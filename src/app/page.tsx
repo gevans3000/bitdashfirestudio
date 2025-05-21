@@ -16,22 +16,6 @@ const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 const INITIAL_AI_ANALYSIS_DELAY_MS = 15 * 1000; // 15 seconds
 
-const initialAppData: AppData = {
-  btc: null,
-  eth: null,
-  spy: null,
-  spx: null,
-  dxy: null,
-  us10y: null,
-  trending: null,
-  fearGreed: null,
-  aiSentiment: null,
-  lastUpdated: null,
-  globalError: null,
-  loading: true, // For initial crypto load
-  loadingAi: false,
-};
-
 const getMockStockData = (symbol?: string): StockData => {
   const now = new Date().toISOString();
   if (symbol === 'SPY') {
@@ -44,19 +28,35 @@ const getMockStockData = (symbol?: string): StockData => {
       id: 'spx', name: 'S&P 500 Index (Mocked)', symbol: '^GSPC', price: 4500, change: 10, changePercent: 0.22, volume: 2000000000, lastUpdated: now, status: 'cached_error'
     };
   }
-  if (symbol === 'DX-Y.NYB' || symbol === 'DXY') { // Allow 'DXY' for easier reference
+  if (symbol === 'DX-Y.NYB' || symbol === 'DXY') { 
     return {
-      id: 'dxy', name: 'US Dollar Index (Mocked)', symbol: 'DXY', price: 104.50, change: 0.10, changePercent: 0.10, volume: 0, lastUpdated: now, status: 'cached_error'
+      id: 'dxy', name: 'US Dollar Index (Placeholder)', symbol: 'DXY', price: 104.50, change: 0.10, changePercent: 0.10, volume: 0, lastUpdated: now, status: 'cached_error'
     };
   }
-  if (symbol === '^TNX' || symbol === 'US10Y') { // Allow 'US10Y' for easier reference
+  if (symbol === '^TNX' || symbol === 'US10Y') { 
     return {
-      id: 'us10y', name: 'US 10-Year Yield (Mocked)', symbol: 'US10Y', price: 4.25, change: -0.02, changePercent: -0.47, volume: 0, lastUpdated: now, status: 'cached_error'
+      id: 'us10y', name: 'US 10-Year Yield (Placeholder)', symbol: 'US10Y', price: 4.25, change: -0.02, changePercent: -0.47, volume: 0, lastUpdated: now, status: 'cached_error'
     };
   }
   return {
       id: 'mock', name: 'Mock Stock Data', symbol: 'MOCK', price: 100, change: 1, changePercent: 1, volume: 1000000, lastUpdated: now, status: 'cached_error'
   };
+};
+
+const initialAppData: AppData = {
+  btc: null,
+  eth: null,
+  spy: null,
+  spx: null,
+  dxy: getMockStockData('DXY'), // Initialize with mock data
+  us10y: getMockStockData('US10Y'), // Initialize with mock data
+  trending: null,
+  fearGreed: null,
+  aiSentiment: null,
+  lastUpdated: null,
+  globalError: null,
+  loading: true, 
+  loadingAi: false,
 };
 
 
@@ -152,7 +152,6 @@ const CryptoDashboardPage: FC = () => {
       }
       
       let currentGlobalError = appDataRef.current.globalError || "";
-      // Filter out old crypto, trending, f&g, and AI errors. Keep stock and DXY/US10Y mock messages.
       currentGlobalError = currentGlobalError.split(". ")
         .filter(msg => 
             !msg.toLowerCase().includes("crypto") && 
@@ -197,17 +196,17 @@ const CryptoDashboardPage: FC = () => {
   }, []); 
 
   const fetchStockData = useCallback(async () => {
-    // For DXY and US10Y, we will use mock data as per the new requirement.
+    // Always use mock data for DXY and US10Y
     const newDxyData: StockData = getMockStockData('DXY');
     const newUs10yData: StockData = getMockStockData('US10Y');
-    let dxyUs10yMockMessage = "DXY and US10Y are using placeholder data as a suitable free, low-usage real-time API is not currently integrated.";
+    const dxyUs10yMockMessage = "DXY and US10Y are using placeholder data as a suitable free, low-usage real-time API is not currently integrated.";
 
     setAppData(prev => ({
       ...prev,
       spy: prev.spy ? { ...prev.spy, status: 'loading' } : { ...getMockStockData('SPY'), status: 'loading' },
       spx: prev.spx ? { ...prev.spx, status: 'loading' } : { ...getMockStockData('^GSPC'), status: 'loading' },
-      dxy: newDxyData, // Set mock data immediately
-      us10y: newUs10yData, // Set mock data immediately
+      dxy: newDxyData, 
+      us10y: newUs10yData,
     }));
   
     let newSpyData: StockData | null = appDataRef.current.spy;
@@ -216,7 +215,7 @@ const CryptoDashboardPage: FC = () => {
   
     if (!FMP_API_KEY) {
       console.warn("FMP API key (NEXT_PUBLIC_FMP_API_KEY) is not set. Using mock stock data for SPY and SPX.");
-      localStockErrorParts.push("SPY and SPX data is mocked due to missing FMP API key.");
+      localStockErrorParts.push("SPY and SPX data is mocked due to missing FMP API key");
       newSpyData = getMockStockData('SPY');
       newSpxData = getMockStockData('^GSPC');
     } else {
@@ -226,7 +225,6 @@ const CryptoDashboardPage: FC = () => {
         
         const [spyResponseSettled, spxResponseSettled] = await Promise.allSettled([spyPromise, spxPromise]);
 
-        // Process SPY
         if (spyResponseSettled.status === 'fulfilled') {
           const spyResponse = spyResponseSettled.value;
           if (spyResponse.ok) {
@@ -240,16 +238,22 @@ const CryptoDashboardPage: FC = () => {
                 lastUpdated: spyApiData.timestamp ? new Date(spyApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
               };
-            } else { if (newSpyData) newSpyData.status = 'cached_error'; localStockErrorParts.push("SPY data not found in FMP response."); }
+            } else { 
+              if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
+              localStockErrorParts.push("SPY data not found in FMP response."); 
+            }
           } else {
-            if (newSpyData) newSpyData.status = 'cached_error';
+            if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
             let spyError = `Failed to fetch SPY data from FMP: (status ${spyResponse.status})`;
             if (spyResponse.status === 401 || spyResponse.status === 403) spyError += ". Please check your FMP API key and ensure it has the correct permissions";
-            localStockErrorParts.push(spyError + ".");
+            else if (spyResponse.status === 400) spyError += ". Bad request, check symbol or API endpoint";
+            localStockErrorParts.push(spyError);
           }
-        } else { if (newSpyData) newSpyData.status = 'cached_error'; localStockErrorParts.push(`Failed to fetch SPY data: ${spyResponseSettled.reason?.message || 'Network error'}.`); }
+        } else { 
+          if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
+          localStockErrorParts.push(`Failed to fetch SPY data: ${spyResponseSettled.reason?.message || 'Network error'}`); 
+        }
 
-        // Process SPX
         if (spxResponseSettled.status === 'fulfilled') {
           const spxResponse = spxResponseSettled.value;
           if (spxResponse.ok) {
@@ -263,14 +267,21 @@ const CryptoDashboardPage: FC = () => {
                 lastUpdated: spxApiData.timestamp ? new Date(spxApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
               };
-            } else { if (newSpxData) newSpxData.status = 'cached_error'; localStockErrorParts.push("^GSPC data not found in FMP response."); }
+            } else { 
+              if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
+              localStockErrorParts.push("^GSPC data not found in FMP response."); 
+            }
           } else {
-            if (newSpxData) newSpxData.status = 'cached_error';
+            if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
             let spxError = `Failed to fetch ^GSPC data from FMP: (status ${spxResponse.status})`;
             if (spxResponse.status === 401 || spxResponse.status === 403) spxError += ". Please check your FMP API key and ensure it has the correct permissions";
-            localStockErrorParts.push(spxError + ".");
+            else if (spxResponse.status === 400) spxError += ". Bad request, check symbol or API endpoint";
+            localStockErrorParts.push(spxError);
           }
-        } else { if (newSpxData) newSpxData.status = 'cached_error'; localStockErrorParts.push(`Failed to fetch ^GSPC data: ${spxResponseSettled.reason?.message || 'Network error'}.`); }
+        } else { 
+          if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
+          localStockErrorParts.push(`Failed to fetch ^GSPC data: ${spxResponseSettled.reason?.message || 'Network error'}`); 
+        }
 
       } catch (error) { 
         console.error("Unexpected error fetching SPY/SPX stock data:", error);
@@ -281,11 +292,10 @@ const CryptoDashboardPage: FC = () => {
       }
     }
     
-    const finalStockErrorMsg = localStockErrorParts.length > 0 ? localStockErrorParts.join(" ") : null;
+    const finalStockErrorMsg = localStockErrorParts.length > 0 ? localStockErrorParts.join(". ") + "." : null;
 
     setAppData(prev => {
       let currentGlobalError = prev.globalError || "";
-      // Filter out old stock-related, FMP, AI, and DXY/US10Y mock messages before adding new ones
       currentGlobalError = currentGlobalError.split(". ")
         .filter(msg => 
             !msg.toLowerCase().includes("stock") && 
@@ -297,14 +307,14 @@ const CryptoDashboardPage: FC = () => {
 
       let combinedError = currentGlobalError;
       if (finalStockErrorMsg) combinedError += finalStockErrorMsg + " ";
-      combinedError += dxyUs10yMockMessage; // Always add the DXY/US10Y mock message
+      combinedError += dxyUs10yMockMessage; 
 
       return {
         ...prev,
         spy: newSpyData || prev.spy, 
         spx: newSpxData || prev.spx, 
-        dxy: newDxyData, // Already set to mock
-        us10y: newUs10yData, // Already set to mock
+        dxy: newDxyData, 
+        us10y: newUs10yData, 
         globalError: combinedError.trim() || null,
         lastUpdated: new Date().toISOString(), 
       };
@@ -318,7 +328,7 @@ const CryptoDashboardPage: FC = () => {
   }, [fetchCryptoData]);
 
   useEffect(() => {
-    fetchStockData(); // This will set DXY/US10Y to mock and attempt SPY/SPX fetch
+    fetchStockData(); 
     const interval = setInterval(fetchStockData, STOCK_FETCH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [fetchStockData]);
@@ -328,20 +338,17 @@ const CryptoDashboardPage: FC = () => {
     const currentData = appDataRef.current;
     if (currentData.loadingAi) return;
 
-    // AI analysis depends on BTC, ETH, SPY, SPX, DXY, US10Y.
-    // DXY and US10Y will be from mock data.
     if (currentData.btc && currentData.eth && currentData.spy && currentData.spx && currentData.dxy && currentData.us10y) {
       setAppData(prev => ({ ...prev, loadingAi: true }));
       try {
         const sentimentResult = await marketSentimentAnalysis({
           btcPrice: currentData.btc.price, ethPrice: currentData.eth.price,
           spyPrice: currentData.spy.price, spxPrice: currentData.spx.price,
-          dxyPrice: currentData.dxy.price, // Will use mock price
-          us10yPrice: currentData.us10y.price, // Will use mock price
+          dxyPrice: currentData.dxy.price, 
+          us10yPrice: currentData.us10y.price, 
         });
         setAppData(prev => {
            let currentGlobalError = prev.globalError || "";
-           // Remove only AI-specific rate limit errors
            currentGlobalError = currentGlobalError.split(". ")
              .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits"))
              .join(". ");
@@ -359,7 +366,6 @@ const CryptoDashboardPage: FC = () => {
         
         setAppData(prev => {
           let currentGlobalError = prev.globalError || "";
-          // Remove only AI-specific rate limit errors before adding a new one
           currentGlobalError = currentGlobalError.split(". ")
             .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits"))
             .join(". ");
@@ -374,7 +380,7 @@ const CryptoDashboardPage: FC = () => {
         });
       }
     } else {
-      if (!currentData.loading) { // Only update if not in initial global loading
+      if (!currentData.loading) { 
          setAppData(prev => ({ ...prev, loadingAi: false, aiSentiment: null }));
       }
     }
@@ -423,7 +429,7 @@ const CryptoDashboardPage: FC = () => {
     if (!stock) return <div className="p-4 text-center">Data unavailable for {title}.</div>;
     
     const unit = (stock.symbol === 'US10Y' || stock.symbol === '^TNX') ? "%" : "USD";
-    const isMocked = stock.name.toLowerCase().includes("(mocked)");
+    const isPlaceholder = stock.name.toLowerCase().includes("(placeholder)") || stock.name.toLowerCase().includes("(mocked)");
 
 
     return (
@@ -450,7 +456,7 @@ const CryptoDashboardPage: FC = () => {
             isLoading={stock.status === 'loading'} 
         />
         {stock.volume > 0 && <ValueDisplay label="Volume" value={stock.volume} isLoading={stock.status === 'loading'} />}
-        {isMocked && <p className="text-xs text-muted-foreground/80 text-center pt-1">(Using placeholder data)</p>}
+        {isPlaceholder && <p className="text-xs text-muted-foreground/80 text-center pt-1">(Using placeholder data)</p>}
       </div>
     );
   };
@@ -515,10 +521,10 @@ const CryptoDashboardPage: FC = () => {
                 <ValueDisplay label="Ethereum (ETH) Sentiment" value={appData.aiSentiment.ethSentiment} />
                 <ValueDisplay label="Stock Market Sentiment" value={appData.aiSentiment.stockMarketSentiment} />
               </div>
-            ) : (appData.btc && appData.eth && appData.spy && appData.spx && appData.dxy && appData.us10y) ? ( // DXY/US10Y will be from mock
+            ) : (appData.btc && appData.eth && appData.spy && appData.spx && appData.dxy && appData.us10y) ? (
               <p className="text-center p-4">AI sentiment analysis will be generated shortly. Waiting for next scheduled run.</p>
             ) : (
-              <p className="text-center p-4">AI sentiment analysis pending complete price data from all sources (some sources may be using placeholder data).</p>
+              <p className="text-center p-4">AI sentiment analysis pending complete price data from all sources. Some sources (DXY, US10Y) use placeholder data.</p>
             )}
           </DataCard>
           
@@ -557,3 +563,5 @@ const CryptoDashboardPage: FC = () => {
 };
 
 export default CryptoDashboardPage;
+
+    
