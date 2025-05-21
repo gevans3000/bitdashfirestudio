@@ -1,3 +1,4 @@
+
 import { useState, type FC, ReactNode, ElementType } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -53,7 +54,10 @@ const DataCard: FC<DataCardProps> = ({
   return (
     <Card className={cn("shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col", className)}>
       <CardHeader
-        className="flex flex-row items-center justify-between space-y-0 pb-2"
+        className={cn(
+          "flex flex-row items-center justify-between space-y-0",
+          isOpen ? "pb-2" : "pb-0" // Remove bottom padding when closed
+        )}
       >
         <div
           className="flex items-center flex-grow mr-2 cursor-pointer"
