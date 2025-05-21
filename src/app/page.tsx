@@ -411,22 +411,6 @@ const CryptoDashboardPage: FC = () => {
             {renderCoinData(appData.eth, Shapes)}
           </DataCard>
           
-          <DataCard title="Top 7 Trending Coins" icon={TrendingUp} status={appData.trending?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
-            {appData.trending && appData.trending.coins.length > 0 ? (
-              <ul className="space-y-2 text-sm max-h-[300px] overflow-y-auto p-1">
-                {appData.trending.coins.map(coin => (
-                  <li key={coin.id} className="flex items-center justify-between p-1.5 bg-muted/30 rounded-md hover:bg-muted/60 transition-colors">
-                    <div className="flex items-center">
-                      <Image data-ai-hint="coin logo" src={coin.thumb} alt={coin.name} width={24} height={24} className="rounded-full mr-2" />
-                      <span className="font-medium">{coin.name} ({coin.symbol})</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">Rank: {coin.market_cap_rank}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : ( (appData.loading && !appData.trending) ? <p className="text-center p-4">Loading trending coins...</p> : <p className="text-center p-4">Trending coins data unavailable.</p>)}
-          </DataCard>
-
           <DataCard title={appData.spy?.name || "SPY"} icon={Briefcase} status={appData.spy?.status ?? 'loading'}>
             {renderStockData(appData.spy, Briefcase)}
           </DataCard>
@@ -466,6 +450,22 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">AI sentiment analysis pending complete price data from all sources.</p>
             )}
           </DataCard>
+
+          <DataCard title="Top 7 Trending Coins" icon={TrendingUp} status={appData.trending?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
+            {appData.trending && appData.trending.coins.length > 0 ? (
+              <ul className="space-y-2 text-sm max-h-[300px] overflow-y-auto p-1">
+                {appData.trending.coins.map(coin => (
+                  <li key={coin.id} className="flex items-center justify-between p-1.5 bg-muted/30 rounded-md hover:bg-muted/60 transition-colors">
+                    <div className="flex items-center">
+                      <Image data-ai-hint="coin logo" src={coin.thumb} alt={coin.name} width={24} height={24} className="rounded-full mr-2" />
+                      <span className="font-medium">{coin.name} ({coin.symbol})</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">Rank: {coin.market_cap_rank}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : ( (appData.loading && !appData.trending) ? <p className="text-center p-4">Loading trending coins...</p> : <p className="text-center p-4">Trending coins data unavailable.</p>)}
+          </DataCard>
         </div>
 
         <footer className="text-center mt-8 py-4 border-t">
@@ -485,3 +485,6 @@ const CryptoDashboardPage: FC = () => {
 };
 
 export default CryptoDashboardPage;
+
+
+    
