@@ -37,10 +37,11 @@ const getMockStockData = (): { spy: StockData, spx: StockData } => {
   };
 };
 
+const AI_ANALYSIS_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 const CryptoDashboardPage: FC = () => {
   const [appData, setAppData] = useState<AppData>(initialAppData);
-  const appDataRef = useRef(appData); // To access previous state in fetchData
+  const appDataRef = useRef(appData); 
 
   useEffect(() => {
     appDataRef.current = appData;
@@ -67,7 +68,6 @@ const CryptoDashboardPage: FC = () => {
       let newTrendingData: TrendingData | null = prevData.trending;
       let newFearGreedData: FearGreedData | null = prevData.fearGreed;
 
-      // Process Bitcoin & Ethereum
       if (marketDataResponse.status === 'fulfilled' && marketDataResponse.value.ok) {
         const markets = await marketDataResponse.value.json();
         const btcApi = markets.find((c: any) => c.id === 'bitcoin');
@@ -120,10 +120,9 @@ const CryptoDashboardPage: FC = () => {
         partialError = true;
         if (newBtcData) newBtcData.status = 'cached_error';
         if (newEthData) newEthData.status = 'cached_error';
-        console.error("Failed to fetch market data:", marketDataResponse.status === 'rejected' ? marketDataResponse.reason : marketDataResponse.value.statusText);
+        console.error("Failed to fetch market data:", marketDataResponse.status === 'rejected' ? marketDataResponse.reason : (marketDataResponse.value?.statusText || "Unknown market data fetch error"));
       }
 
-      // Process Trending Coins
       if (trendingResponse.status === 'fulfilled' && trendingResponse.value.ok) {
         const trendingApi = await trendingResponse.value.json();
         if (trendingApi.coins && trendingApi.coins.length > 0) {
@@ -145,10 +144,9 @@ const CryptoDashboardPage: FC = () => {
       } else {
         partialError = true;
         if (newTrendingData) newTrendingData.status = 'cached_error';
-        console.error("Failed to fetch trending coins:", trendingResponse.status === 'rejected' ? trendingResponse.reason : trendingResponse.value.statusText);
+        console.error("Failed to fetch trending coins:", trendingResponse.status === 'rejected' ? trendingResponse.reason : (trendingResponse.value?.statusText || "Unknown trending coins fetch error"));
       }
 
-      // Process Fear & Greed Index
       if (fearGreedResponse.status === 'fulfilled' && fearGreedResponse.value.ok) {
         const fearGreedApi = await fearGreedResponse.value.json();
         if (fearGreedApi.data && fearGreedApi.data.length > 0) {
@@ -157,7 +155,7 @@ const CryptoDashboardPage: FC = () => {
           newFearGreedData = {
             value: fgValue.value,
             value_classification: fgValue.value_classification,
-            timestamp: fgValue.timestamp, // This is Unix timestamp as string
+            timestamp: fgValue.timestamp,
             status: 'fresh',
           };
         } else {
@@ -166,7 +164,7 @@ const CryptoDashboardPage: FC = () => {
       } else {
         partialError = true;
         if (newFearGreedData) newFearGreedData.status = 'cached_error';
-        console.error("Failed to fetch Fear & Greed Index:", fearGreedResponse.status === 'rejected' ? fearGreedResponse.reason : fearGreedResponse.value.statusText);
+        console.error("Failed to fetch Fear & Greed Index:", fearGreedResponse.status === 'rejected' ? fearGreedResponse.reason : (fearGreedResponse.value?.statusText || "Unknown F&G index fetch error"));
       }
 
       const mockStocks = getMockStockData();
@@ -175,8 +173,8 @@ const CryptoDashboardPage: FC = () => {
         ...current,
         btc: newBtcData,
         eth: newEthData,
-        spy: mockStocks.spy, // Always use fresh mock for stocks
-        spx: mockStocks.spx,   // Always use fresh mock for stocks
+        spy: mockStocks.spy,
+        spx: mockStocks.spx,
         trending: newTrendingData,
         fearGreed: newFearGreedData,
         lastUpdated: anyDataFetched || current.lastUpdated ? new Date().toISOString() : null,
@@ -187,49 +185,81 @@ const CryptoDashboardPage: FC = () => {
     } catch (error) {
       console.error("Overall error fetching dashboard data:", error);
       setAppData(current => ({
-        ...current, // Keep existing data as cache
+        ...current,
         btc: current.btc ? { ...current.btc, status: 'cached_error' } : null,
         eth: current.eth ? { ...current.eth, status: 'cached_error' } : null,
         trending: current.trending ? { ...current.trending, status: 'cached_error' } : null,
         fearGreed: current.fearGreed ? { ...current.fearGreed, status: 'cached_error' } : null,
-        spy: current.spy || getMockStockData().spy, // Ensure stocks are present
+        spy: current.spy || getMockStockData().spy,
         spx: current.spx || getMockStockData().spx,
         globalError: error instanceof Error ? error.message : 'Unknown error fetching data. Displaying cached or limited data.',
         loading: false,
-        lastUpdated: current.lastUpdated || new Date().toISOString(), // Keep last update time or set new if some parts loaded
+        lastUpdated: current.lastUpdated || new Date().toISOString(),
       }));
     }
-  }, []); // Removed appDataRef from deps as it's a ref, fetchData is called by interval or effect
+  }, []); 
 
   useEffect(() => {
-    fetchData(); // Initial fetch
-    const interval = setInterval(fetchData, 60000); // Refresh every 60 seconds
+    fetchData(); 
+    const interval = setInterval(fetchData, 60000); 
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  useEffect(() => {
-    // Only run AI sentiment if critical data (prices) are available and not already loading AI
-    if (appData.btc && appData.eth && appData.spy && appData.spx && !appData.loadingAi) {
-      const runAnalysis = async () => {
-        setAppData(prev => ({ ...prev, loadingAi: true }));
-        try {
-          const sentimentResult = await marketSentimentAnalysis({
-            btcPrice: appData.btc!.price,
-            ethPrice: appData.eth!.price,
-            spyPrice: appData.spy!.price,
-            spxPrice: appData.spx!.price,
-          });
-          setAppData(prev => ({ ...prev, aiSentiment: sentimentResult, loadingAi: false }));
-        } catch (error) {
-          console.error("Error fetching AI sentiment:", error);
-          // Keep previous AI sentiment if new fetch fails, or set to null if it was the first attempt
-          setAppData(prev => ({ ...prev, aiSentiment: prev.aiSentiment || null, loadingAi: false }));
-        }
-      };
-      // Debounce or make conditional if prices haven't changed much
-      runAnalysis();
+  const runAiAnalysis = useCallback(async () => {
+    const currentData = appDataRef.current;
+
+    if (currentData.loadingAi) {
+      return;
     }
-  }, [appData.btc, appData.eth, appData.spy, appData.spx, appData.loadingAi]); // re-run if prices change
+
+    if (currentData.btc && currentData.eth && currentData.spy && currentData.spx) {
+      setAppData(prev => ({ ...prev, loadingAi: true }));
+      try {
+        const sentimentResult = await marketSentimentAnalysis({
+          btcPrice: currentData.btc.price,
+          ethPrice: currentData.eth.price,
+          spyPrice: currentData.spy.price,
+          spxPrice: currentData.spx.price,
+        });
+        setAppData(prev => ({ ...prev, aiSentiment: sentimentResult, loadingAi: false }));
+      } catch (error) {
+        console.error("Error fetching AI sentiment:", error);
+        let errorMessage = "AI sentiment analysis failed.";
+        if (error instanceof Error && error.message.includes("429")) {
+          errorMessage = "AI sentiment analysis failed due to rate limits. Will retry on the next scheduled run.";
+        }
+        // Keep previous AI sentiment if new fetch fails, or set to null if it was the first attempt
+        setAppData(prev => ({ ...prev, aiSentiment: prev.aiSentiment || null, loadingAi: false, 
+          // Optionally update globalError or a dedicated AI error state
+          // globalError: prev.globalError ? `${prev.globalError} ${errorMessage}` : errorMessage 
+        }));
+      }
+    } else {
+      // If prerequisite data isn't available, ensure loadingAi is false
+      // and we are not in the main loading phase
+      if (!currentData.loading) {
+         setAppData(prev => ({ ...prev, loadingAi: false, aiSentiment: null }));
+      }
+    }
+  }, []); // setAppData, marketSentimentAnalysis are stable. appDataRef.current provides latest data.
+
+
+  useEffect(() => {
+    // Attempt initial run shortly after mount, in case data is ready
+    const initialRunTimeout = setTimeout(() => {
+      runAiAnalysis();
+    }, 5000); // 5 seconds delay
+
+    const aiInterval = setInterval(() => {
+      runAiAnalysis();
+    }, AI_ANALYSIS_INTERVAL_MS);
+
+    return () => {
+      clearTimeout(initialRunTimeout);
+      clearInterval(aiInterval);
+    };
+  }, [runAiAnalysis]);
+
 
   const navItems = [
     { label: 'Metric' }, { label: 'Bitcoin (BTC)' }, { label: 'Ethereum (ETH)' },
@@ -237,21 +267,20 @@ const CryptoDashboardPage: FC = () => {
   ];
 
   const renderCoinData = (coin: CoinData | null, IconComponent: ElementType) => {
-    // If app is loading globally and coin data is null, show top-level card loading
-    if (appData.loading && !coin) return null; // DataCard handles its own loading skeleton
+    if (appData.loading && !coin) return null; 
     if (!coin) return <div className="p-4 text-center">Data unavailable for {IconComponent === Bitcoin ? 'Bitcoin' : 'Ethereum'}.</div>;
     
     return (
       <div className="space-y-3 p-1">
         <div className="flex items-center space-x-2 mb-2">
           <Image data-ai-hint="coin logo" src={coin.image} alt={coin.name} width={32} height={32} className="rounded-full" />
-          <ValueDisplay label="Price" value={coin.price} unit={coin.symbol} variant="highlight" isLoading={coin.status === 'loading'} valueClassName="text-accent" />
+          <ValueDisplay label="Price" value={coin.price} unit={coin.symbol.toUpperCase()} variant="highlight" isLoading={coin.status === 'loading'} valueClassName="text-accent" />
         </div>
         <ValueDisplay label="24h Change" value={`${coin.change24h?.toFixed(2) ?? 'N/A'}%`} valueClassName={coin.change24h >= 0 ? 'text-green-500' : 'text-red-500'} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="24h High" value={coin.high24h ?? 'N/A'} unit={coin.symbol} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="24h Low" value={coin.low24h ?? 'N/A'} unit={coin.symbol} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="Volume" value={coin.volume24h ?? 'N/A'} unit={coin.symbol} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="Market Cap" value={coin.marketCap ?? 'N/A'} unit={coin.symbol} isLoading={coin.status === 'loading'} />
+        <ValueDisplay label="24h High" value={coin.high24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+        <ValueDisplay label="24h Low" value={coin.low24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+        <ValueDisplay label="Volume" value={coin.volume24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+        <ValueDisplay label="Market Cap" value={coin.marketCap ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
       </div>
     );
   };
@@ -301,7 +330,7 @@ const CryptoDashboardPage: FC = () => {
                   </li>
                 ))}
               </ul>
-            ) : (appData.loading && !appData.trending ? <p>Loading trending coins...</p> : <p className="text-center p-4">Trending coins data unavailable.</p>)}
+            ) : (appData.loading && !appData.trending ? <p className="text-center p-4">Loading trending coins...</p> : <p className="text-center p-4">Trending coins data unavailable.</p>)}
           </DataCard>
 
 
@@ -321,18 +350,29 @@ const CryptoDashboardPage: FC = () => {
                 <p className="text-muted-foreground">{appData.fearGreed.value_classification}</p>
                 {appData.fearGreed.timestamp && <p className="text-xs text-muted-foreground mt-2">As of {new Date(parseInt(appData.fearGreed.timestamp) * 1000).toLocaleTimeString()}</p>}
               </div>
-            ) : (appData.loading && !appData.fearGreed ? <p>Loading F&G Index...</p> : <p className="text-center p-4">Fear & Greed Index data unavailable.</p>)}
+            ) : (appData.loading && !appData.fearGreed ? <p className="text-center p-4">Loading F&G Index...</p> : <p className="text-center p-4">Fear & Greed Index data unavailable.</p>)}
           </DataCard>
 
-          <DataCard title="AI Market Sentiment" icon={Brain} status={appData.loadingAi ? 'loading' : (appData.aiSentiment ? 'fresh' : (appData.btc ? 'waiting' : 'error'))} className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
-            {appData.aiSentiment ? (
+          <DataCard 
+            title="AI Market Sentiment" 
+            icon={Brain} 
+            status={appData.loadingAi ? 'loading' : appData.aiSentiment ? 'fresh' : 'waiting'} 
+            className="sm:col-span-2 lg:col-span-3 xl:col-span-4"
+          >
+            {appData.loadingAi ? (
+              <p className="text-center p-4">Generating AI sentiment analysis...</p>
+            ) : appData.aiSentiment ? (
               <div className="space-y-2 text-sm p-1">
                 <ValueDisplay label="Overall Sentiment" value={appData.aiSentiment.overallSentiment} />
                 <ValueDisplay label="Bitcoin (BTC) Sentiment" value={appData.aiSentiment.btcSentiment} />
                 <ValueDisplay label="Ethereum (ETH) Sentiment" value={appData.aiSentiment.ethSentiment} />
                 <ValueDisplay label="Stock Market Sentiment" value={appData.aiSentiment.stockMarketSentiment} />
               </div>
-            ) : (appData.loadingAi ? <p>Generating AI sentiment analysis...</p> : <p className="text-center p-4">AI sentiment analysis {appData.btc ? 'pending price data...' : 'unavailable. Ensure price data is loaded.'}</p>)}
+            ) : (appData.btc && appData.eth && appData.spy && appData.spx) ? (
+              <p className="text-center p-4">AI sentiment analysis will be generated shortly. Waiting for next scheduled run.</p>
+            ) : (
+              <p className="text-center p-4">AI sentiment analysis pending complete price data.</p>
+            )}
           </DataCard>
         </div>
 
