@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'assets.coingecko.com', // Added as CoinGecko often uses this for thumbs
+        hostname: 'assets.coingecko.com',
         port: '',
         pathname: '/coins/images/**',
       }
