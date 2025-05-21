@@ -1,6 +1,6 @@
 
 import { useState, type FC, ReactNode, ElementType } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -8,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 interface DataCardProps {
   title: string;
-  description?: string;
   icon?: ElementType;
   status?: 'fresh' | 'cached_error' | 'error' | 'loading' | 'waiting' | null;
   children: ReactNode;
@@ -18,7 +17,6 @@ interface DataCardProps {
 
 const DataCard: FC<DataCardProps> = ({
   title,
-  description,
   icon: Icon,
   status,
   children,
@@ -92,9 +90,6 @@ const DataCard: FC<DataCardProps> = ({
         )}
         aria-hidden={!isOpen}
       >
-        {description && isOpen && ( // Only show description if card is open
-            <CardDescription className="px-6 pb-2 text-xs">{description}</CardDescription>
-        )}
         <CardContent className={cn("pt-2 flex-grow", contentClassName, { 'py-0': !isOpen })}>
           {status === 'loading' ? (
             <div className="space-y-2 py-2">
