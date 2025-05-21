@@ -13,8 +13,8 @@ import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3 } from 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
 const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
 const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
-const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes (increased from 5)
-const INITIAL_AI_ANALYSIS_DELAY_MS = 15 * 1000; // 15 seconds (increased from 5)
+const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+const INITIAL_AI_ANALYSIS_DELAY_MS = 15 * 1000; // 15 seconds
 
 const initialAppData: AppData = {
   btc: null,
@@ -206,9 +206,9 @@ const CryptoDashboardPage: FC = () => {
     }
   
     try {
-      const response = await fetch(`https://financialmodelingprep.com/api/v3/quote/SPY,^GSPC?apikey=${FMP_API_KEY}`);
+      const response = await fetch(`https://financialmodelingprep.com/stable/quote?symbols=SPY,^GSPC&apikey=${FMP_API_KEY}`);
       if (!response.ok) {
-        stockErrorMsg = `Failed to fetch stock data from FMP: ${response.statusText} (status ${response.status}). `;
+        stockErrorMsg = `Failed to fetch stock data from FMP: (status ${response.status}). `;
         if (response.status === 401 || response.status === 403) {
           stockErrorMsg += "Please check your FMP API key and ensure it has the correct permissions. ";
         }
@@ -476,3 +476,4 @@ export default CryptoDashboardPage;
     
 
     
+
