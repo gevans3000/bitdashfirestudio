@@ -1,0 +1,69 @@
+'use server';
+
+/**
+ * @fileOverview Generates market sentiment analysis for cryptocurrencies using data from stock APIs.
+ *
+ * - marketSentimentAnalysis - A function that generates market sentiment analysis.
+ * - MarketSentimentAnalysisInput - The input type for the marketSentimentAnalysis function.
+ * - MarketSentimentAnalysisOutput - The return type for the marketSentimentAnalysis function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+
+const MarketSentimentAnalysisInputSchema = z.object({
+  btcPrice: z.number().describe('The current price of Bitcoin.'),
+  ethPrice: z.number().describe('The current price of Ethereum.'),
+  spyPrice: z.number().describe('The current price of SPY.'),
+  spxPrice: z.number().describe('The current price of SPX.'),
+});
+export type MarketSentimentAnalysisInput = z.infer<typeof MarketSentimentAnalysisInputSchema>;
+
+const MarketSentimentAnalysisOutputSchema = z.object({
+  overallSentiment: z.string().describe('Overall market sentiment analysis based on the provided data.'),
+  btcSentiment: z.string().describe('Sentiment analysis specific to Bitcoin.'),
+  ethSentiment: z.string().describe('Sentiment analysis specific to Ethereum.'),
+  stockMarketSentiment: z
+    .string()
+    .describe('Sentiment analysis of the stock market based on SPY and SPX data.'),
+});
+export type MarketSentimentAnalysisOutput = z.infer<typeof MarketSentimentAnalysisOutputSchema>;
+
+export async function marketSentimentAnalysis(
+  input: MarketSentimentAnalysisInput
+): Promise<MarketSentimentAnalysisOutput> {
+  return marketSentimentAnalysisFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'marketSentimentAnalysisPrompt',
+  input: {schema: MarketSentimentAnalysisInputSchema},
+  output: {schema: MarketSentimentAnalysisOutputSchema},
+  prompt: `You are an expert financial analyst specializing in cryptocurrency and stock market sentiment analysis.
+
+  Based on the provided data, generate a comprehensive market sentiment analysis.
+
+  Bitcoin Price: {{btcPrice}}
+  Ethereum Price: {{ethPrice}}
+  SPY Price: {{spyPrice}}
+  S&P 500 Price: {{spxPrice}}
+
+  Consider the relationships between these assets to provide nuanced insights. For example, a rising stock market might indicate a positive sentiment that could affect crypto, or vice versa.
+  Use the provided information to determine overall sentiment, as well as sentiment for individual cryptocurrencies and the stock market.
+  Be concise and provide actionable insights.
+
+  Output the response as a JSON object.
+  `,
+});
+
+const marketSentimentAnalysisFlow = ai.defineFlow(
+  {
+    name: 'marketSentimentAnalysisFlow',
+    inputSchema: MarketSentimentAnalysisInputSchema,
+    outputSchema: MarketSentimentAnalysisOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
