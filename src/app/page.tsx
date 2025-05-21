@@ -209,8 +209,8 @@ const CryptoDashboardPage: FC = () => {
       const response = await fetch(`https://financialmodelingprep.com/api/v3/quote/SPY,^GSPC?apikey=${FMP_API_KEY}`);
       if (!response.ok) {
         stockErrorMsg = `Failed to fetch stock data from FMP: ${response.statusText} (status ${response.status}). `;
-        if (response.status === 401) {
-          stockErrorMsg += "Please check your FMP API key. ";
+        if (response.status === 401 || response.status === 403) {
+          stockErrorMsg += "Please check your FMP API key and ensure it has the correct permissions. ";
         }
         throw new Error(stockErrorMsg);
       }
