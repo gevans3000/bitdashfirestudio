@@ -13,7 +13,8 @@ import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3 } from 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
 const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
 const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
-const AI_ANALYSIS_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes (increased from 5)
+const INITIAL_AI_ANALYSIS_DELAY_MS = 15 * 1000; // 15 seconds (increased from 5)
 
 const initialAppData: AppData = {
   btc: null,
@@ -57,8 +58,8 @@ const CryptoDashboardPage: FC = () => {
   }, [appData]);
 
   const fetchCryptoData = useCallback(async () => {
-    if (!appDataRef.current.loading && appDataRef.current.btc === null) { // Only set loading true if it's an initial-like fetch
-      setAppData(prev => ({ ...prev, loading: true, globalError: appDataRef.current.globalError })); // Preserve existing globalError
+    if (!appDataRef.current.loading && appDataRef.current.btc === null) { 
+      setAppData(prev => ({ ...prev, loading: true, globalError: appDataRef.current.globalError })); 
     }
 
     const prevData = appDataRef.current;
@@ -140,9 +141,8 @@ const CryptoDashboardPage: FC = () => {
       }
       
       let currentGlobalError = appDataRef.current.globalError || "";
-      // Remove previous crypto error messages to avoid duplication, keep stock messages
-      currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("crypto") && !msg.toLowerCase().includes("trending") && !msg.toLowerCase().includes("f&g")).join(". ");
-      if (currentGlobalError && !currentGlobalError.endsWith(". ")) currentGlobalError += ". ";
+      currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("crypto") && !msg.toLowerCase().includes("trending") && !msg.toLowerCase().includes("f&g") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
+      if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
 
       if (partialError && !anyDataFetched && !prevData.btc) {
@@ -150,7 +150,7 @@ const CryptoDashboardPage: FC = () => {
       } else if (partialError) {
          cryptoErrorMsg = cryptoErrorMsg || "Some crypto data might be outdated.";
       } else {
-        cryptoErrorMsg = null; // Clear crypto error if successful
+        cryptoErrorMsg = null; 
       }
       
       const finalGlobalError = cryptoErrorMsg ? (currentGlobalError + cryptoErrorMsg).trim() : currentGlobalError.trim();
@@ -159,7 +159,7 @@ const CryptoDashboardPage: FC = () => {
         ...current, btc: newBtcData, eth: newEthData, trending: newTrendingData, fearGreed: newFearGreedData,
         lastUpdated: anyDataFetched || current.lastUpdated ? new Date().toISOString() : null,
         globalError: finalGlobalError || null,
-        loading: false, // Crypto loading done
+        loading: false, 
       }));
 
     } catch (error) {
@@ -172,7 +172,7 @@ const CryptoDashboardPage: FC = () => {
         trending: current.trending ? { ...current.trending, status: 'cached_error' } : null,
         fearGreed: current.fearGreed ? { ...current.fearGreed, status: 'cached_error' } : null,
         globalError: `${current.globalError ? current.globalError + " " : ""} ${errorMsg}`,
-        loading: false, // Crypto loading done
+        loading: false, 
         lastUpdated: current.lastUpdated || new Date().toISOString(),
       }));
     }
@@ -192,13 +192,13 @@ const CryptoDashboardPage: FC = () => {
       stockErrorMsg = "Stock data is mocked. Add NEXT_PUBLIC_FMP_API_KEY to .env for live data.";
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.includes("Stock data is mocked")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(". ")) currentGlobalError += ". ";
+        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.includes("Stock data is mocked") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
+        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
           ...prev,
-          spy: getMockStockData('SPY'), // status is 'cached_error'
-          spx: getMockStockData('^GSPC'), // status is 'cached_error'
+          spy: getMockStockData('SPY'), 
+          spx: getMockStockData('^GSPC'), 
           globalError: (currentGlobalError + stockErrorMsg).trim(),
         };
       });
@@ -244,16 +244,15 @@ const CryptoDashboardPage: FC = () => {
       
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
-        // Clear previous stock-related errors if current fetch is successful or partially successful
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp")).join(". ");
-         if (currentGlobalError && !currentGlobalError.endsWith(". ")) currentGlobalError += ". ";
+        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
+        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
           ...prev,
-          spy: newSpyData || prev.spy, // Fallback to previous if new is null
-          spx: newSpxData || prev.spx, // Fallback to previous if new is null
+          spy: newSpyData || prev.spy, 
+          spx: newSpxData || prev.spx, 
           globalError: stockErrorMsg ? (currentGlobalError + stockErrorMsg).trim() : (currentGlobalError.trim() || null),
-          lastUpdated: new Date().toISOString(), // Stock data also implies an update
+          lastUpdated: new Date().toISOString(), 
         };
       });
   
@@ -262,8 +261,8 @@ const CryptoDashboardPage: FC = () => {
       const errorText = error instanceof Error ? error.message : "Unknown error fetching stock data.";
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(". ")) currentGlobalError += ". ";
+        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
+        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
         ...prev,
@@ -275,14 +274,12 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
-  // Effect for Crypto Data
   useEffect(() => {
     fetchCryptoData(); 
     const interval = setInterval(fetchCryptoData, CRYPTO_FETCH_INTERVAL_MS); 
     return () => clearInterval(interval);
   }, [fetchCryptoData]);
 
-  // Effect for Stock Data
   useEffect(() => {
     fetchStockData();
     const interval = setInterval(fetchStockData, STOCK_FETCH_INTERVAL_MS);
@@ -301,17 +298,37 @@ const CryptoDashboardPage: FC = () => {
           btcPrice: currentData.btc.price, ethPrice: currentData.eth.price,
           spyPrice: currentData.spy.price, spxPrice: currentData.spx.price,
         });
-        setAppData(prev => ({ ...prev, aiSentiment: sentimentResult, loadingAi: false }));
+        setAppData(prev => {
+           let currentGlobalError = prev.globalError || "";
+           currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits")).join(". ");
+           if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
+
+          return {...prev, aiSentiment: sentimentResult, loadingAi: false, globalError: currentGlobalError.trim() || null };
+        });
+
       } catch (error) {
         console.error("Error fetching AI sentiment:", error);
-        let errorMessage = "AI sentiment analysis failed.";
+        let aiErrorMsg = "AI sentiment analysis failed.";
         if (error instanceof Error && error.message.includes("429")) {
-          errorMessage = "AI sentiment analysis failed due to rate limits. Will retry on the next scheduled run.";
+          aiErrorMsg = "AI sentiment analysis failed due to rate limits. Will retry on the next scheduled run.";
         }
-        setAppData(prev => ({ ...prev, aiSentiment: prev.aiSentiment || null, loadingAi: false }));
+        
+        setAppData(prev => {
+          let currentGlobalError = prev.globalError || "";
+          // Remove previous AI rate limit message to avoid duplication
+          currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits")).join(". ");
+          if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
+          
+          return { 
+            ...prev, 
+            aiSentiment: prev.aiSentiment || null, 
+            loadingAi: false,
+            globalError: (currentGlobalError + aiErrorMsg).trim() 
+          };
+        });
       }
     } else {
-      if (!currentData.loading) { // Avoid changing loadingAi if main data is still loading
+      if (!currentData.loading) { 
          setAppData(prev => ({ ...prev, loadingAi: false, aiSentiment: null }));
       }
     }
@@ -319,7 +336,7 @@ const CryptoDashboardPage: FC = () => {
 
 
   useEffect(() => {
-    const initialRunTimeout = setTimeout(() => { runAiAnalysis(); }, 5000); // 5 seconds delay
+    const initialRunTimeout = setTimeout(() => { runAiAnalysis(); }, INITIAL_AI_ANALYSIS_DELAY_MS); 
     const aiInterval = setInterval(runAiAnalysis, AI_ANALYSIS_INTERVAL_MS);
     return () => { clearTimeout(initialRunTimeout); clearInterval(aiInterval); };
   }, [runAiAnalysis]);
@@ -331,7 +348,7 @@ const CryptoDashboardPage: FC = () => {
   ];
 
   const renderCoinData = (coin: CoinData | null, IconComponent: ElementType) => {
-    const isLoading = appData.loading && !coin; // True if global loading and coin data not yet present
+    const isLoading = appData.loading && !coin; 
     if (isLoading) return <div className="p-4 text-center">Loading data...</div>;
     if (!coin) return <div className="p-4 text-center">Data unavailable for {IconComponent === Bitcoin ? 'Bitcoin' : 'Ethereum'}.</div>;
     
@@ -351,7 +368,6 @@ const CryptoDashboardPage: FC = () => {
   };
   
   const renderStockData = (stock: StockData | null, IconComponent: ElementType) => {
-    // Stock loading is handled by its own status, not global appData.loading
     if (!stock) return <div className="p-4 text-center">Data unavailable for {IconComponent === Briefcase ? 'SPY' : 'S&P 500'}.</div>;
     return (
       <div className="space-y-3 p-1">
@@ -456,5 +472,7 @@ const CryptoDashboardPage: FC = () => {
 };
 
 export default CryptoDashboardPage;
+
+    
 
     
