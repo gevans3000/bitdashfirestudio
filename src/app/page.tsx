@@ -142,7 +142,7 @@ const CryptoDashboardPage: FC = () => {
       
       let currentGlobalError = appDataRef.current.globalError || "";
       currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("crypto") && !msg.toLowerCase().includes("trending") && !msg.toLowerCase().includes("f&g") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-      if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
+      if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
 
       if (partialError && !anyDataFetched && !prevData.btc) {
@@ -193,7 +193,7 @@ const CryptoDashboardPage: FC = () => {
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
         currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.includes("Stock data is mocked") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
+        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
           ...prev,
@@ -206,12 +206,14 @@ const CryptoDashboardPage: FC = () => {
     }
   
     try {
-      const response = await fetch(`https://financialmodelingprep.com/stable/quote?symbols=SPY,^GSPC&apikey=${FMP_API_KEY}`);
+      const symbols = `SPY,${encodeURIComponent('^GSPC')}`;
+      const response = await fetch(`https://financialmodelingprep.com/stable/quote?symbols=${symbols}&apikey=${FMP_API_KEY}`);
       if (!response.ok) {
-        stockErrorMsg = `Failed to fetch stock data from FMP: (status ${response.status}). `;
+        stockErrorMsg = `Failed to fetch stock data from FMP: (status ${response.status})`; // Removed trailing period and space
         if (response.status === 401 || response.status === 403) {
-          stockErrorMsg += "Please check your FMP API key and ensure it has the correct permissions. ";
+          stockErrorMsg += ". Please check your FMP API key and ensure it has the correct permissions";
         }
+        stockErrorMsg += "."; // Add period at the end of the full message
         throw new Error(stockErrorMsg);
       }
       const data = await response.json();
@@ -245,7 +247,7 @@ const CryptoDashboardPage: FC = () => {
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
         currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
+        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
           ...prev,
@@ -262,7 +264,7 @@ const CryptoDashboardPage: FC = () => {
       setAppData(prev => {
         let currentGlobalError = prev.globalError || "";
         currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(". ") && currentGlobalError.length > 0) currentGlobalError += ". ";
+        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
         return {
         ...prev,
@@ -477,3 +479,6 @@ export default CryptoDashboardPage;
 
     
 
+
+
+    
