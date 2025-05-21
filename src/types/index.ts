@@ -56,6 +56,8 @@ export interface AppData {
   eth: CoinData | null;
   spy: StockData | null;
   spx: StockData | null;
+  dxy: StockData | null;
+  us10y: StockData | null;
   trending: TrendingData | null;
   fearGreed: FearGreedData | null;
   aiSentiment: MarketSentimentAnalysisOutput | null;
