@@ -1,0 +1,59 @@
+# BitDash Firestudio - Windsurf Rules
+
+## Project Rules
+1. Always check console errors and logs before making decisions
+2. Keep the `scopetemplate/` directory as a template for new scopes only
+3. Do not modify files in `scopetemplate/` directly
+4. Follow TypeScript best practices and type safety
+5. Maintain clean commit history with meaningful messages
+
+## Development Guidelines
+- Use functional components with hooks
+- Keep components small and focused
+- Write tests for new features
+- Document complex logic
+- Follow the project's code style (Prettier + ESLint)
+
+## File Organization
+- Keep all components in `/components`
+- Place utility functions in `/lib`
+- Store types in `/types`
+- Keep global styles in `/styles`
+- Follow Next.js 13+ App Router conventions
+
+## Commit Message Format
+```
+type(scope): short description
+
+[optional body]
+
+[optional footer]
+```
+
+Types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test
+
+## Firebase Rules
+- Secure all Firebase services with proper security rules
+- Validate data on both client and server
+- Use environment variables for sensitive information
+- Follow the principle of least privilege
+
+## Code Review
+- All PRs must pass CI checks
+- At least one approval required before merging
+- Keep PRs small and focused
+- Include relevant tests
+- Update documentation as needed
+
+## Branching Strategy
+- `main` - Production code
+- `develop` - Development branch
+- `feature/*` - New features
+- `bugfix/*` - Bug fixes
+- `hotfix/*` - Critical production fixes
+
+## Environment Variables
+- Use `.env.local` for local development
+- Never commit sensitive data
+- Document all required environment variables in `.env.example`
+- Keep environment-specific configurations separate

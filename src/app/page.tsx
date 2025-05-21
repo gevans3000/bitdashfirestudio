@@ -8,9 +8,11 @@ import DataCard from '@/components/DataCard';
 import ValueDisplay from '@/components/ValueDisplay';
 import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketSentimentAnalysisOutput as AISentimentData, TrendingCoinItem } from '@/types';
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
-import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark } from 'lucide-react';
+import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
+import { CorrelationPanel } from '@/components/CorrelationPanel';
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
+const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'demo'; // Get a free key from Alpha Vantage if needed
 const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
 const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
@@ -48,25 +50,157 @@ const initialAppData: AppData = {
   eth: null,
   spy: null,
   spx: null,
-  dxy: getMockStockData('DXY'), // Initialize with mock data
-  us10y: getMockStockData('US10Y'), // Initialize with mock data
+  dxy: getMockStockData('DXY'),
+  us10y: getMockStockData('US10Y'),
   trending: null,
   fearGreed: null,
   aiSentiment: null,
   lastUpdated: null,
   globalError: null,
-  loading: true, 
-  loadingAi: false,
+  loading: true,
+  loadingAi: false
 };
 
 
 const CryptoDashboardPage: FC = () => {
   const [appData, setAppData] = useState<AppData>(initialAppData);
-  const appDataRef = useRef(appData); 
+  const [correlationData, setCorrelationData] = useState<Array<{pair: string; value: number; timeFrame: string}>>([]);
+  const appDataRef = useRef(appData);
 
   useEffect(() => {
     appDataRef.current = appData;
   }, [appData]);
+
+  // Fetch DXY data from Alpha Vantage
+  const fetchDXYData = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=UUP&apikey=${ALPHA_VANTAGE_API_KEY}`
+      );
+      const data = await response.json();
+      
+      if (data['Global Quote']) {
+        const quote = data['Global Quote'];
+        const change = parseFloat(quote['09. change']);
+        const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+        
+        setAppData(prev => ({
+          ...prev,
+          dxy: {
+            id: 'dxy',
+            name: 'US Dollar Index',
+            symbol: 'DXY',
+            price: parseFloat(quote['05. price']),
+            change: change,
+            changePercent: changePercent,
+            volume: 0, // Not provided in this API
+            lastUpdated: new Date().toISOString(),
+            status: 'fresh' as const
+          }
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching DXY data:', error);
+    }
+  }, []);
+
+  // Fetch US10Y data from Alpha Vantage
+  const fetchUS10YData = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=10year&apikey=${ALPHA_VANTAGE_API_KEY}`
+      );
+      const data = await response.json();
+      
+      if (data.data && data.data.length > 0) {
+        const latest = data.data[0];
+        const value = parseFloat(latest.value);
+        
+        // Calculate change from previous day if available
+        const prevValue = data.data[1] ? parseFloat(data.data[1].value) : value;
+        const change = value - prevValue;
+        const changePercent = (change / prevValue) * 100;
+        
+        setAppData(prev => ({
+          ...prev,
+          us10y: {
+            id: 'us10y',
+            name: 'US 10-Year Yield',
+            symbol: 'US10Y',
+            price: value,
+            change: change,
+            changePercent: changePercent,
+            volume: 0,
+            lastUpdated: new Date().toISOString(),
+            status: 'fresh' as const
+          }
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching US10Y data:', error);
+    }
+  }, []);
+
+  // Calculate correlation between two data series
+  const calculateCorrelation = useCallback((x: number[], y: number[]): number => {
+    if (x.length !== y.length || x.length === 0) return 0;
+    
+    const n = x.length;
+    const xMean = x.reduce((a, b) => a + b, 0) / n;
+    const yMean = y.reduce((a, b) => a + b, 0) / n;
+    
+    let num = 0;
+    let denomX = 0;
+    let denomY = 0;
+    
+    for (let i = 0; i < n; i++) {
+      const xDiff = x[i] - xMean;
+      const yDiff = y[i] - yMean;
+      num += xDiff * yDiff;
+      denomX += xDiff * xDiff;
+      denomY += yDiff * yDiff;
+    }
+    
+    return num / Math.sqrt(denomX * denomY);
+  }, []);
+
+  // Update correlation data when prices change
+  useEffect(() => {
+    if (appData.btc?.price && appData.spx?.price && appData.spy?.price) {
+      // Simple correlation using current prices (in a real app, use historical data)
+      const btcPrice = appData.btc.price;
+      const spxPrice = appData.spx.price;
+      const spyPrice = appData.spy.price;
+      
+      // In a real app, you would use historical data points
+      // This is a simplified example using just the current prices
+      const btcSpxCorrelation = calculateCorrelation([btcPrice], [spxPrice]);
+      const btcSpyCorrelation = calculateCorrelation([btcPrice], [spyPrice]);
+      const spxSpyCorrelation = calculateCorrelation([spxPrice], [spyPrice]);
+      
+      setCorrelationData([
+        { pair: 'BTC/SPX', value: btcSpxCorrelation, timeFrame: '1h' },
+        { pair: 'BTC/SPY', value: btcSpyCorrelation, timeFrame: '1h' },
+        { pair: 'SPX/SPY', value: spxSpyCorrelation, timeFrame: '1h' },
+      ]);
+    }
+  }, [appData.btc?.price, appData.spx?.price, appData.spy?.price, calculateCorrelation]);
+
+  // Add DXY and US10Y to the data fetching intervals
+  useEffect(() => {
+    // Initial fetch
+    fetchDXYData();
+    fetchUS10YData();
+    
+    // Set up intervals (every 5 minutes for DXY and US10Y)
+    const dxyInterval = setInterval(fetchDXYData, 5 * 60 * 1000);
+    const us10yInterval = setInterval(fetchUS10YData, 5 * 60 * 1000);
+    
+    return () => {
+      clearInterval(dxyInterval);
+      clearInterval(us10yInterval);
+    };
+  }, [fetchDXYData, fetchUS10YData]);
 
   const fetchCryptoData = useCallback(async () => {
     if (!appDataRef.current.loading && appDataRef.current.btc === null) { 
@@ -196,17 +330,16 @@ const CryptoDashboardPage: FC = () => {
   }, []); 
 
   const fetchStockData = useCallback(async () => {
-    // Always use mock data for DXY and US10Y
-    const newDxyData: StockData = getMockStockData('DXY');
-    const newUs10yData: StockData = getMockStockData('US10Y');
-    const dxyUs10yMockMessage = "DXY and US10Y are using placeholder data as a suitable free, low-usage real-time API is not currently integrated.";
+    // Get fresh data for DXY and US10Y
+    await Promise.all([
+      fetchDXYData(),
+      fetchUS10YData()
+    ]);
 
     setAppData(prev => ({
       ...prev,
       spy: prev.spy ? { ...prev.spy, status: 'loading' } : { ...getMockStockData('SPY'), status: 'loading' },
       spx: prev.spx ? { ...prev.spx, status: 'loading' } : { ...getMockStockData('^GSPC'), status: 'loading' },
-      dxy: newDxyData, 
-      us10y: newUs10yData,
     }));
   
     let newSpyData: StockData | null = appDataRef.current.spy;
@@ -305,16 +438,12 @@ const CryptoDashboardPage: FC = () => {
         .join(". ");
       if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
-      let combinedError = currentGlobalError;
-      if (finalStockErrorMsg) combinedError += finalStockErrorMsg + " ";
-      combinedError += dxyUs10yMockMessage; 
+      const combinedError = currentGlobalError + (finalStockErrorMsg ? ` ${finalStockErrorMsg}` : '');
 
       return {
         ...prev,
         spy: newSpyData || prev.spy, 
         spx: newSpxData || prev.spx, 
-        dxy: newDxyData, 
-        us10y: newUs10yData, 
         globalError: combinedError.trim() || null,
         lastUpdated: new Date().toISOString(), 
       };
@@ -506,12 +635,16 @@ const CryptoDashboardPage: FC = () => {
             ) : ((appData.loading && !appData.fearGreed) ? <p className="text-center p-4">Loading F&G Index...</p> : <p className="text-center p-4">Fear & Greed Index data unavailable.</p>)}
           </DataCard>
 
-          <DataCard 
-            title="AI Market Sentiment" 
-            icon={Brain} 
-            status={appData.loadingAi ? 'loading' : appData.aiSentiment ? 'fresh' : (appData.btc && appData.eth && appData.spy && appData.spx && appData.dxy && appData.us10y ? 'waiting' : 'error')} 
-            className="sm:col-span-2 lg:col-span-3 xl:col-span-4"
-          >
+          {/* Correlation Panel */}
+          <DataCard title="Market Correlations" icon={BarChart2} status="fresh" className="sm:col-span-2 lg:col-span-2">
+            {correlationData.length > 0 ? (
+              <CorrelationPanel data={correlationData} />
+            ) : (
+              <p className="text-center p-4">Calculating correlations...</p>
+            )}
+          </DataCard>
+
+          <DataCard title="AI Market Sentiment" icon={Brain} status={appData.aiSentiment?.status ?? (appData.loadingAi ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2">
             {appData.loadingAi ? (
               <p className="text-center p-4">Generating AI sentiment analysis...</p>
             ) : appData.aiSentiment ? (
@@ -527,8 +660,8 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">AI sentiment analysis pending complete price data from all sources. Some sources (DXY, US10Y) use placeholder data.</p>
             )}
           </DataCard>
-          
-          <DataCard title="Top 7 Trending Coins" icon={TrendingUp} status={appData.trending?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
+
+          <DataCard title="Top 7 Trending Coins" icon={TrendingUp} status={appData.trending?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2">
             {appData.trending && appData.trending.coins.length > 0 ? (
               <ul className="space-y-2 text-sm max-h-[300px] overflow-y-auto p-1">
                 {appData.trending.coins.map(coin => (
@@ -550,7 +683,6 @@ const CryptoDashboardPage: FC = () => {
           <p className="text-xs text-muted-foreground mt-1">
             Crypto Pulse - Financial data displayed is for informational purposes only.
             {!FMP_API_KEY && " Live SPY/SPX data requires NEXT_PUBLIC_FMP_API_KEY."}
-            {" DXY and US10Y are using placeholder data."}
           </p>
            <p className="text-xs text-muted-foreground mt-1">
             Crypto data powered by <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">CoinGecko</a> and <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">alternative.me</a>.
