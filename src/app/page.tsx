@@ -42,7 +42,6 @@ const getMockStockData = (symbol?: string): StockData => {
       id: 'spx', name: 'S&P 500 Index (Mocked)', symbol: '^GSPC', price: 4500, change: 10, changePercent: 0.22, volume: 2000000000, lastUpdated: now, status: 'cached_error'
     };
   }
-  // Default mock if symbol not specified (should not happen if called with symbol)
   return {
       id: 'mock', name: 'Mock Stock Data', symbol: 'MOCK', price: 100, change: 1, changePercent: 1, volume: 1000000, lastUpdated: now, status: 'cached_error'
   };
@@ -185,95 +184,108 @@ const CryptoDashboardPage: FC = () => {
       spx: prev.spx ? { ...prev.spx, status: 'loading' } : { ...getMockStockData('^GSPC'), status: 'loading' },
     }));
   
-    let stockErrorMsg: string | null = null;
+    let newSpyData: StockData | null = appDataRef.current.spy;
+    let newSpxData: StockData | null = appDataRef.current.spx;
+    const localStockErrorParts: string[] = [];
   
     if (!FMP_API_KEY) {
       console.warn("FMP API key (NEXT_PUBLIC_FMP_API_KEY) is not set. Using mock stock data.");
-      stockErrorMsg = "Stock data is mocked. Add NEXT_PUBLIC_FMP_API_KEY to .env for live data.";
-      setAppData(prev => {
-        let currentGlobalError = prev.globalError || "";
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.includes("Stock data is mocked") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
+      localStockErrorParts.push("Stock data is mocked. Add NEXT_PUBLIC_FMP_API_KEY to .env for live data.");
+      newSpyData = getMockStockData('SPY');
+      newSpxData = getMockStockData('^GSPC');
+    } else {
+      try {
+        const spyPromise = fetch(`https://financialmodelingprep.com/stable/quote?symbol=SPY&apikey=${FMP_API_KEY}`);
+        const spxPromise = fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent('^GSPC')}&apikey=${FMP_API_KEY}`);
+        
+        const [spyResponseSettled, spxResponseSettled] = await Promise.allSettled([spyPromise, spxPromise]);
 
-        return {
-          ...prev,
-          spy: getMockStockData('SPY'), 
-          spx: getMockStockData('^GSPC'), 
-          globalError: (currentGlobalError + stockErrorMsg).trim(),
-        };
-      });
-      return;
-    }
-  
-    try {
-      const symbols = `SPY,${encodeURIComponent('^GSPC')}`;
-      const response = await fetch(`https://financialmodelingprep.com/stable/quote?symbols=${symbols}&apikey=${FMP_API_KEY}`);
-      if (!response.ok) {
-        stockErrorMsg = `Failed to fetch stock data from FMP: (status ${response.status})`; // Removed trailing period and space
-        if (response.status === 401 || response.status === 403) {
-          stockErrorMsg += ". Please check your FMP API key and ensure it has the correct permissions";
+        // Process SPY
+        if (spyResponseSettled.status === 'fulfilled') {
+          const spyResponse = spyResponseSettled.value;
+          if (spyResponse.ok) {
+            const spyDataArray = await spyResponse.json();
+            if (spyDataArray && spyDataArray.length > 0) {
+              const spyApiData = spyDataArray[0];
+              newSpyData = {
+                id: spyApiData.symbol, name: spyApiData.name || "SPDR S&P 500 ETF", symbol: spyApiData.symbol,
+                price: spyApiData.price, change: spyApiData.change, changePercent: spyApiData.changesPercentage,
+                volume: spyApiData.volume, 
+                lastUpdated: spyApiData.timestamp ? new Date(spyApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
+                status: 'fresh',
+              };
+            } else {
+              if (newSpyData) newSpyData.status = 'cached_error';
+              localStockErrorParts.push("SPY data not found in FMP response.");
+            }
+          } else {
+            if (newSpyData) newSpyData.status = 'cached_error';
+            let spyError = `Failed to fetch SPY data from FMP: (status ${spyResponse.status})`;
+            if (spyResponse.status === 401 || spyResponse.status === 403) {
+              spyError += ". Please check your FMP API key and ensure it has the correct permissions";
+            }
+            localStockErrorParts.push(spyError + ".");
+          }
+        } else { // Fetch failed (network error, etc.)
+            if (newSpyData) newSpyData.status = 'cached_error';
+            localStockErrorParts.push(`Failed to fetch SPY data: ${spyResponseSettled.reason?.message || 'Network error'}.`);
         }
-        stockErrorMsg += "."; // Add period at the end of the full message
-        throw new Error(stockErrorMsg);
+
+        // Process SPX
+        if (spxResponseSettled.status === 'fulfilled') {
+          const spxResponse = spxResponseSettled.value;
+          if (spxResponse.ok) {
+            const spxDataArray = await spxResponse.json();
+            if (spxDataArray && spxDataArray.length > 0) {
+              const spxApiData = spxDataArray[0];
+              newSpxData = {
+                id: spxApiData.symbol, name: spxApiData.name || "S&P 500 Index", symbol: spxApiData.symbol,
+                price: spxApiData.price, change: spxApiData.change, changePercent: spxApiData.changesPercentage,
+                volume: spxApiData.volume,
+                lastUpdated: spxApiData.timestamp ? new Date(spxApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
+                status: 'fresh',
+              };
+            } else {
+              if (newSpxData) newSpxData.status = 'cached_error';
+              localStockErrorParts.push("^GSPC data not found in FMP response.");
+            }
+          } else {
+            if (newSpxData) newSpxData.status = 'cached_error';
+            let spxError = `Failed to fetch ^GSPC data from FMP: (status ${spxResponse.status})`;
+            if (spxResponse.status === 401 || spxResponse.status === 403) {
+              spxError += ". Please check your FMP API key and ensure it has the correct permissions";
+            }
+            localStockErrorParts.push(spxError + ".");
+          }
+        } else { // Fetch failed
+            if (newSpxData) newSpxData.status = 'cached_error';
+            localStockErrorParts.push(`Failed to fetch ^GSPC data: ${spxResponseSettled.reason?.message || 'Network error'}.`);
+        }
+
+      } catch (error) { // Catch unexpected errors during fetch setup or Promise.allSettled itself
+        console.error("Unexpected error fetching stock data:", error);
+        const errorText = error instanceof Error ? error.message : "Unknown error during stock data fetch.";
+        localStockErrorParts.push(`Unexpected error: ${errorText}`);
+        if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
+        if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
       }
-      const data = await response.json();
-      
-      const spyApiData = data.find((s: any) => s.symbol === "SPY");
-      const spxApiData = data.find((s: any) => s.symbol === "^GSPC");
-  
-      let newSpyData: StockData | null = appDataRef.current.spy;
-      let newSpxData: StockData | null = appDataRef.current.spx;
-  
-      if (spyApiData) {
-        newSpyData = {
-          id: spyApiData.symbol, name: spyApiData.name || "SPDR S&P 500 ETF", symbol: spyApiData.symbol,
-          price: spyApiData.price, change: spyApiData.change, changePercent: spyApiData.changesPercentage,
-          volume: spyApiData.volume, 
-          lastUpdated: spyApiData.timestamp ? new Date(spyApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
-          status: 'fresh',
-        };
-      } else { if (newSpyData) newSpyData.status = 'cached_error'; console.error("SPY data not found in FMP response."); stockErrorMsg = (stockErrorMsg || "") + "SPY data missing. ";}
-  
-      if (spxApiData) {
-        newSpxData = {
-          id: spxApiData.symbol, name: spxApiData.name || "S&P 500 Index", symbol: spxApiData.symbol,
-          price: spxApiData.price, change: spxApiData.change, changePercent: spxApiData.changesPercentage,
-          volume: spxApiData.volume,
-          lastUpdated: spxApiData.timestamp ? new Date(spxApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
-          status: 'fresh',
-        };
-      } else { if (newSpxData) newSpxData.status = 'cached_error'; console.error("^GSPC data not found in FMP response."); stockErrorMsg = (stockErrorMsg || "") + "^GSPC data missing. ";}
-      
-      setAppData(prev => {
-        let currentGlobalError = prev.globalError || "";
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
-
-        return {
-          ...prev,
-          spy: newSpyData || prev.spy, 
-          spx: newSpxData || prev.spx, 
-          globalError: stockErrorMsg ? (currentGlobalError + stockErrorMsg).trim() : (currentGlobalError.trim() || null),
-          lastUpdated: new Date().toISOString(), 
-        };
-      });
-  
-    } catch (error) {
-      console.error("Error fetching stock data:", error);
-      const errorText = error instanceof Error ? error.message : "Unknown error fetching stock data.";
-      setAppData(prev => {
-        let currentGlobalError = prev.globalError || "";
-        currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
-        if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
-
-        return {
-        ...prev,
-        spy: prev.spy ? { ...prev.spy, status: 'cached_error' } : getMockStockData('SPY'),
-        spx: prev.spx ? { ...prev.spx, status: 'cached_error' } : getMockStockData('^GSPC'),
-        globalError: (currentGlobalError + errorText).trim(),
-        };
-      });
     }
+    
+    const finalStockErrorMsg = localStockErrorParts.length > 0 ? localStockErrorParts.join(" ") : null;
+
+    setAppData(prev => {
+      let currentGlobalError = prev.globalError || "";
+      currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("stock") && !msg.toLowerCase().includes("fmp") && !msg.toLowerCase().includes("ai sentiment")).join(". ");
+      if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
+
+      return {
+        ...prev,
+        spy: newSpyData || prev.spy, 
+        spx: newSpxData || prev.spx, 
+        globalError: finalStockErrorMsg ? (currentGlobalError + finalStockErrorMsg).trim() : (currentGlobalError.trim() || null),
+        lastUpdated: new Date().toISOString(), 
+      };
+    });
   }, []);
 
   useEffect(() => {
@@ -317,7 +329,6 @@ const CryptoDashboardPage: FC = () => {
         
         setAppData(prev => {
           let currentGlobalError = prev.globalError || "";
-          // Remove previous AI rate limit message to avoid duplication
           currentGlobalError = currentGlobalError.split(". ").filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits")).join(". ");
           if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
           
@@ -474,11 +485,3 @@ const CryptoDashboardPage: FC = () => {
 };
 
 export default CryptoDashboardPage;
-
-    
-
-    
-
-
-
-    
