@@ -1,23 +1,6 @@
 import type { MarketSentimentAnalysisOutput as AiSentimentOutput } from '@/ai/flows/market-sentiment-analysis';
 
-export interface IndicatorValue {
-  value: number | string; // SMA, RSI might be numbers, MACD components could be numbers
-}
-
-export interface MACDValue {
-  macd: number;
-  signal: number;
-  histogram: number;
-}
-
-export interface BollingerBandsValue {
-  upper: number;
-  middle: number; // SMA20
-  lower: number;
-  percentB?: number;
-  bandwidth?: number;
-}
-
+// Removed detailed indicators as basic free APIs don't usually provide them.
 export interface CoinData {
   id: string;
   name: string;
@@ -29,16 +12,8 @@ export interface CoinData {
   high24h: number;
   low24h: number;
   lastUpdated: string; // ISO string
-  indicators: {
-    sma?: IndicatorValue;
-    rsi?: IndicatorValue;
-    macd?: MACDValue;
-    bollingerBands: BollingerBandsValue;
-    support: number[];
-    resistance: number[];
-  };
+  image: string; // URL for the coin image
   status: 'fresh' | 'cached_error' | 'error' | 'loading';
-  chartData?: { name: string; price: number; upper: number; middle: number; lower: number }[];
 }
 
 export interface StockData {
@@ -57,9 +32,9 @@ export interface TrendingCoinItem {
   id: string;
   name: string;
   symbol: string;
-  price_btc?: number; // Optional as per spec
   market_cap_rank: number;
-  thumb: string; // image URL
+  thumb: string; // image URL from CoinGecko trending
+  price_btc?: number;
 }
 
 export interface TrendingData {
@@ -70,7 +45,7 @@ export interface TrendingData {
 export interface FearGreedData {
   value: string;
   value_classification: string;
-  timestamp?: string; // Add timestamp if available
+  timestamp?: string; // Unix timestamp string
   status: 'fresh' | 'cached_error' | 'error' | 'loading';
 }
 
