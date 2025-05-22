@@ -7,19 +7,116 @@
 ### 1. Price Data
 - [x] BTC/USD price chart
 - [x] SPX/SPY price chart
+- [x] DXY (US Dollar Index)
+- [x] US 10-Year Treasury Yield
 - [ ] Add 50/200 MA crossovers
 - [ ] Show volume profile
+- [ ] Add exponential moving averages (20, 50, 200-period EMA)
+- [ ] Implement Ichimoku Cloud
 
 ### 2. Technical Indicators
-- [ ] RSI (14 period)
-- [ ] MACD
+#### Trend Indicators
+- [ ] 20/50/200 EMA crossovers
+- [ ] Ichimoku Cloud components
 - [ ] Support/Resistance levels
-- [ ] Simple moving averages (50, 200)
 
-### 3. Trading Signals
-- [ ] Basic buy/sell signals
-- [ ] Simple risk/reward calculator
-- [ ] Basic position sizing
+#### Momentum Indicators
+- [ ] RSI (14 period)
+- [ ] MACD (12,26,9)
+- [ ] Stochastic Oscillator
+
+#### Volatility Indicators
+- [ ] Bollinger Bands (20,2)
+- [ ] ATR (14) for position sizing
+
+### 3. Volume & Liquidity
+- [ ] On-chain transaction count & volume (CoinGecko)
+- [ ] SPY average daily volume (Yahoo Finance)
+- [ ] Order book depth visualization (Binance/IEX)
+
+### 4. Market Sentiment
+- [x] Crypto Fear & Greed Index
+- [ ] VIX index integration
+- [ ] Market breadth indicators
+
+### 5. Correlation Analysis
+- [ ] BTC vs SPY/SPX correlation (1h, 1d)
+- [ ] Correlation heatmap
+- [ ] Decoupling alerts
+
+### 6. Macro Indicators
+- [x] 10-Year Treasury Yield
+- [ ] Fed funds rate calendar
+- [ ] Economic calendar integration
+
+## Development Tasks
+
+### 1. Data Layer
+- [ ] Create data fetchers for each source:
+  - [ ] CoinGecko (crypto data)
+  - [ ] Yahoo Finance (stocks, VIX)
+  - [ ] FRED (macro data)
+  - [ ] Binance/IEX (order book)
+- [ ] Implement caching (15-30s for REST, WebSocket where available)
+- [ ] Add rate limiting (5 calls/min per endpoint)
+
+### 2. Indicator Engine
+- [ ] Set up technical indicators library
+- [ ] Create indicator calculation utilities:
+  - [ ] EMA/MA calculations
+  - [ ] RSI implementation
+  - [ ] MACD implementation
+  - [ ] Bollinger Bands
+  - [ ] ATR calculation
+
+### 3. Signal Generation
+- [ ] Define signal interface
+- [ ] Implement signal rules:
+  - [ ] EMA crossovers
+  - [ ] RSI thresholds
+  - [ ] Volume confirmation
+  - [ ] Correlation-based signals
+- [ ] Create signal history logging
+
+### 4. UI Components
+- [ ] Dashboard cards for:
+  - [ ] Indicator status
+  - [ ] Current signals
+  - [ ] Market conditions
+- [ ] Enhanced charting:
+  - [ ] TradingView widget integration
+  - [ ] Custom indicator toggles
+  - [ ] Timeframe selection
+
+### 5. Alerting System
+- [ ] Toast notifications for signals
+- [ ] Signal history panel
+- [ ] Custom alert configuration
+
+### 6. Configuration
+- [ ] Create config file for thresholds
+- [ ] Document all settings
+- [ ] Add UI for live adjustments
+
+## Testing & Validation
+- [ ] Unit tests for indicators
+- [ ] Backtesting framework
+- [ ] Historical data validation
+- [ ] Performance testing
+
+## Documentation
+- [ ] API documentation
+- [ ] User guide
+- [ ] Development setup guide
+
+## Free APIs & Data Sources
+- **CoinGecko**: BTC metrics, on-chain data
+- **Binance**: Real-time BTC data
+- **Yahoo Finance**: SPY, ^GSPC, VIX, DXY
+- **IEX Cloud**: SPY price & volume (50k calls/mo free)
+- **FRED**: US10Y, macro data
+- **alternative.me**: Crypto Fear & Greed Index
+- **TradingView**: Chart widgets
 
 ### 4. Data Management
 - [ ] Basic error handling
