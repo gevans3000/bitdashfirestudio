@@ -7,8 +7,6 @@
 ### 1. Price Data
 - [x] BTC/USD price chart
 - [x] SPX/SPY price chart
-- [x] DXY (US Dollar Index)
-- [x] US 10-Year Treasury Yield
 - [ ] Add 50/200 MA crossovers
 - [ ] Show volume profile
 - [ ] Add exponential moving averages (20, 50, 200-period EMA)
