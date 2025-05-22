@@ -71,112 +71,67 @@ const CryptoDashboardPage: FC = () => {
     appDataRef.current = appData;
   }, [appData]);
 
-  // Fetch DXY data from Polygon.io API
+  // Fetch DXY data from our API route
   const fetchDXYData = useCallback(async () => {
     try {
-      const response = await fetch(
-        `https://api.polygon.io/v3/snapshot/indices?ticker=DXY&apiKey=${process.env.NEXT_PUBLIC_POLYGON_API_KEY}`
-      );
+      const response = await fetch('/api/dxy');
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`API error: ${response.statusText}`);
       }
       
       const data = await response.json();
       
-      if (data.results && data.results.length > 0) {
-        const dxyData = data.results[0];
-        const currentPrice = dxyData.value;
-        const prevClose = dxyData.prevClose?.c || currentPrice; // Use current price as fallback
-        const change = currentPrice - prevClose;
-        const changePercent = (change / prevClose) * 100;
-        
-        setAppData(prev => ({
-          ...prev,
-          dxy: {
-            id: 'dxy',
-            name: 'US Dollar Index',
-            symbol: 'DXY',
-            price: currentPrice,
-            change: change,
-            changePercent: changePercent,
-            volume: dxyData.volume || 0,
-            lastUpdated: new Date().toISOString(),
-            status: 'fresh' as const
-          }
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching DXY data from Polygon.io:', error);
-      
-      // Fallback to FRED API if Polygon fails
-      try {
-        const fallbackResponse = await fetch(
-          `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=${process.env.FRED_API_KEY}&file_type=json&limit=1&sort_order=desc`
-        );
-        const fallbackData = await fallbackResponse.json();
-        
-        if (fallbackData.observations?.length > 0) {
-          const latest = fallbackData.observations[0];
-          const currentPrice = parseFloat(latest.value);
-          
-          setAppData(prev => ({
-            ...prev,
-            dxy: {
-              id: 'dxy',
-              name: 'US Dollar Index (Broad)',
-              symbol: 'DXY',
-              price: currentPrice,
-              change: 0, // Can't calculate without previous value
-              changePercent: 0,
-              volume: 0,
-              lastUpdated: new Date().toISOString(),
-              status: 'cached' as const
-            }
-          }));
+      setAppData(prev => ({
+        ...prev,
+        dxy: {
+          ...data,
+          status: 'fresh' as const,
+          source: 'FRED (via API)'
         }
-      } catch (fallbackError) {
-        console.error('Fallback DXY fetch failed:', fallbackError);
-      }
+      }));
+      
+    } catch (error) {
+      console.error('Error fetching DXY data:', error);
+      // Fall back to mock data if all else fails
+      setAppData(prev => ({
+        ...prev,
+        dxy: getMockStockData('DXY')
+      }));
     }
   }, []);
 
-  // Fetch US10Y data from Alpha Vantage
+  // Fetch US10Y data from our API route
   const fetchUS10YData = useCallback(async () => {
     try {
-      const response = await fetch(
-        `https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=10year&apikey=${ALPHA_VANTAGE_API_KEY}`
-      );
+      const response = await fetch('/api/us10y');
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+      
       const data = await response.json();
       
-      if (data.data && data.data.length > 0) {
-        const latest = data.data[0];
-        const value = parseFloat(latest.value);
-        
-        // Calculate change from previous day if available
-        const prevValue = data.data[1] ? parseFloat(data.data[1].value) : value;
-        const change = value - prevValue;
-        const changePercent = (change / prevValue) * 100;
-        
-        setAppData(prev => ({
-          ...prev,
-          us10y: {
-            id: 'us10y',
-            name: 'US 10-Year Yield',
-            symbol: 'US10Y',
-            price: value,
-            change: change,
-            changePercent: changePercent,
-            volume: 0,
-            lastUpdated: new Date().toISOString(),
-            status: 'fresh' as const
-          }
-        }));
-      }
+      setAppData(prev => ({
+        ...prev,
+        us10y: {
+          ...data,
+          status: 'fresh' as const,
+          source: 'FRED (via API)'
+        }
+      }));
+      
     } catch (error) {
       console.error('Error fetching US10Y data:', error);
+      // Fall back to mock data if all else fails
+      setAppData(prev => ({
+        ...prev,
+        us10y: getMockStockData('US10Y')
+      }));
     }
   }, []);
+
+
 
   // Calculate correlation between two data series
   const calculateCorrelation = useCallback((x: number[], y: number[]): number => {
@@ -498,6 +453,22 @@ const CryptoDashboardPage: FC = () => {
     const interval = setInterval(fetchStockData, STOCK_FETCH_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [fetchStockData]);
+
+  useEffect(() => {
+    // Initial fetch
+    fetchDXYData();
+    fetchUS10YData();
+    
+    // Set up interval for periodic refresh
+    const dxyIntervalId = setInterval(fetchDXYData, STOCK_FETCH_INTERVAL_MS);
+    const us10yIntervalId = setInterval(fetchUS10YData, STOCK_FETCH_INTERVAL_MS);
+    
+    // Clean up intervals on component unmount
+    return () => {
+      clearInterval(dxyIntervalId);
+      clearInterval(us10yIntervalId);
+    };
+  }, [fetchDXYData, fetchUS10YData]);
 
 
   const runAiAnalysis = useCallback(async () => {
