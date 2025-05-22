@@ -86,100 +86,42 @@
 #### `src/components/ValueDisplay.tsx`
 1. **Number Formatting**: Make formatting options configurable.
 2. **Handle `null`/`undefined` Values**: Add proper fallbacks.
-3. **Consistent Loading State**: Use skeleton placeholders.
 
-### III. Main Page (`src/app/page.tsx`)
+## Testing Strategy
 
-#### Overall Structure & State Management
-1. **Component Modularity**: Break down large components.
-2. **State Management**: Consider `useReducer` or state management library.
-3. **API Key Security**: Proxy sensitive API calls through Next.js API routes.
+### 1. Unit Testing
+- [ ] Core data fetching and processing
+- [ ] AI model output validation
+- [ ] Component rendering and interactions
+- [ ] Utility functions and helpers
 
-#### Data Fetching & Error Handling
-4. **Consolidate API Config**: Centralize API configuration.
-5. **Global Error Handling**: Refactor error handling.
-6. **Retry Logic**: Implement retries for API calls.
-7. **Polling Alternatives**: Consider `swr` or `react-query`.
+### 2. Integration Testing
+- [ ] Data flow between components
+- [ ] API interaction handling
+- [ ] State management
+- [ ] Error scenarios and recovery
 
-#### Specific Features & Logic
-8. **Correlation Calculation**: Implement historical price data fetching.
-9. **Rendering Logic**: Extract into separate components.
-10. **Hardcoded Values**: Minimize and centralize.
+### 3. End-to-End Testing
+- [ ] Critical user flows
+- [ ] Data refresh scenarios
+- [ ] Error handling and recovery
+- [ ] Performance under load
 
-#### UI/UX & Accessibility
-11. **Loading State Consistency**: Use skeleton loaders consistently.
+## Deployment & Monitoring
 
-#### Performance
-12. **Memoization**: Use `React.memo` where appropriate.
+### 1. Production Readiness
+- [ ] Configure production environment variables
+- [ ] Set up monitoring and alerting
+- [ ] Implement logging and analytics
+- [ ] Configure backup and recovery
+- [ ] Document deployment procedures
 
-## Development Guidelines
-- Follow TypeScript best practices
-- Use functional components with hooks
-- Keep components small and focused
-- Write tests for new features
-- Document complex logic
-
-## Current Tasks
-- [x] Project Setup
-  - [x] Initialize Next.js with TypeScript
-  - [x] Configure Tailwind CSS
-  - [x] Set up Firebase
-  - [x] Add Shadcn/ui components
-
-- [ ] Authentication
-  - [x] Set up Firebase Auth
-  - [ ] Implement email/password login
-  - [ ] Add Google OAuth
-  - [ ] Create protected routes
-
-- [ ] Database
-  - [x] Initialize Firestore
-  - [ ] Set up basic collections
-  - [ ] Implement data models
-  - [ ] Add security rules
-
-## Next Tasks
-- [ ] UI Components
-  - [ ] Build layout components
-  - [ ] Create form components
-  - [ ] Implement theme system
-  - [ ] Add responsive design
-
-- [ ] API Integration
-  - [ ] Set up API routes
-  - [ ] Implement CRUD operations
-  - [ ] Add error handling
-  - [ ] Set up data validation
-
-## Future Tasks
-- [ ] Testing
-  - [ ] Unit tests
-  - [ ] Integration tests
-  - [ ] E2E tests
-  - [ ] Performance testing
-
-- [ ] Deployment
-  - [ ] Set up CI/CD
-  - [ ] Configure hosting
-  - [ ] Set up monitoring
-  - [ ] Implement analytics
-
-## Completed Tasks
-- [x] Project Initialization
-  - [x] Create Next.js app
-  - [x] Set up Git repository
-  - [x] Configure TypeScript
-  - [x] Install dependencies
-
-- [x] Development Environment
-  - [x] Set up ESLint
-  - [x] Configure Prettier
-  - [x] Add Husky hooks
-  - [x] Set up commit linting
-
-## Progress Tracking
-Started: 2025-05-21 | Last Updated: 2025-05-21
-Completed: 2/6 | In Progress: 2 | Pending: 2
+### 2. Performance Monitoring
+- [ ] Track API response times
+- [ ] Monitor AI model performance
+- [ ] Track user interactions
+- [ ] Set up error tracking
+- [ ] Implement usage analytics
 
 ## Commit Guidelines
 1. **Type**: Use conventional commit types (feat, fix, docs, etc.)
