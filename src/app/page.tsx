@@ -71,18 +71,25 @@ const CryptoDashboardPage: FC = () => {
     appDataRef.current = appData;
   }, [appData]);
 
-  // Fetch DXY data from Alpha Vantage
+  // Fetch DXY data from Polygon.io API
   const fetchDXYData = useCallback(async () => {
     try {
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=UUP&apikey=${ALPHA_VANTAGE_API_KEY}`
+        `https://api.polygon.io/v3/snapshot/indices?ticker=DXY&apiKey=${process.env.NEXT_PUBLIC_POLYGON_API_KEY}`
       );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
       
-      if (data['Global Quote']) {
-        const quote = data['Global Quote'];
-        const change = parseFloat(quote['09. change']);
-        const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+      if (data.results && data.results.length > 0) {
+        const dxyData = data.results[0];
+        const currentPrice = dxyData.value;
+        const prevClose = dxyData.prevClose?.c || currentPrice; // Use current price as fallback
+        const change = currentPrice - prevClose;
+        const changePercent = (change / prevClose) * 100;
         
         setAppData(prev => ({
           ...prev,
@@ -90,17 +97,47 @@ const CryptoDashboardPage: FC = () => {
             id: 'dxy',
             name: 'US Dollar Index',
             symbol: 'DXY',
-            price: parseFloat(quote['05. price']),
+            price: currentPrice,
             change: change,
             changePercent: changePercent,
-            volume: 0, // Not provided in this API
+            volume: dxyData.volume || 0,
             lastUpdated: new Date().toISOString(),
             status: 'fresh' as const
           }
         }));
       }
     } catch (error) {
-      console.error('Error fetching DXY data:', error);
+      console.error('Error fetching DXY data from Polygon.io:', error);
+      
+      // Fallback to FRED API if Polygon fails
+      try {
+        const fallbackResponse = await fetch(
+          `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=${process.env.FRED_API_KEY}&file_type=json&limit=1&sort_order=desc`
+        );
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackData.observations?.length > 0) {
+          const latest = fallbackData.observations[0];
+          const currentPrice = parseFloat(latest.value);
+          
+          setAppData(prev => ({
+            ...prev,
+            dxy: {
+              id: 'dxy',
+              name: 'US Dollar Index (Broad)',
+              symbol: 'DXY',
+              price: currentPrice,
+              change: 0, // Can't calculate without previous value
+              changePercent: 0,
+              volume: 0,
+              lastUpdated: new Date().toISOString(),
+              status: 'cached' as const
+            }
+          }));
+        }
+      } catch (fallbackError) {
+        console.error('Fallback DXY fetch failed:', fallbackError);
+      }
     }
   }, []);
 
@@ -468,29 +505,54 @@ const CryptoDashboardPage: FC = () => {
     if (currentData.loadingAi) return;
 
     if (currentData.btc && currentData.eth && currentData.spy && currentData.spx && currentData.dxy && currentData.us10y) {
+      // Only run analysis if we don't have a recent result or data has changed significantly
+      const shouldRunAnalysis = !currentData.aiSentiment || 
+        (Date.now() - new Date(currentData.aiSentiment.timestamp || 0).getTime() > 15 * 60 * 1000);
+
+      if (!shouldRunAnalysis) return;
+
       setAppData(prev => ({ ...prev, loadingAi: true }));
+      
       try {
         const sentimentResult = await marketSentimentAnalysis({
-          btcPrice: currentData.btc.price, ethPrice: currentData.eth.price,
-          spyPrice: currentData.spy.price, spxPrice: currentData.spx.price,
+          btcPrice: currentData.btc.price, 
+          ethPrice: currentData.eth.price,
+          spyPrice: currentData.spy.price, 
+          spxPrice: currentData.spx.price,
           dxyPrice: currentData.dxy.price, 
           us10yPrice: currentData.us10y.price, 
         });
-        setAppData(prev => {
-           let currentGlobalError = prev.globalError || "";
-           currentGlobalError = currentGlobalError.split(". ")
-             .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits"))
-             .join(". ");
-           if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
-          return {...prev, aiSentiment: sentimentResult, loadingAi: false, globalError: currentGlobalError.trim() || null };
-        });
+        // Only update if we got a fresh analysis or we don't have any analysis yet
+        if (!sentimentResult.cached || !currentData.aiSentiment) {
+          setAppData(prev => {
+            let currentGlobalError = prev.globalError || "";
+            currentGlobalError = currentGlobalError.split(". ")
+              .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis"))
+              .join(". ").trim();
+            
+            if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) {
+              currentGlobalError += ". ";
+            }
 
+            return {
+              ...prev, 
+              aiSentiment: {
+                ...sentimentResult,
+                timestamp: new Date().toISOString()
+              }, 
+              loadingAi: false, 
+              globalError: currentGlobalError || null 
+            };
+          });
+        } else {
+          setAppData(prev => ({ ...prev, loadingAi: false }));
+        }
       } catch (error) {
-        console.error("Error fetching AI sentiment:", error);
+        console.error("Error in AI sentiment analysis:", error);
         let aiErrorMsg = "AI sentiment analysis failed.";
         if (error instanceof Error && error.message.includes("429")) {
-          aiErrorMsg = "AI sentiment analysis failed due to rate limits. Will retry on the next scheduled run.";
+          aiErrorMsg = "AI sentiment analysis rate limited. Will retry later.";
         }
         
         setAppData(prev => {

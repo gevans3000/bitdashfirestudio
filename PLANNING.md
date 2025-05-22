@@ -3,22 +3,31 @@
 Last Updated: 2025-05-21
 
 ## Project Overview
-BitDash Firestudio is a NextJS starter project with Firebase integration, designed for rapid web application development with a focus on performance and developer experience.
+BitDash Firestudio is an AI-powered trading assistant that helps users identify optimal entry and exit points for Bitcoin and S&P 500 (SPX) investments. The platform combines real-time market data with advanced analytics to provide actionable trading signals.
 
 **Version:** 1.0.0  
-**Environment:** Development
+**Environment:** Production
+
+## Core Features
+- Real-time Bitcoin and SPX price tracking
+- AI-powered trading signals and analysis
+- Market sentiment scoring
+- Correlation analysis between crypto and traditional markets
+- Customizable alerts and notifications
 
 ## Architecture
-- NextJS 14+ with App Router
-- Firebase Integration
-- TypeScript for type safety
-- Tailwind CSS for styling
-- Shadcn/ui components
+- **Frontend**: NextJS 14+ with App Router
+- **Backend**: Firebase (Auth, Firestore, Functions)
+- **AI/ML**: Custom models for market prediction
+- **Data**: Real-time market data from multiple financial APIs
+- **UI**: Tailwind CSS + Shadcn/ui for responsive design
 
 ## Key Components
-1. **Authentication** - User management with Firebase Auth
-2. **Database** - Firestore for real-time data
-3. **Storage** - Firebase Storage for file uploads
+1. **Market Data Pipeline** - Real-time price and volume data
+2. **AI Analysis Engine** - Signal generation and prediction models
+3. **User Dashboard** - Personalized trading insights
+4. **Alert System** - Custom notifications for trading opportunities
+5. **Portfolio Tracking** - Performance monitoring and analytics
 4. **UI Components** - Reusable, accessible components
 5. **API Routes** - Serverless functions for backend logic
 
