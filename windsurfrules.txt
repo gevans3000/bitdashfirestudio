@@ -1,59 +1,127 @@
-# BitDash Firestudio - Windsurf Rules
+# BitDash Firestudio - Simplified Development Rules
 
-## Project Rules
-1. Always check console errors and logs before making decisions
-2. Keep the `scopetemplate/` directory as a template for new scopes only
-3. Do not modify files in `scopetemplate/` directly
-4. Follow TypeScript best practices and type safety
-5. Maintain clean commit history with meaningful messages
+## 1. Core Focus
+- Personal trading decisions for Bitcoin and SPX/SPY
+- Simple, clean UI showing only essential trading information
+- Minimal dependencies and overhead
 
-## Development Guidelines
-- Use functional components with hooks
+## 2. Project Structure
+```
+/app
+  /dashboard      # Main trading dashboard
+  /api           # API routes
+/components      # Core UI components
+  /charts        # Charting components
+  /indicators    # Trading indicators
+/lib
+  /data          # Data fetching and processing
+  /utils         # Utility functions
+/public         # Static assets
+```
+
+## 3. Technical Stack
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Lightweight charting library
+- Tailwind CSS for styling
+- No backend (client-side data fetching only)
+
+## 4. Code Style
+- 2-space indentation
+- No semicolons
+- Single quotes
+- Simple, functional components
+- Minimal state management (useState/useContext only)
+- No complex state management libraries
+
+## 5. Data Management
+- Single source for each data feed
+- Simple error handling
+- Basic caching (5 minutes for price data)
+- No complex data transformations
+- Keep data models simple
+
+## 6. Trading Features
+### Essential Indicators
+- Price (candlestick/line)
+- Volume
+- RSI (14 period)
+- Moving Averages (50, 200)
+- Basic support/resistance
+
+### Views
+1. Main Dashboard
+   - Price chart
+   - Volume
+   - Key indicators
+   - Simple buy/sell signals
+
+## 7. Development Guidelines
 - Keep components small and focused
-- Write tests for new features
-- Document complex logic
-- Follow the project's code style (Prettier + ESLint)
+- No premature optimization
+- Avoid over-engineering
+- Prefer simplicity over abstraction
+- Remove unused code immediately
 
-## File Organization
-- Keep all components in `/components`
-- Place utility functions in `/lib`
-- Store types in `/types`
-- Keep global styles in `/styles`
-- Follow Next.js 13+ App Router conventions
+## 8. Performance
+- Code-split routes
+- Lazy load non-critical components
+- Optimize re-renders
+- Keep bundle size minimal
 
-## Commit Message Format
-```
-type(scope): short description
+## 9. Error Handling
+- Simple error boundaries
+- Basic error messages
+- Graceful degradation
+- No complex error recovery
 
-[optional body]
-
-[optional footer]
-```
-
-Types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test
-
-## Firebase Rules
-- Secure all Firebase services with proper security rules
-- Validate data on both client and server
-- Use environment variables for sensitive information
-- Follow the principle of least privilege
-
-## Code Review
-- All PRs must pass CI checks
-- At least one approval required before merging
-- Keep PRs small and focused
-- Include relevant tests
-- Update documentation as needed
-
-## Branching Strategy
-- `main` - Production code
-- `develop` - Development branch
+## 10. Git Workflow
+### Branch Naming
 - `feature/*` - New features
-- `bugfix/*` - Bug fixes
-- `hotfix/*` - Critical production fixes
+- `fix/*` - Bug fixes
+- `refactor/*` - Code improvements
 
-## Environment Variables
-- Use `.env.local` for local development
-- Never commit sensitive data
-- Document all required environment variables in `.env.example`
-- Keep environment-specific configurations separate
+### Commit Messages
+Simple format: `type: description`
+Example: `feat: add RSI indicator`
+
+## 11. Local Development
+1. Clone repo
+2. `npm install`
+3. `npm run dev`
+4. Open http://localhost:3000
+
+## 12. Dependencies
+Keep to a minimum. Before adding any dependency:
+1. Is it absolutely necessary?
+2. Is it well-maintained?
+3. Is it lightweight?
+4. Can we implement this simply ourselves?
+
+## 13. Code Review (For Personal Reference)
+- Does this change improve trading decisions?
+- Is this the simplest solution?
+- Is there any unnecessary complexity?
+- Could this break existing functionality?
+
+## 14. Deployment
+- Simple Vercel deployment
+- No complex CI/CD
+- Manual deployments are fine
+- Keep environment variables minimal
+
+## 15. Maintenance
+- Update dependencies monthly
+- Remove unused code regularly
+- Keep documentation minimal but clear
+- Focus on what improves trading decisions
+
+## 16. Golden Rules
+1. If it doesn't help make better trades, don't build it
+2. Prefer simple solutions
+3. Delete code you don't need
+4. Keep the UI clean and focused
+5. Performance matters, but don't over-optimize
+6. If it's not broken, don't fix it
+7. Keep learning and improving the trading strategy
