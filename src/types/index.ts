@@ -14,6 +14,9 @@ export interface CoinData {
   lastUpdated: string; // ISO string
   image: string; // URL for the coin image
   status: 'fresh' | 'cached_error' | 'error' | 'loading';
+  ma50?: number;
+  ma200?: number;
+  maCrossover?: 'bullish' | 'bearish';
 }
 
 export interface StockData {

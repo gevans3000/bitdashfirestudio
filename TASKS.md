@@ -7,7 +7,7 @@
 ### 1. Price Data
 - [x] BTC/USD price chart
 - [x] SPX/SPY price chart
-- [ ] Add 50/200 MA crossovers
+- [x] Add 50/200 MA crossovers
 - [ ] Show volume profile
 
 ### 2. Technical Indicators

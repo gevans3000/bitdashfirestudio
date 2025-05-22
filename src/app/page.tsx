@@ -10,6 +10,7 @@ import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketS
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
 import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
 import { CorrelationPanel } from '@/components/CorrelationPanel';
+import { simpleMovingAverage } from '@/lib/indicators';
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
 const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'demo'; // Get a free key from Alpha Vantage if needed
@@ -141,6 +142,21 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
+  const fetchBtcMovingAverages = useCallback(async () => {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=200&interval=daily')
+      const data = await res.json()
+      const prices: number[] = data.prices.map((p: [number, number]) => p[1])
+      const ma50 = simpleMovingAverage(prices, 50)
+      const ma200 = simpleMovingAverage(prices, 200)
+      const maCrossover = ma50 > ma200 ? 'bullish' : 'bearish'
+      return { ma50, ma200, maCrossover }
+    } catch (e) {
+      console.error('Error fetching BTC MA data:', e)
+      return null
+    }
+  }, [])
+
   // Fetch US10Y data from Alpha Vantage
   const fetchUS10YData = useCallback(async () => {
     try {
@@ -268,10 +284,23 @@ const CryptoDashboardPage: FC = () => {
 
         if (btcApi) {
           anyDataFetched = true;
+          const maData = await fetchBtcMovingAverages();
           newBtcData = {
-            id: btcApi.id, name: btcApi.name, symbol: btcApi.symbol.toUpperCase(), price: btcApi.current_price,
-            change24h: btcApi.price_change_percentage_24h || 0, volume24h: btcApi.total_volume, marketCap: btcApi.market_cap,
-            high24h: btcApi.high_24h, low24h: btcApi.low_24h, lastUpdated: btcApi.last_updated, image: btcApi.image, status: 'fresh',
+            id: btcApi.id,
+            name: btcApi.name,
+            symbol: btcApi.symbol.toUpperCase(),
+            price: btcApi.current_price,
+            change24h: btcApi.price_change_percentage_24h || 0,
+            volume24h: btcApi.total_volume,
+            marketCap: btcApi.market_cap,
+            high24h: btcApi.high_24h,
+            low24h: btcApi.low_24h,
+            lastUpdated: btcApi.last_updated,
+            image: btcApi.image,
+            status: 'fresh',
+            ma50: maData?.ma50,
+            ma200: maData?.ma200,
+            maCrossover: maData?.maCrossover,
           };
         } else { partialError = true; if (newBtcData) newBtcData.status = 'cached_error'; console.error("Bitcoin data not found."); }
 
@@ -606,6 +635,13 @@ const CryptoDashboardPage: FC = () => {
         <ValueDisplay label="24h Low" value={coin.low24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
         <ValueDisplay label="Volume" value={coin.volume24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
         <ValueDisplay label="Market Cap" value={coin.marketCap ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+        {coin.ma50 && coin.ma200 && (
+          <>
+            <ValueDisplay label="MA 50" value={coin.ma50.toFixed(2)} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+            <ValueDisplay label="MA 200" value={coin.ma200.toFixed(2)} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+            <ValueDisplay label="MA Crossover" value={coin.maCrossover === 'bullish' ? 'Bullish' : 'Bearish'} isLoading={coin.status === 'loading'} />
+          </>
+        )}
       </div>
     );
   };
