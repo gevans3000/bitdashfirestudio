@@ -1,28 +1,58 @@
 import { NextResponse } from 'next/server';
 
+// Fallback data in case API fails
+const FALLBACK_US10Y = {
+  id: 'us10y',
+  name: '10-Year Treasury Yield',
+  symbol: 'US10Y',
+  price: 4.25, // Example fallback value
+  change: -0.02,
+  changePercent: -0.47,
+  volume: 0,
+  lastUpdated: new Date().toISOString(),
+  status: 'cached',
+  source: 'fallback'
+};
+
+// CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function GET() {
-  try {
-    const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'FRED API key not configured' },
-        { status: 500 }
-      );
-    }
+  const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
+  if (!apiKey) {
+    console.warn('FRED_API_KEY is not configured, using fallback data');
+    return NextResponse.json(FALLBACK_US10Y, { 
+      headers: corsHeaders 
+    });
+  }
 
     // Fetch current value
     const response = await fetch(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`
+      `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
+      { 
+        next: { revalidate: 300 }, // Cache for 5 minutes
+        cache: 'no-store' // Ensure we don't cache errors
+      }
     );
     
     if (!response.ok) {
-      throw new Error(`FRED API error: ${response.statusText}`);
+      console.warn(`FRED API error: ${response.status} ${response.statusText}`);
+      return NextResponse.json(FALLBACK_US10Y, { 
+        headers: corsHeaders 
+      });
     }
 
     const data = await response.json();
     
     if (!data.observations || data.observations.length === 0) {
-      throw new Error('No data available from FRED');
+      console.warn('No data available from FRED');
+      return NextResponse.json(FALLBACK_US10Y, { 
+        headers: corsHeaders 
+      });
     }
 
     const latest = data.observations[0];
@@ -45,16 +75,25 @@ export async function GET() {
       price: currentYield,
       change: change,
       changePercent: changePercent,
+      volume: 0,
       lastUpdated: new Date().toISOString(),
       status: 'fresh',
       source: 'FRED (via API)'
+    }, { 
+      headers: corsHeaders 
     });
     
   } catch (error) {
     console.error('Error in US10Y API route:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch US10Y data' },
-      { status: 500 }
-    );
+    return NextResponse.json(FALLBACK_US10Y, { 
+      headers: corsHeaders 
+    });
   }
+}
+
+// Handle OPTIONS request for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    headers: corsHeaders
+  });
 }

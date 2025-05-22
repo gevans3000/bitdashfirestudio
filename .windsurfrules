@@ -2,6 +2,7 @@
 
 ## 1. Core Focus
 - Personal trading decisions for Bitcoin and SPX/SPY
+- MUST CREATE COMMIT AND PUSH TO GITHUB AT END OF EVERY UPDATE TO CODE
 - Simple, clean UI showing only essential trading information
 - Keep the UI looking very modern and good as it is now
 - Minimal dependencies and overhead
