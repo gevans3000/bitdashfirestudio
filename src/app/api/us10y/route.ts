@@ -25,10 +25,12 @@ export async function GET() {
   const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
   if (!apiKey) {
     console.warn('FRED_API_KEY is not configured, using fallback data');
-    return NextResponse.json(FALLBACK_US10Y, { 
-      headers: corsHeaders 
+    return NextResponse.json(FALLBACK_US10Y, {
+      headers: corsHeaders
     });
   }
+
+  try {
 
   try {
     // Fetch current value with a 5-minute cache

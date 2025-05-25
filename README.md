@@ -46,6 +46,13 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 3. Monitor technical indicators
 4. Use signals to inform trading decisions
 
+### Macro Data Refresh Demo
+
+For a simple example that fetches macro data only when you click refresh, visit
+`/refresh-demo` after starting the development server. This page displays the
+current US Dollar Index (DXY) and 10-Year Treasury Yield using the free FRED
+API through the project's API routes.
+
 ## Data Sources
 
 - Price data from public APIs
