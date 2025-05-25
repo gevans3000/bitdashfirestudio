@@ -127,50 +127,10 @@ const CryptoDashboardPage: FC = () => {
     appDataRef.current = appData;
   }, [appData]);
 
-  // Fetch DXY data from our API route with caching
+  // Fetch DXY data from our API route
   const fetchDXYData = useCallback(async (forceRefresh = false) => {
     const CACHE_KEY = 'dxy_data';
     const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
-    
-    // Always try to get from cache first, unless force refresh
-    if (!forceRefresh) {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { data, timestamp } = JSON.parse(cached);
-        // Only use cache if it's not expired
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          setAppData(prev => ({
-            ...prev,
-            dxy: { ...data, status: 'cached' as const }
-          }));
-          return;
-        }
-      }
-    }
-    
-    // Use fallback data if API is not available
-    const fallbackData = {
-      id: 'dxy',
-      name: 'US Dollar Index (DXY)',
-      symbol: 'DXY',
-      price: 104.50,
-      change: 0.10,
-      changePercent: 0.10,
-      volume: 0,
-      lastUpdated: new Date().toISOString(),
-      status: 'cached',
-      source: 'fallback'
-    };
-    
-    setAppData(prev => ({
-      ...prev,
-      dxy: { ...fallbackData, status: 'cached' as const }
-    }));
-    
-    // Don't try to fetch if we're in the browser and the API is not available
-    if (typeof window !== 'undefined') {
-      return;
-    }
     
     // Set loading state
     setAppData(prev => ({
@@ -178,12 +138,13 @@ const CryptoDashboardPage: FC = () => {
       dxy: prev.dxy ? { ...prev.dxy, status: 'loading' } : { ...getMockStockData('DXY'), status: 'loading' }
     }));
     
-    try {
-      // Try to get from cache if not forcing refresh
-      if (!forceRefresh) {
+    // Try to get from cache first, unless force refresh
+    if (!forceRefresh) {
+      try {
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
           const { data, timestamp } = JSON.parse(cached);
+          // Only use cache if it's not expired
           if (Date.now() - timestamp < CACHE_DURATION) {
             setAppData(prev => ({
               ...prev,
@@ -192,19 +153,22 @@ const CryptoDashboardPage: FC = () => {
             return;
           }
         }
+      } catch (e) {
+        console.warn('Error reading DXY cache:', e);
       }
-
-      // Use relative URL in production, absolute in development
-      const baseUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
-      const response = await fetch(`${baseUrl}/api/dxy`, {
+    }
+    
+    try {
+      const response = await fetch('/api/dxy', {
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
-        }
+        },
+        next: { revalidate: 300 } // 5 minutes
       });
       
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
       }
       
       const data = await response.json();
@@ -219,8 +183,7 @@ const CryptoDashboardPage: FC = () => {
         ...prev,
         dxy: {
           ...data,
-          status: 'fresh' as const,
-          source: 'FRED (via API)'
+          status: 'fresh' as const
         }
       }));
       

@@ -30,7 +30,8 @@ export async function GET() {
     });
   }
 
-    // Fetch current value
+  try {
+    // Fetch current value with a 5-minute cache
     const response = await fetch(
       `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
       { 
@@ -38,7 +39,7 @@ export async function GET() {
         cache: 'no-store' // Ensure we don't cache errors
       }
     );
-    
+
     if (!response.ok) {
       console.warn(`FRED API error: ${response.status} ${response.statusText}`);
       return NextResponse.json(FALLBACK_US10Y, { 
@@ -48,25 +49,27 @@ export async function GET() {
 
     const data = await response.json();
     
-    if (!data.observations || data.observations.length === 0) {
-      console.warn('No data available from FRED');
+    if (!data.observations || data.observations.length < 2) {
+      console.warn('Insufficient data points from FRED API');
       return NextResponse.json(FALLBACK_US10Y, { 
         headers: corsHeaders 
       });
     }
-
-    const latest = data.observations[0];
+    
+    const [latest, previous] = data.observations;
     const currentYield = parseFloat(latest.value);
+    const previousYield = parseFloat(previous.value);
     
-    // Calculate change from previous day if available
-    let change = 0;
-    let changePercent = 0;
-    
-    if (data.observations.length > 1) {
-      const prevYield = parseFloat(data.observations[1].value);
-      change = currentYield - prevYield;
-      changePercent = (change / prevYield) * 100;
+    if (isNaN(currentYield) || isNaN(previousYield)) {
+      console.warn('Invalid yield data from FRED');
+      return NextResponse.json(FALLBACK_US10Y, { 
+        headers: corsHeaders 
+      });
     }
+    
+    // Calculate change from previous day
+    const change = currentYield - previousYield;
+    const changePercent = previousYield !== 0 ? (change / previousYield) * 100 : 0;
 
     return NextResponse.json({
       id: 'us10y',

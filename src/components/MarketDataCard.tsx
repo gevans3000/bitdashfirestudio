@@ -20,16 +20,47 @@ export function MarketDataCard({
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [quality, setQuality] = useState<string>('loading');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const fetchData = async () => {
+  // Get cached data from localStorage on initial load
+  useEffect(() => {
+    const cacheKey = `marketData_${metric}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    
+    if (cachedData) {
+      try {
+        const { value: cachedValue, source: cachedSource, timestamp } = JSON.parse(cachedData);
+        setValue(cachedValue);
+        setSource(cachedSource);
+        setLastUpdated(new Date(timestamp).toLocaleTimeString());
+        setQuality('good');
+      } catch (e) {
+        console.error('Error parsing cached data:', e);
+      }
+    }
+  }, [metric]);
+
+  const fetchData = async (force = false) => {
+    if (isLoading && !force) return;
+    
+    setIsLoading(true);
     try {
       const fetchFn = metric === 'DXY' ? fetchDXY : fetchUS10Y;
       const { value: newValue, source: newSource } = await fetchFn();
       
+      // Update state
       setValue(newValue);
       setSource(newSource);
       setLastUpdated(new Date().toLocaleTimeString());
       setError(null);
+      
+      // Update cache
+      const cacheKey = `marketData_${metric}`;
+      localStorage.setItem(cacheKey, JSON.stringify({
+        value: newValue,
+        source: newSource,
+        timestamp: Date.now()
+      }));
       
       // Log data quality
       const isValid = metric === 'DXY' 
@@ -40,14 +71,26 @@ export function MarketDataCard({
       setQuality(getDataQualityStatus(metric));
     } catch (err) {
       console.error(`Error fetching ${metric}:`, err);
-      setError('Failed to load data');
-      setQuality('error');
+      // Only show error if we don't have any cached data
+      if (!value) {
+        setError('Failed to load data');
+        setQuality('error');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // Initial data fetch and setup refresh interval
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 300000); // 5 minutes
+    // Fetch fresh data in the background
+    fetchData().catch(console.error);
+    
+    // Set up refresh interval
+    const interval = setInterval(() => {
+      fetchData().catch(console.error);
+    }, 300000); // 5 minutes
+    
     return () => clearInterval(interval);
   }, [metric]);
 

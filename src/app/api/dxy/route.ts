@@ -22,7 +22,7 @@ const corsHeaders = {
 };
 
 export async function GET() {
-  const apiKey = process.env.FRED_API_KEY;
+  const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
   
   if (!apiKey) {
     console.warn('FRED_API_KEY is not configured, using fallback data');
@@ -32,8 +32,9 @@ export async function GET() {
   }
 
   try {
+    // First, get the most recent DXY data point
     const response = await fetch(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEX&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
+      `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS9&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
       { 
         next: { revalidate: 300 }, // Cache for 5 minutes
         cache: 'no-store' // Ensure we don't cache errors
@@ -49,46 +50,28 @@ export async function GET() {
 
     const data = await response.json();
     
-    if (!data.observations?.length) {
-      console.warn('No data available from FRED');
-      return NextResponse.json(FALLBACK_DXY, { 
-        headers: corsHeaders 
-      });
-    }
-
-    const latest = data.observations[0];
-    const currentPrice = parseFloat(latest.value);
-    
-    if (isNaN(currentPrice)) {
-      console.warn('Invalid price data from FRED');
-      return NextResponse.json(FALLBACK_DXY, { 
-        headers: corsHeaders 
-      });
+    if (!data.observations || data.observations.length < 1) {
+      console.warn('Insufficient data points from FRED API');
+      return NextResponse.json(FALLBACK_DXY, { headers: corsHeaders });
     }
     
-    // Calculate change from previous day if available
-    let change = 0;
-    let changePercent = 0;
+    const [latest, previous] = data.observations;
+    const currentValue = parseFloat(latest.value);
+    const previousValue = parseFloat(previous.value);
+    const change = currentValue - previousValue;
+    const changePercent = (change / previousValue) * 100;
     
-    if (data.observations.length > 1) {
-      const prevPrice = parseFloat(data.observations[1].value);
-      if (!isNaN(prevPrice) && prevPrice !== 0) {
-        change = currentPrice - prevPrice;
-        changePercent = (change / prevPrice) * 100;
-      }
-    }
-
     return NextResponse.json({
       id: 'dxy',
       name: 'US Dollar Index (DXY)',
       symbol: 'DXY',
-      price: currentPrice,
-      change: change,
-      changePercent: changePercent,
+      price: currentValue,
+      change: parseFloat(change.toFixed(4)),
+      changePercent: parseFloat(changePercent.toFixed(2)),
       volume: 0,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: latest.date,
       status: 'fresh',
-      source: 'FRED (via API)'
+      source: 'FRED (DTWEXBGS9)'
     }, { 
       headers: corsHeaders 
     });
