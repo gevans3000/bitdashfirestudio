@@ -300,11 +300,6 @@ const CryptoDashboardPage: FC = () => {
       us10y: { ...fallbackData, status: 'cached' as const }
     }));
     
-    // Don't try to fetch if we're in the browser and the API is not available
-    if (typeof window !== 'undefined') {
-      return;
-    }
-    
     // Set loading state
     setAppData(prev => ({
       ...prev,
@@ -313,14 +308,14 @@ const CryptoDashboardPage: FC = () => {
     
     try {
       // Use relative URL in production, absolute in development
-      const baseUrl = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000';
+      const baseUrl = typeof window === 'undefined' ? 'http://localhost:3000' : '';
       const response = await fetch(`${baseUrl}/api/us10y`, {
         headers: {
           'Cache-Control': 'no-cache',
           'Pragma': 'no-cache'
         },
-        // Add credentials for CORS if needed
-        credentials: 'same-origin'
+        cache: 'no-store', // Ensure we don't get cached responses
+        next: { revalidate: 0 } // Ensure we always get fresh data
       });
       
       if (!response.ok) {
@@ -329,12 +324,20 @@ const CryptoDashboardPage: FC = () => {
       
       const data = await response.json();
       
+      // Update cache
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('us10y_data', JSON.stringify({
+          data,
+          timestamp: Date.now()
+        }));
+      }
+      
       setAppData(prev => ({
         ...prev,
         us10y: {
           ...data,
           status: 'fresh' as const,
-          source: 'FRED (via API)'
+          source: 'Alpha Vantage (via API)'
         }
       }));
       
@@ -914,11 +917,12 @@ const CryptoDashboardPage: FC = () => {
   };
   
   const renderStockData = (stock: StockData | null, IconComponent: ElementType) => {
-    let title = "Data";
-    if (IconComponent === Briefcase) title = 'SPY';
-    else if (IconComponent === BarChart3) title = 'S&P 500';
-    else if (IconComponent === DollarSign) title = 'US Dollar Index';
-    else if (IconComponent === Landmark) title = 'US 10-Year Yield';
+    // Use a consistent title based on the stock symbol to prevent hydration mismatch
+    const title = stock?.symbol === 'SPY' ? 'SPDR S&P 500 ETF Trust' :
+                 stock?.symbol === '^GSPC' ? 'S&P 500 Index' :
+                 stock?.symbol === 'DXY' ? 'US Dollar Index' :
+                 stock?.symbol === 'US10Y' || stock?.symbol === '^TNX' ? 'US 10-Year Yield' :
+                 'Market Data';
 
     // Handle server-side rendering and initial client render
     if (typeof window === 'undefined' || !isClient) {

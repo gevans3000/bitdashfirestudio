@@ -21,70 +21,98 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
+// Helper function to fetch with retry
+async function fetchWithRetry(url: string, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, { 
+        next: { revalidate: 300 },
+        cache: 'no-store' // Ensure we don't get cached responses
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (error) {
+      console.warn(`Attempt ${i + 1} failed:`, error);
+    }
+    if (i < retries - 1) await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  throw new Error(`Failed after ${retries} retries`);
+}
+
 export async function GET() {
-  const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
+  
   if (!apiKey) {
-    console.warn('FRED_API_KEY is not configured, using fallback data');
+    console.warn('ALPHA_VANTAGE_API_KEY is not configured, using fallback data');
     return NextResponse.json(FALLBACK_US10Y, {
       headers: corsHeaders
     });
   }
 
   try {
-
-  try {
-    // Fetch current value with a 5-minute cache
-    const response = await fetch(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
-      { 
-        next: { revalidate: 300 }, // Cache for 5 minutes
-        cache: 'no-store' // Ensure we don't cache errors
-      }
+    // Fetch 10-year treasury yield from Alpha Vantage
+    const response = await fetchWithRetry(
+      `https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=10year&apikey=${apiKey}`
     );
 
-    if (!response.ok) {
-      console.warn(`FRED API error: ${response.status} ${response.statusText}`);
-      return NextResponse.json(FALLBACK_US10Y, { 
-        headers: corsHeaders 
-      });
-    }
-
-    const data = await response.json();
+    // Parse the Alpha Vantage response
+    const seriesData = response?.data || [];
     
-    if (!data.observations || data.observations.length < 2) {
-      console.warn('Insufficient data points from FRED API');
+    if (!Array.isArray(seriesData) || seriesData.length === 0) {
+      console.warn('No data returned from Alpha Vantage API');
       return NextResponse.json(FALLBACK_US10Y, { 
         headers: corsHeaders 
       });
     }
     
-    const [latest, previous] = data.observations;
-    const currentYield = parseFloat(latest.value);
-    const previousYield = parseFloat(previous.value);
+    // Sort data by date in descending order
+    const sortedData = [...seriesData].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
     
-    if (isNaN(currentYield) || isNaN(previousYield)) {
-      console.warn('Invalid yield data from FRED');
+    // Get the most recent data point
+    const latestData = sortedData[0];
+    const currentYield = parseFloat(latestData.value);
+    
+    if (isNaN(currentYield)) {
+      console.warn('Invalid yield data from Alpha Vantage');
       return NextResponse.json(FALLBACK_US10Y, { 
         headers: corsHeaders 
       });
+    }
+    
+    // Get previous day's close for change calculation
+    let previousYield = currentYield * 0.99; // Default to 1% change if we can't get previous data
+    
+    if (sortedData.length > 1) {
+      const prevYield = parseFloat(sortedData[1].value);
+      if (!isNaN(prevYield)) {
+        previousYield = prevYield;
+      }
     }
     
     // Calculate change from previous day
     const change = currentYield - previousYield;
     const changePercent = previousYield !== 0 ? (change / previousYield) * 100 : 0;
-
-    return NextResponse.json({
+    
+    const result = {
       id: 'us10y',
       name: '10-Year Treasury Yield',
       symbol: 'US10Y',
-      price: currentYield,
-      change: change,
-      changePercent: changePercent,
+      price: parseFloat(currentYield.toFixed(4)),
+      change: parseFloat(change.toFixed(4)),
+      changePercent: parseFloat(changePercent.toFixed(2)),
       volume: 0,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: latestData.date || new Date().toISOString(),
       status: 'fresh',
-      source: 'FRED (via API)'
-    }, { 
+      source: 'Alpha Vantage'
+    };
+
+    console.log('US10Y Data:', result); // Debug log
+    
+    return NextResponse.json(result, { 
       headers: corsHeaders 
     });
     

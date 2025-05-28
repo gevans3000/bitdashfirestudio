@@ -21,57 +21,62 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
+// Helper function to fetch with retry
+async function fetchWithRetry(url: string, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, { next: { revalidate: 300 } });
+      if (response.ok) return response.json();
+    } catch (error) {
+      console.warn(`Attempt ${i + 1} failed:`, error);
+    }
+    if (i < retries - 1) await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  throw new Error(`Failed after ${retries} retries`);
+}
+
 export async function GET() {
-  const apiKey = process.env.FRED_API_KEY || process.env.NEXT_PUBLIC_FRED_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_FMP_API_KEY;
   
   if (!apiKey) {
-    console.warn('FRED_API_KEY is not configured, using fallback data');
+    console.warn('FMP_API_KEY is not configured, using fallback data');
     return NextResponse.json(FALLBACK_DXY, { 
       headers: corsHeaders 
     });
   }
 
   try {
-    // First, get the most recent DXY data point
-    const response = await fetch(
-      `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS9&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`,
-      { 
-        next: { revalidate: 300 }, // Cache for 5 minutes
-        cache: 'no-store' // Ensure we don't cache errors
-      }
+    // Fetch DXY data from Financial Modeling Prep
+    const response = await fetchWithRetry(
+      `https://financialmodelingprep.com/api/v3/quote/DX-Y.NYB?apikey=${apiKey}`
     );
     
-    if (!response.ok) {
-      console.warn(`FRED API error: ${response.status} ${response.statusText}`);
-      return NextResponse.json(FALLBACK_DXY, { 
-        headers: corsHeaders 
-      });
-    }
-
-    const data = await response.json();
-    
-    if (!data.observations || data.observations.length < 1) {
-      console.warn('Insufficient data points from FRED API');
+    if (!Array.isArray(response) || response.length === 0) {
+      console.warn('No DXY data returned from FMP API');
       return NextResponse.json(FALLBACK_DXY, { headers: corsHeaders });
     }
     
-    const [latest, previous] = data.observations;
-    const currentValue = parseFloat(latest.value);
-    const previousValue = parseFloat(previous.value);
-    const change = currentValue - previousValue;
-    const changePercent = (change / previousValue) * 100;
+    const dxyData = response[0];
+    const currentValue = dxyData.price;
+    const change = dxyData.change || 0;
+    const changePercent = dxyData.changesPercentage || 0;
+    
+    if (isNaN(currentValue)) {
+      console.warn('Invalid DXY data from FMP');
+      return NextResponse.json(FALLBACK_DXY, { headers: corsHeaders });
+    }
     
     return NextResponse.json({
       id: 'dxy',
       name: 'US Dollar Index (DXY)',
       symbol: 'DXY',
-      price: currentValue,
+      price: parseFloat(currentValue.toFixed(4)),
       change: parseFloat(change.toFixed(4)),
       changePercent: parseFloat(changePercent.toFixed(2)),
-      volume: 0,
-      lastUpdated: latest.date,
+      volume: dxyData.volume || 0,
+      lastUpdated: new Date().toISOString(),
       status: 'fresh',
-      source: 'FRED (DTWEXBGS9)'
+      source: 'Financial Modeling Prep'
     }, { 
       headers: corsHeaders 
     });
