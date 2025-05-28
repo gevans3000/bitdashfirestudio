@@ -10,7 +10,12 @@ import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketS
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
 import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
 import { CorrelationPanel } from '@/components/CorrelationPanel';
-import { simpleMovingAverage, rsi } from '@/lib/indicators';
+import {
+  simpleMovingAverage,
+  rsi,
+  exponentialMovingAverage,
+  calculateVolumeProfile,
+} from '@/lib/indicators';
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
 const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'demo'; // Get a free key from Alpha Vantage if needed
@@ -233,12 +238,30 @@ const CryptoDashboardPage: FC = () => {
       
       const data = await res.json()
       const prices: number[] = data.prices.map((p: [number, number]) => p[1])
+      const volumes: number[] = data.total_volumes.map((v: [number, number]) => v[1])
       const ma50 = simpleMovingAverage(prices, 50)
       const ma200 = simpleMovingAverage(prices, 200)
       const maCrossover = ma50 > ma200 ? 'bullish' : 'bearish'
+      const ema20 = exponentialMovingAverage(prices, 20)
+      const ema50 = exponentialMovingAverage(prices, 50)
+      const ema200 = exponentialMovingAverage(prices, 200)
+      const volumeProfile = calculateVolumeProfile(prices, volumes)
+      const highestVolume = volumeProfile.reduce((a, b) => (b.volume > a.volume ? b : a), volumeProfile[0])
+      const volumeProfilePrice = highestVolume?.price
       const rsi14 = rsi(prices, 14)
       const signal = rsi14 <= 30 ? 'buy' : rsi14 >= 70 ? 'sell' : 'hold'
-      const result = { ma50, ma200, maCrossover, rsi14, signal, lastUpdated: new Date().toISOString() };
+      const result = {
+        ma50,
+        ma200,
+        maCrossover,
+        ema20,
+        ema50,
+        ema200,
+        volumeProfilePrice,
+        rsi14,
+        signal,
+        lastUpdated: new Date().toISOString(),
+      }
       
       // Cache the result
       localStorage.setItem(CACHE_KEY, JSON.stringify({
@@ -490,6 +513,10 @@ const CryptoDashboardPage: FC = () => {
             ma50: maData?.ma50,
             ma200: maData?.ma200,
             maCrossover: maData?.maCrossover,
+            ema20: maData?.ema20,
+            ema50: maData?.ema50,
+            ema200: maData?.ema200,
+            volumeProfilePrice: maData?.volumeProfilePrice,
             rsi14: maData?.rsi14,
             signal: maData?.signal,
           }
@@ -952,23 +979,55 @@ const CryptoDashboardPage: FC = () => {
             />
             {/* Always render MA section but hide if no data */}
             <div className={!coin.ma50 || !coin.ma200 ? 'hidden' : ''}>
-              <ValueDisplay 
-                label="MA 50" 
-                value={coin.ma50?.toFixed(2) ?? 'N/A'} 
-                unit={coin.symbol.toUpperCase()} 
-                isLoading={coin.status === 'loading'} 
+              <ValueDisplay
+                label="MA 50"
+                value={coin.ma50?.toFixed(2) ?? 'N/A'}
+                unit={coin.symbol.toUpperCase()}
+                isLoading={coin.status === 'loading'}
               />
-              <ValueDisplay 
-                label="MA 200" 
-                value={coin.ma200?.toFixed(2) ?? 'N/A'} 
-                unit={coin.symbol.toUpperCase()} 
-                isLoading={coin.status === 'loading'} 
+              <ValueDisplay
+                label="MA 200"
+                value={coin.ma200?.toFixed(2) ?? 'N/A'}
+                unit={coin.symbol.toUpperCase()}
+                isLoading={coin.status === 'loading'}
               />
-              <ValueDisplay 
-                label="MA Crossover" 
-                value={coin.maCrossover === 'bullish' ? 'Bullish' : 'Bearish'} 
-                isLoading={coin.status === 'loading'} 
+              <ValueDisplay
+                label="MA Crossover"
+                value={coin.maCrossover === 'bullish' ? 'Bullish' : 'Bearish'}
+                isLoading={coin.status === 'loading'}
               />
+              {coin.ema20 !== undefined && (
+                <ValueDisplay
+                  label="EMA 20"
+                  value={coin.ema20.toFixed(2)}
+                  unit={coin.symbol.toUpperCase()}
+                  isLoading={coin.status === 'loading'}
+                />
+              )}
+              {coin.ema50 !== undefined && (
+                <ValueDisplay
+                  label="EMA 50"
+                  value={coin.ema50.toFixed(2)}
+                  unit={coin.symbol.toUpperCase()}
+                  isLoading={coin.status === 'loading'}
+                />
+              )}
+              {coin.ema200 !== undefined && (
+                <ValueDisplay
+                  label="EMA 200"
+                  value={coin.ema200.toFixed(2)}
+                  unit={coin.symbol.toUpperCase()}
+                  isLoading={coin.status === 'loading'}
+                />
+              )}
+              {coin.volumeProfilePrice !== undefined && (
+                <ValueDisplay
+                  label="High Vol Price"
+                  value={coin.volumeProfilePrice.toFixed(2)}
+                  unit="USD"
+                  isLoading={coin.status === 'loading'}
+                />
+              )}
             </div>
           </>
         )}
