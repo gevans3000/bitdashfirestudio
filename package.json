@@ -1,7 +1,11 @@
 {
-  "name": "nextn",
-  "version": "0.1.0",
+  "name": "bitdash-firestudio",
+  "version": "1.0.0",
   "private": true,
+  "description": "AI-Powered Bitcoin & SPX Trading Assistant - Identify optimal entry and exit points for your investments",
+  "keywords": ["bitcoin", "trading", "spx", "crypto", "stock market", "ai trading", "trading signals"],
+  "author": "",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",

@@ -1,0 +1,129 @@
+# BitDash Firestudio - Simplified Development Rules
+
+## 1. Core Focus
+- Personal trading decisions for Bitcoin and SPX/SPY
+- MUST CREATE COMMIT AND PUSH TO GITHUB AT END OF EVERY UPDATE TO CODE
+- Simple, clean UI showing only essential trading information
+- Keep the UI looking very modern and good as it is now
+- Minimal dependencies and overhead
+
+## 2. Project Structure
+```
+/app
+  /dashboard      # Main trading dashboard
+  /api           # API routes
+/components      # Core UI components
+  /charts        # Charting components
+  /indicators    # Trading indicators
+/lib
+  /data          # Data fetching and processing
+  /utils         # Utility functions
+/public         # Static assets
+```
+
+## 3. Technical Stack
+- Next.js 14 (App Router)
+- React 18
+- TypeScript
+- Lightweight charting library
+- Tailwind CSS for styling
+- No backend (client-side data fetching only)
+
+## 4. Code Style
+- 2-space indentation
+- No semicolons
+- Single quotes
+- Simple, functional components
+- Minimal state management (useState/useContext only)
+- No complex state management libraries
+
+## 5. Data Management
+- Single source for each data feed
+- Simple error handling
+- Basic caching (5 minutes for price data)
+- No complex data transformations
+- Keep data models simple
+
+## 6. Trading Features
+### Essential Indicators
+- Price (candlestick/line)
+- Volume
+- RSI (14 period)
+- Moving Averages (50, 200)
+- Basic support/resistance
+
+### Views
+1. Main Dashboard
+   - Price chart
+   - Volume
+   - Key indicators
+   - Simple buy/sell signals
+
+## 7. Development Guidelines
+- Keep components small and focused
+- No premature optimization
+- Avoid over-engineering
+- Prefer simplicity over abstraction
+- Remove unused code immediately
+
+## 8. Performance
+- Code-split routes
+- Lazy load non-critical components
+- Optimize re-renders
+- Keep bundle size minimal
+
+## 9. Error Handling
+- Simple error boundaries
+- Basic error messages
+- Graceful degradation
+- No complex error recovery
+
+## 10. Git Workflow
+### Branch Naming
+- `feature/*` - New features
+- `fix/*` - Bug fixes
+- `refactor/*` - Code improvements
+
+### Commit Messages
+Simple format: `type: description`
+Example: `feat: add RSI indicator`
+
+## 11. Local Development
+1. Clone repo
+2. `npm install`
+3. `npm run dev`
+4. Open http://localhost:3000
+
+## 12. Dependencies
+Keep to a minimum. Before adding any dependency:
+1. Is it absolutely necessary?
+2. Is it well-maintained?
+3. Is it lightweight?
+4. Can we implement this simply ourselves?
+
+## 13. Code Review (For Personal Reference)
+- Does this change improve trading decisions?
+- Is this the simplest solution?
+- Is there any unnecessary complexity?
+- Could this break existing functionality?
+
+## 14. Deployment
+- Simple Vercel deployment
+- No complex CI/CD
+- Manual deployments are fine
+- Keep environment variables minimal
+
+## 15. Maintenance
+- Update dependencies monthly
+- Remove unused code regularly
+- Keep documentation minimal but clear
+- Focus on what improves trading decisions
+
+## 16. Golden Rules
+1. If it doesn't help make better trades, don't build it
+2. Prefer simple solutions
+3. Delete code you don't need
+4. Keep the UI clean and focused
+5. Performance matters, but don't over-optimize
+6. If it's not broken, don't fix it
+7. Keep learning and improving the trading strategy

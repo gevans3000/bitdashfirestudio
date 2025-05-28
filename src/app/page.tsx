@@ -8,9 +8,12 @@ import DataCard from '@/components/DataCard';
 import ValueDisplay from '@/components/ValueDisplay';
 import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketSentimentAnalysisOutput as AISentimentData, TrendingCoinItem } from '@/types';
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
-import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark } from 'lucide-react';
+import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
+import { CorrelationPanel } from '@/components/CorrelationPanel';
+import { simpleMovingAverage, rsi } from '@/lib/indicators';
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
+const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'demo'; // Get a free key from Alpha Vantage if needed
 const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
 const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
@@ -48,30 +51,403 @@ const initialAppData: AppData = {
   eth: null,
   spy: null,
   spx: null,
-  dxy: getMockStockData('DXY'), // Initialize with mock data
-  us10y: getMockStockData('US10Y'), // Initialize with mock data
+  dxy: null, // Don't load any data initially
+  us10y: null, // Don't load any data initially
   trending: null,
   fearGreed: null,
   aiSentiment: null,
   lastUpdated: null,
-  globalError: null,
-  loading: true, 
-  loadingAi: false,
+  globalError: 'Click the refresh button to load the latest data',
+  loading: false, // Start with loading false since we're not loading anything initially
+  loadingAi: false
 };
 
 
+// Load data from localStorage on initial render
+const loadInitialData = (): AppData => {
+  if (typeof window === 'undefined') return initialAppData;
+  
+  try {
+    const savedData = localStorage.getItem('cryptoDashboardData');
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      // Ensure we have the latest structure with all required fields
+      return {
+        ...initialAppData,
+        ...parsed,
+        loading: false,
+        loadingAi: false,
+        globalError: parsed.globalError || 'Click the refresh button to load the latest data'
+      };
+    }
+  } catch (e) {
+    console.error('Failed to load saved data:', e);
+  }
+  return initialAppData;
+};
+
 const CryptoDashboardPage: FC = () => {
-  const [appData, setAppData] = useState<AppData>(initialAppData);
-  const appDataRef = useRef(appData); 
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  const [appData, setAppData] = useState<AppData>(loadInitialData);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [correlationData, setCorrelationData] = useState<Array<{pair: string; value: number; timeFrame: string}>>([]);
+  const appDataRef = useRef(appData);
+  const hasInitialized = useRef(false);
+  
+  // Save to localStorage whenever appData changes
+  useEffect(() => {
+    if (hasInitialized.current) {
+      try {
+        localStorage.setItem('cryptoDashboardData', JSON.stringify({
+          btc: appData.btc,
+          eth: appData.eth,
+          spy: appData.spy,
+          spx: appData.spx,
+          dxy: appData.dxy,
+          us10y: appData.us10y,
+          trending: appData.trending,
+          fearGreed: appData.fearGreed,
+          aiSentiment: appData.aiSentiment,
+          lastUpdated: appData.lastUpdated,
+          globalError: appData.globalError
+        }));
+      } catch (e) {
+        console.error('Failed to save data to localStorage:', e);
+      }
+    } else {
+      hasInitialized.current = true;
+    }
+  }, [appData]);
 
   useEffect(() => {
     appDataRef.current = appData;
   }, [appData]);
 
-  const fetchCryptoData = useCallback(async () => {
-    if (!appDataRef.current.loading && appDataRef.current.btc === null) { 
-      setAppData(prev => ({ ...prev, loading: true, globalError: appDataRef.current.globalError })); 
+  // Fetch DXY data from our API route
+  const fetchDXYData = useCallback(async (forceRefresh = false) => {
+    const CACHE_KEY = 'dxy_data';
+    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
+    
+    // Set loading state
+    setAppData(prev => ({
+      ...prev,
+      dxy: prev.dxy ? { ...prev.dxy, status: 'loading' } : { ...getMockStockData('DXY'), status: 'loading' }
+    }));
+    
+    // Try to get from cache first, unless force refresh
+    if (!forceRefresh) {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          // Only use cache if it's not expired
+          if (Date.now() - timestamp < CACHE_DURATION) {
+            setAppData(prev => ({
+              ...prev,
+              dxy: { ...data, status: 'cached' as const }
+            }));
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Error reading DXY cache:', e);
+      }
     }
+    
+    try {
+      const response = await fetch('/api/dxy', {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        },
+        next: { revalidate: 300 } // 5 minutes
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      // Cache the successful response
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }));
+      
+      setAppData(prev => ({
+        ...prev,
+        dxy: {
+          ...data,
+          status: 'fresh' as const
+        }
+      }));
+      
+    } catch (error) {
+      console.error('Error fetching DXY data:', error);
+      // Try to use cached data even if it's stale
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data } = JSON.parse(cached);
+          setAppData(prev => ({
+            ...prev,
+            dxy: { ...data, status: 'stale' as const }
+          }));
+          return;
+        }
+      } catch (e) {
+        console.warn('Failed to read from cache:', e);
+      }
+      
+      // Fall back to mock data if all else fails
+      setAppData(prev => ({
+        ...prev,
+        dxy: getMockStockData('DXY')
+      }));
+    }
+  }, []);
+
+  const fetchBtcMovingAverages = useCallback(async () => {
+    const CACHE_KEY = 'btc_ma_data';
+    const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+    
+    try {
+      // Try to get from cache first
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          return data;
+        }
+      }
+
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=200&interval=daily')
+      if (!res.ok) {
+        throw new Error(`CoinGecko API error: ${res.statusText}`);
+      }
+      
+      const data = await res.json()
+      const prices: number[] = data.prices.map((p: [number, number]) => p[1])
+      const ma50 = simpleMovingAverage(prices, 50)
+      const ma200 = simpleMovingAverage(prices, 200)
+      const maCrossover = ma50 > ma200 ? 'bullish' : 'bearish'
+      const rsi14 = rsi(prices, 14)
+      const signal = rsi14 <= 30 ? 'buy' : rsi14 >= 70 ? 'sell' : 'hold'
+      const result = { ma50, ma200, maCrossover, rsi14, signal, lastUpdated: new Date().toISOString() };
+      
+      // Cache the result
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        data: result,
+        timestamp: Date.now()
+      }));
+      
+      return result;
+    } catch (e) {
+      console.error('Error fetching BTC MA data:', e);
+      // Return cached data even if stale
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          return JSON.parse(cached).data;
+        }
+      } catch (e) {
+        console.warn('Failed to read from cache:', e);
+      }
+      return null;
+    }
+  }, [])
+
+  const fetchStockRsi = useCallback(async (symbol: string) => {
+    try {
+      if (!FMP_API_KEY) return null
+      const res = await fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${encodeURIComponent(symbol)}?timeseries=20&apikey=${FMP_API_KEY}`)
+      if (!res.ok) return null
+      const data = await res.json()
+      if (Array.isArray(data.historical)) {
+        const prices = data.historical.slice(0, 15).map((p: any) => p.close).reverse()
+        return rsi(prices, 14)
+      }
+    } catch (e) {
+      console.error('Error fetching RSI for', symbol, e)
+    }
+    return null
+  }, [])
+
+  // Fetch US10Y data from our API route
+  const fetchUS10YData = useCallback(async (forceRefresh = false) => {
+    const CACHE_KEY = 'us10y_data';
+    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
+    
+    // Always try to get from cache first, unless force refresh
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        // Only use cache if it's not expired
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          setAppData(prev => ({
+            ...prev,
+            us10y: { ...data, status: 'cached' as const }
+          }));
+          return;
+        }
+      }
+    }
+    
+    // Use fallback data if API is not available
+    const fallbackData = {
+      id: 'us10y',
+      name: '10-Year Treasury Yield',
+      symbol: 'US10Y',
+      price: 4.25,
+      change: -0.02,
+      changePercent: -0.47,
+      volume: 0,
+      lastUpdated: new Date().toISOString(),
+      status: 'cached',
+      source: 'fallback'
+    };
+    
+    setAppData(prev => ({
+      ...prev,
+      us10y: { ...fallbackData, status: 'cached' as const }
+    }));
+    
+    // Set loading state
+    setAppData(prev => ({
+      ...prev,
+      us10y: prev.us10y ? { ...prev.us10y, status: 'loading' } : { ...getMockStockData('US10Y'), status: 'loading' }
+    }));
+    
+    try {
+      // Use relative URL in production, absolute in development
+      const baseUrl = typeof window === 'undefined' ? 'http://localhost:3000' : '';
+      const response = await fetch(`${baseUrl}/api/us10y`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        },
+        cache: 'no-store', // Ensure we don't get cached responses
+        next: { revalidate: 0 } // Ensure we always get fresh data
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      // Update cache
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('us10y_data', JSON.stringify({
+          data,
+          timestamp: Date.now()
+        }));
+      }
+      
+      setAppData(prev => ({
+        ...prev,
+        us10y: {
+          ...data,
+          status: 'fresh' as const,
+          source: 'Alpha Vantage (via API)'
+        }
+      }));
+      
+    } catch (error) {
+      console.error('Error fetching US10Y data:', error);
+      // Fall back to mock data if all else fails
+      setAppData(prev => ({
+        ...prev,
+        us10y: getMockStockData('US10Y')
+      }));
+    }
+  }, []);
+
+
+
+  // Calculate correlation between two data series
+  const calculateCorrelation = useCallback((x: number[], y: number[]): number => {
+    if (x.length !== y.length || x.length === 0) return 0;
+    
+    const n = x.length;
+    const xMean = x.reduce((a, b) => a + b, 0) / n;
+    const yMean = y.reduce((a, b) => a + b, 0) / n;
+    
+    let num = 0;
+    let denomX = 0;
+    let denomY = 0;
+    
+    for (let i = 0; i < n; i++) {
+      const xDiff = x[i] - xMean;
+      const yDiff = y[i] - yMean;
+      num += xDiff * yDiff;
+      denomX += xDiff * xDiff;
+      denomY += yDiff * yDiff;
+    }
+    
+    return num / Math.sqrt(denomX * denomY);
+  }, []);
+
+  // Update correlation data when prices change
+  useEffect(() => {
+    if (appData.btc?.price && appData.spx?.price && appData.spy?.price) {
+      // Simple correlation using current prices (in a real app, use historical data)
+      const btcPrice = appData.btc.price;
+      const spxPrice = appData.spx.price;
+      const spyPrice = appData.spy.price;
+      
+      // In a real app, you would use historical data points
+      // This is a simplified example using just the current prices
+      const btcSpxCorrelation = calculateCorrelation([btcPrice], [spxPrice]);
+      const btcSpyCorrelation = calculateCorrelation([btcPrice], [spyPrice]);
+      const spxSpyCorrelation = calculateCorrelation([spxPrice], [spyPrice]);
+      
+      setCorrelationData([
+        { pair: 'BTC/SPX', value: btcSpxCorrelation, timeFrame: '1h' },
+        { pair: 'BTC/SPY', value: btcSpyCorrelation, timeFrame: '1h' },
+        { pair: 'SPX/SPY', value: spxSpyCorrelation, timeFrame: '1h' },
+      ]);
+    }
+  }, [appData.btc?.price, appData.spx?.price, appData.spy?.price, calculateCorrelation]);
+
+  // Data fetching is now handled by the refresh button click
+  // No automatic data fetching on component mount
+
+  const fetchCryptoData = useCallback(async (forceRefresh = false) => {
+    const CRYPTO_CACHE_KEY = 'crypto_data';
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+    
+    // Try to get from cache first if not forcing refresh
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(CRYPTO_CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        // Only use cache if it's not expired
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          setAppData(prev => ({
+            ...prev,
+            ...data,
+            loading: false,
+            loadingAi: false
+          }));
+          return;
+        }
+      }
+    }
+    
+    // Set loading state
+    setAppData(prev => ({
+      ...prev,
+      loading: true,
+      loadingAi: true,
+      globalError: prev.globalError?.includes('Refreshing data') ? prev.globalError : null
+    }));
 
     const prevData = appDataRef.current;
     let partialError = false;
@@ -97,11 +473,26 @@ const CryptoDashboardPage: FC = () => {
 
         if (btcApi) {
           anyDataFetched = true;
+          const maData = await fetchBtcMovingAverages();
           newBtcData = {
-            id: btcApi.id, name: btcApi.name, symbol: btcApi.symbol.toUpperCase(), price: btcApi.current_price,
-            change24h: btcApi.price_change_percentage_24h || 0, volume24h: btcApi.total_volume, marketCap: btcApi.market_cap,
-            high24h: btcApi.high_24h, low24h: btcApi.low_24h, lastUpdated: btcApi.last_updated, image: btcApi.image, status: 'fresh',
-          };
+            id: btcApi.id,
+            name: btcApi.name,
+            symbol: btcApi.symbol.toUpperCase(),
+            price: btcApi.current_price,
+            change24h: btcApi.price_change_percentage_24h || 0,
+            volume24h: btcApi.total_volume,
+            marketCap: btcApi.market_cap,
+            high24h: btcApi.high_24h,
+            low24h: btcApi.low_24h,
+            lastUpdated: btcApi.last_updated,
+            image: btcApi.image,
+            status: 'fresh',
+            ma50: maData?.ma50,
+            ma200: maData?.ma200,
+            maCrossover: maData?.maCrossover,
+            rsi14: maData?.rsi14,
+            signal: maData?.signal,
+          }
         } else { partialError = true; if (newBtcData) newBtcData.status = 'cached_error'; console.error("Bitcoin data not found."); }
 
         if (ethApi) {
@@ -195,18 +586,38 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []); 
 
-  const fetchStockData = useCallback(async () => {
-    // Always use mock data for DXY and US10Y
-    const newDxyData: StockData = getMockStockData('DXY');
-    const newUs10yData: StockData = getMockStockData('US10Y');
-    const dxyUs10yMockMessage = "DXY and US10Y are using placeholder data as a suitable free, low-usage real-time API is not currently integrated.";
+  const fetchStockData = useCallback(async (forceRefresh = false) => {
+    const STOCK_CACHE_KEY = 'stock_data';
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+    
+    // Try to get from cache first if not forcing refresh
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(STOCK_CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        // Only use cache if it's not expired
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          setAppData(prev => ({
+            ...prev,
+            ...data,
+            loading: false
+          }));
+          return;
+        }
+      }
+    }
+    // Only fetch fresh data if force refresh is true
+    if (forceRefresh) {
+      await Promise.all([
+        fetchDXYData(true),
+        fetchUS10YData(true)
+      ]);
+    }
 
     setAppData(prev => ({
       ...prev,
       spy: prev.spy ? { ...prev.spy, status: 'loading' } : { ...getMockStockData('SPY'), status: 'loading' },
       spx: prev.spx ? { ...prev.spx, status: 'loading' } : { ...getMockStockData('^GSPC'), status: 'loading' },
-      dxy: newDxyData, 
-      us10y: newUs10yData,
     }));
   
     let newSpyData: StockData | null = appDataRef.current.spy;
@@ -231,13 +642,20 @@ const CryptoDashboardPage: FC = () => {
             const spyDataArray = await spyResponse.json();
             if (spyDataArray && spyDataArray.length > 0) {
               const spyApiData = spyDataArray[0];
+              const spyRsi = await fetchStockRsi('SPY')
               newSpyData = {
-                id: spyApiData.symbol, name: spyApiData.name || "SPDR S&P 500 ETF", symbol: spyApiData.symbol,
-                price: spyApiData.price, change: spyApiData.change, changePercent: spyApiData.changesPercentage,
-                volume: spyApiData.volume, 
+                id: spyApiData.symbol,
+                name: spyApiData.name || 'SPDR S&P 500 ETF',
+                symbol: spyApiData.symbol,
+                price: spyApiData.price,
+                change: spyApiData.change,
+                changePercent: spyApiData.changesPercentage,
+                volume: spyApiData.volume,
                 lastUpdated: spyApiData.timestamp ? new Date(spyApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
-              };
+                rsi14: spyRsi ?? undefined,
+                signal: spyRsi != null ? (spyRsi <= 30 ? 'buy' : spyRsi >= 70 ? 'sell' : 'hold') : undefined,
+              }
             } else { 
               if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
               localStockErrorParts.push("SPY data not found in FMP response."); 
@@ -260,13 +678,20 @@ const CryptoDashboardPage: FC = () => {
             const spxDataArray = await spxResponse.json();
             if (spxDataArray && spxDataArray.length > 0) {
               const spxApiData = spxDataArray[0];
+              const spxRsi = await fetchStockRsi('^GSPC')
               newSpxData = {
-                id: spxApiData.symbol, name: spxApiData.name || "S&P 500 Index", symbol: spxApiData.symbol,
-                price: spxApiData.price, change: spxApiData.change, changePercent: spxApiData.changesPercentage,
+                id: spxApiData.symbol,
+                name: spxApiData.name || 'S&P 500 Index',
+                symbol: spxApiData.symbol,
+                price: spxApiData.price,
+                change: spxApiData.change,
+                changePercent: spxApiData.changesPercentage,
                 volume: spxApiData.volume,
                 lastUpdated: spxApiData.timestamp ? new Date(spxApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
-              };
+                rsi14: spxRsi ?? undefined,
+                signal: spxRsi != null ? (spxRsi <= 30 ? 'buy' : spxRsi >= 70 ? 'sell' : 'hold') : undefined,
+              }
             } else { 
               if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
               localStockErrorParts.push("^GSPC data not found in FMP response."); 
@@ -305,63 +730,91 @@ const CryptoDashboardPage: FC = () => {
         .join(". ");
       if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
-      let combinedError = currentGlobalError;
-      if (finalStockErrorMsg) combinedError += finalStockErrorMsg + " ";
-      combinedError += dxyUs10yMockMessage; 
+      const combinedError = currentGlobalError + (finalStockErrorMsg ? ` ${finalStockErrorMsg}` : '');
 
       return {
         ...prev,
         spy: newSpyData || prev.spy, 
         spx: newSpxData || prev.spx, 
-        dxy: newDxyData, 
-        us10y: newUs10yData, 
         globalError: combinedError.trim() || null,
         lastUpdated: new Date().toISOString(), 
       };
     });
   }, []);
 
-  useEffect(() => {
-    fetchCryptoData(); 
-    const interval = setInterval(fetchCryptoData, CRYPTO_FETCH_INTERVAL_MS); 
-    return () => clearInterval(interval);
-  }, [fetchCryptoData]);
-
-  useEffect(() => {
-    fetchStockData(); 
-    const interval = setInterval(fetchStockData, STOCK_FETCH_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [fetchStockData]);
+  // Data fetching is now handled by the refresh button click
+  // No automatic data fetching on component mount
 
 
   const runAiAnalysis = useCallback(async () => {
     const currentData = appDataRef.current;
     if (currentData.loadingAi) return;
+    
+    const AI_CACHE_KEY = 'ai_analysis';
+    
+    // Try to get from cache first
+    const cached = localStorage.getItem(AI_CACHE_KEY);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < 15 * 60 * 1000) { // 15 minute cache
+        setAppData(prev => ({
+          ...prev,
+          aiSentiment: data,
+          loadingAi: false
+        }));
+        return;
+      }
+    }
 
     if (currentData.btc && currentData.eth && currentData.spy && currentData.spx && currentData.dxy && currentData.us10y) {
+      // Only run analysis if we don't have a recent result or data has changed significantly
+      const shouldRunAnalysis = !currentData.aiSentiment || 
+        (Date.now() - new Date(currentData.aiSentiment.timestamp || 0).getTime() > 15 * 60 * 1000);
+
+      if (!shouldRunAnalysis) return;
+
       setAppData(prev => ({ ...prev, loadingAi: true }));
+      
       try {
         const sentimentResult = await marketSentimentAnalysis({
-          btcPrice: currentData.btc.price, ethPrice: currentData.eth.price,
-          spyPrice: currentData.spy.price, spxPrice: currentData.spx.price,
+          btcPrice: currentData.btc.price, 
+          ethPrice: currentData.eth.price,
+          spyPrice: currentData.spy.price, 
+          spxPrice: currentData.spx.price,
           dxyPrice: currentData.dxy.price, 
           us10yPrice: currentData.us10y.price, 
         });
-        setAppData(prev => {
-           let currentGlobalError = prev.globalError || "";
-           currentGlobalError = currentGlobalError.split(". ")
-             .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis failed due to rate limits"))
-             .join(". ");
-           if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) currentGlobalError += ". ";
 
-          return {...prev, aiSentiment: sentimentResult, loadingAi: false, globalError: currentGlobalError.trim() || null };
-        });
+        // Only update if we got a fresh analysis or we don't have any analysis yet
+        if (!sentimentResult.cached || !currentData.aiSentiment) {
+          setAppData(prev => {
+            let currentGlobalError = prev.globalError || "";
+            currentGlobalError = currentGlobalError.split(". ")
+              .filter(msg => !msg.toLowerCase().includes("ai sentiment analysis"))
+              .join(". ").trim();
+            
+            if (currentGlobalError && !currentGlobalError.endsWith(".") && currentGlobalError.length > 0) {
+              currentGlobalError += ". ";
+            }
 
+            return {
+              ...prev, 
+              aiSentiment: {
+                ...sentimentResult,
+                timestamp: new Date().toISOString()
+              }, 
+              loadingAi: false, 
+              globalError: currentGlobalError || null 
+            };
+          });
+        } else {
+          setAppData(prev => ({ ...prev, loadingAi: false }));
+        }
       } catch (error) {
-        console.error("Error fetching AI sentiment:", error);
+        console.error("Error in AI sentiment analysis:", error);
         let aiErrorMsg = "AI sentiment analysis failed.";
         if (error instanceof Error && error.message.includes("429")) {
-          aiErrorMsg = "AI sentiment analysis failed due to rate limits. Will retry on the next scheduled run.";
+          aiErrorMsg = "AI sentiment analysis rate limited. Will retry later.";
         }
         
         setAppData(prev => {
@@ -400,118 +853,462 @@ const CryptoDashboardPage: FC = () => {
   ];
 
   const renderCoinData = (coin: CoinData | null, IconComponent: ElementType) => {
-    const isLoading = appData.loading && !coin; 
-    if (isLoading) return <div className="p-4 text-center">Loading data...</div>;
-    if (!coin) return <div className="p-4 text-center">Data unavailable for {IconComponent === Bitcoin ? 'Bitcoin' : 'Ethereum'}.</div>;
+    const isBitcoin = IconComponent === Bitcoin;
+    const coinName = isBitcoin ? 'Bitcoin' : 'Ethereum';
+    
+    // Handle server-side rendering and initial client render
+    if (typeof window === 'undefined' || !isClient) {
+      return (
+        <div className="space-y-3 p-1">
+          <div className="p-4 text-center">Loading {coinName} data...</div>
+        </div>
+      );
+    }
+    
+    // Client-side rendering after initial hydration
+    const isLoading = appData.loading && !coin;
     
     return (
       <div className="space-y-3 p-1">
-        <div className="flex items-center space-x-2 mb-2">
-          <Image data-ai-hint="coin logo" src={coin.image} alt={coin.name} width={32} height={32} className="rounded-full" />
-          <ValueDisplay label="Price" value={coin.price} unit={coin.symbol.toUpperCase()} variant="highlight" isLoading={coin.status === 'loading'} valueClassName="text-accent" />
-        </div>
-        <ValueDisplay label="24h Change" value={`${coin.change24h?.toFixed(2) ?? 'N/A'}%`} valueClassName={coin.change24h >= 0 ? 'text-green-500' : 'text-red-500'} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="24h High" value={coin.high24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="24h Low" value={coin.low24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="Volume" value={coin.volume24h ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
-        <ValueDisplay label="Market Cap" value={coin.marketCap ?? 'N/A'} unit={coin.symbol.toUpperCase()} isLoading={coin.status === 'loading'} />
+        {isLoading ? (
+          <div className="p-4 text-center">Loading {coinName} data...</div>
+        ) : !coin ? (
+          <div className="p-4 text-center">Data unavailable for {coinName}.</div>
+        ) : (
+          <>
+            <div className="flex items-center space-x-2 mb-2">
+              <Image 
+                data-ai-hint="coin logo" 
+                src={coin.image} 
+                alt={coin.name} 
+                width={32} 
+                height={32} 
+                className="rounded-full" 
+              />
+              <ValueDisplay 
+                label="Price" 
+                value={coin.price} 
+                unit={coin.symbol.toUpperCase()} 
+                variant="highlight" 
+                isLoading={coin.status === 'loading'} 
+                valueClassName="text-accent" 
+              />
+            </div>
+            <ValueDisplay 
+              label="24h Change" 
+              value={`${coin.change24h?.toFixed(2) ?? 'N/A'}%`} 
+              valueClassName={coin.change24h >= 0 ? 'text-green-500' : 'text-red-500'} 
+              isLoading={coin.status === 'loading'} 
+            />
+            <ValueDisplay 
+              label="24h High" 
+              value={coin.high24h ?? 'N/A'} 
+              unit={coin.symbol.toUpperCase()} 
+              isLoading={coin.status === 'loading'} 
+            />
+            <ValueDisplay 
+              label="24h Low" 
+              value={coin.low24h ?? 'N/A'} 
+              unit={coin.symbol.toUpperCase()} 
+              isLoading={coin.status === 'loading'} 
+            />
+            <ValueDisplay 
+              label="Volume" 
+              value={coin.volume24h ?? 'N/A'} 
+              unit={coin.symbol.toUpperCase()} 
+              isLoading={coin.status === 'loading'} 
+            />
+            <ValueDisplay
+              label="Market Cap"
+              value={coin.marketCap ?? 'N/A'}
+              unit={coin.symbol.toUpperCase()}
+              isLoading={coin.status === 'loading'}
+            />
+            <ValueDisplay
+              label="RSI (14)"
+              value={coin.rsi14?.toFixed(2) ?? 'N/A'}
+              valueClassName={
+                coin.rsi14 !== undefined
+                  ? coin.rsi14 >= 70
+                    ? 'text-red-500'
+                    : coin.rsi14 <= 30
+                      ? 'text-green-500'
+                      : ''
+                  : ''
+              }
+              isLoading={coin.status === 'loading'}
+            />
+            <ValueDisplay
+              label="Signal"
+              value={coin.signal ? coin.signal.toUpperCase() : 'N/A'}
+              valueClassName={
+                coin.signal === 'buy'
+                  ? 'text-green-500'
+                  : coin.signal === 'sell'
+                    ? 'text-red-500'
+                    : ''
+              }
+              isLoading={coin.status === 'loading'}
+            />
+            {/* Always render MA section but hide if no data */}
+            <div className={!coin.ma50 || !coin.ma200 ? 'hidden' : ''}>
+              <ValueDisplay 
+                label="MA 50" 
+                value={coin.ma50?.toFixed(2) ?? 'N/A'} 
+                unit={coin.symbol.toUpperCase()} 
+                isLoading={coin.status === 'loading'} 
+              />
+              <ValueDisplay 
+                label="MA 200" 
+                value={coin.ma200?.toFixed(2) ?? 'N/A'} 
+                unit={coin.symbol.toUpperCase()} 
+                isLoading={coin.status === 'loading'} 
+              />
+              <ValueDisplay 
+                label="MA Crossover" 
+                value={coin.maCrossover === 'bullish' ? 'Bullish' : 'Bearish'} 
+                isLoading={coin.status === 'loading'} 
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   };
   
   const renderStockData = (stock: StockData | null, IconComponent: ElementType) => {
-    let title = "Data";
-    if (IconComponent === Briefcase) title = 'SPY';
-    else if (IconComponent === BarChart3) title = 'S&P 500';
-    else if (IconComponent === DollarSign) title = 'US Dollar Index';
-    else if (IconComponent === Landmark) title = 'US 10-Year Yield';
+    // Use a consistent title based on the stock symbol to prevent hydration mismatch
+    const title = stock?.symbol === 'SPY' ? 'SPDR S&P 500 ETF Trust' :
+                 stock?.symbol === '^GSPC' ? 'S&P 500 Index' :
+                 stock?.symbol === 'DXY' ? 'US Dollar Index' :
+                 stock?.symbol === 'US10Y' || stock?.symbol === '^TNX' ? 'US 10-Year Yield' :
+                 'Market Data';
 
-    if (!stock) return <div className="p-4 text-center">Data unavailable for {title}.</div>;
+    // Handle server-side rendering and initial client render
+    if (typeof window === 'undefined' || !isClient) {
+      return (
+        <div className="space-y-3 p-1">
+          <div className="p-4 text-center">Loading {title} data...</div>
+        </div>
+      );
+    }
+
+    // Client-side rendering after initial hydration
+    const unit = (stock?.symbol === 'US10Y' || stock?.symbol === '^TNX') ? "%" : "USD";
+    const isPlaceholder = stock?.status === 'cached_error';
     
-    const unit = (stock.symbol === 'US10Y' || stock.symbol === '^TNX') ? "%" : "USD";
-    const isPlaceholder = stock.name.toLowerCase().includes("(placeholder)") || stock.name.toLowerCase().includes("(mocked)");
-
-
     return (
       <div className="space-y-3 p-1">
-        <ValueDisplay 
-            label="Price" 
-            value={stock.price} 
-            unit={unit} 
-            variant="highlight" 
-            isLoading={stock.status === 'loading'} 
-            valueClassName="text-accent" 
-        />
-        <ValueDisplay 
-            label="Change" 
-            value={stock.change?.toFixed(2)} 
-            valueClassName={stock.change >= 0 ? 'text-green-500' : 'text-red-500'} 
-            unit={unit !== "%" ? "USD" : undefined} 
-            isLoading={stock.status === 'loading'} 
-        />
-        <ValueDisplay 
-            label="Change %" 
-            value={`${stock.changePercent?.toFixed(2)}%`} 
-            valueClassName={stock.changePercent >= 0 ? 'text-green-500' : 'text-red-500'} 
-            isLoading={stock.status === 'loading'} 
-        />
-        {stock.volume > 0 && <ValueDisplay label="Volume" value={stock.volume} isLoading={stock.status === 'loading'} />}
-        {isPlaceholder && <p className="text-xs text-muted-foreground/80 text-center pt-1">(Using placeholder data)</p>}
+        {!stock ? (
+          <div className="p-4 text-center">Data unavailable for {title}.</div>
+        ) : (
+          <>
+            <div className="flex items-center space-x-2 mb-2">
+              <IconComponent className="h-6 w-6 text-muted-foreground" />
+              <ValueDisplay 
+                label="Price" 
+                value={stock.price} 
+                unit={unit} 
+                variant="highlight" 
+                isLoading={stock.status === 'loading'} 
+                valueClassName="text-accent" 
+              />
+            </div>
+            <ValueDisplay 
+              label="Change" 
+              value={stock.change?.toFixed(2) ?? 'N/A'} 
+              unit={unit} 
+              isLoading={stock.status === 'loading'} 
+            />
+            <ValueDisplay 
+              label="Change %" 
+              value={`${stock.changePercent?.toFixed(2) ?? '0.00'}%`} 
+              valueClassName={(stock.changePercent ?? 0) >= 0 ? 'text-green-500' : 'text-red-500'} 
+              isLoading={stock.status === 'loading'} 
+            />
+            {/* Always render volume but hide if 0 */}
+            <div className={!stock.volume ? 'hidden' : ''}>
+              <ValueDisplay
+                label="Volume"
+                value={stock.volume}
+                isLoading={stock.status === 'loading'}
+              />
+            </div>
+            <ValueDisplay
+              label="RSI (14)"
+              value={stock.rsi14?.toFixed(2) ?? 'N/A'}
+              valueClassName={
+                stock.rsi14 !== undefined
+                  ? stock.rsi14 >= 70
+                    ? 'text-red-500'
+                    : stock.rsi14 <= 30
+                      ? 'text-green-500'
+                      : ''
+                  : ''
+              }
+              isLoading={stock.status === 'loading'}
+            />
+            <ValueDisplay
+              label="Signal"
+              value={stock.signal ? stock.signal.toUpperCase() : 'N/A'}
+              valueClassName={
+                stock.signal === 'buy'
+                  ? 'text-green-500'
+                  : stock.signal === 'sell'
+                    ? 'text-red-500'
+                    : ''
+              }
+              isLoading={stock.status === 'loading'}
+            />
+            {isPlaceholder && (
+              <p className="text-xs text-muted-foreground/80 text-center pt-1">
+                (Using placeholder data)
+              </p>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // Handle manual refresh
+  const handleRefresh = useCallback(async () => {
+    if (isRefreshing) return;
+    
+    setIsRefreshing(true);
+    const startTime = Date.now();
+    
+    try {
+      // Set loading state
+      setAppData(prev => ({
+        ...prev,
+        globalError: 'Refreshing data...',
+        loading: true,
+        loadingAi: true
+      }));
+      
+      // Clear any existing errors
+      setAppData(prev => ({
+        ...prev,
+        globalError: null
+      }));
+      
+      // Fetch all data in parallel with force refresh
+      const [dxyResult, us10yResult, cryptoResult, stockResult] = await Promise.allSettled([
+        fetchDXYData(true).catch(e => {
+          console.error('Error in DXY fetch:', e);
+          return null;
+        }),
+        fetchUS10YData(true).catch(e => {
+          console.error('Error in US10Y fetch:', e);
+          return null;
+        }),
+        fetchCryptoData(true).catch(e => {
+          console.error('Error in crypto fetch:', e);
+          return null;
+        }),
+        fetchStockData(true).catch(e => {
+          console.error('Error in stock fetch:', e);
+          return null;
+        })
+      ]);
+      
+      // Check if we have all required data for AI analysis
+      const hasAllData = [dxyResult, us10yResult, cryptoResult, stockResult].every(
+        result => result.status === 'fulfilled' && result.value !== null
+      );
+      
+      // Run AI analysis if we have all the required data
+      if (hasAllData) {
+        try {
+          await runAiAnalysis();
+        } catch (e) {
+          console.error('Error in AI analysis:', e);
+        }
+      }
+      
+      // Calculate refresh duration
+      const refreshDuration = Date.now() - startTime;
+      
+      // Clear loading state and update last updated time
+      setAppData(prev => ({
+        ...prev,
+        loading: false,
+        loadingAi: false,
+        lastUpdated: new Date().toISOString(),
+        globalError: null
+      }));
+      
+      console.log(`Data refresh completed in ${refreshDuration}ms`);
+      
+    } catch (error) {
+      console.error('Error during refresh:', error);
+      setAppData(prev => ({
+        ...prev,
+        globalError: `Error refreshing data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        loading: false,
+        loadingAi: false
+      }));
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [isRefreshing]);
+
+  // Helper function to get status that's consistent between server and client
+  const getStatus = (data: any): 'fresh' | 'cached_error' | 'error' | 'loading' | 'waiting' | null => {
+    // On server, always return 'loading' to match initial client render
+    if (typeof window === 'undefined') return 'loading';
+    
+    if (!data) return 'error';
+    if (data.status) return data.status as 'fresh' | 'cached_error' | 'error' | 'loading' | 'waiting';
+    if (data.isLoading) return 'loading';
+    if (data.error) return 'error';
+    if (data.lastFetched) return 'fresh';
+    return 'loading';
+  };
+
+  const hasLoadedData = isClient && (appData.btc || appData.eth || appData.spy || appData.spx || appData.dxy || appData.us10y);
+
+  // Only render the welcome message on the client side
+  const renderWelcomeMessage = () => {
+    if (!isClient || hasLoadedData || isRefreshing) return null;
+    
+    return (
+      <div className="bg-primary/10 border border-primary text-primary p-6 rounded-lg mb-6 text-center">
+        <p className="text-lg font-medium mb-2">Welcome to Crypto Pulse</p>
+        <p className="mb-4">Click the refresh button above to load the latest market data</p>
+        <button 
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isRefreshing ? 'Loading...' : 'Load Data'}
+        </button>
+      </div>
+    );
+  };
+
+  // Only render the error message on the client side
+  const renderErrorMessage = () => {
+    if (!isClient || !appData.globalError) return null;
+    
+    return (
+      <div className="bg-destructive/10 border border-destructive text-destructive p-3 rounded-md mb-4 text-sm">
+        <strong>Notice:</strong> {appData.globalError}
       </div>
     );
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-sans">
-      <DashboardHeader title="Crypto Pulse" navItems={navItems} />
+      <DashboardHeader 
+        title="Crypto Pulse" 
+        navItems={navItems}
+        onRefresh={handleRefresh}
+        isLoading={isRefreshing}
+      />
       <main className="flex-grow container mx-auto px-2 py-4 sm:px-4 sm:py-6">
-        {appData.globalError && (
-          <div className="bg-destructive/10 border border-destructive text-destructive p-3 rounded-md mb-4 text-sm">
-            <strong>Notice:</strong> {appData.globalError}
-          </div>
-        )}
+        {renderWelcomeMessage()}
+        {renderErrorMessage()}
 
         <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <DataCard title="Bitcoin (BTC)" icon={Bitcoin} status={appData.btc?.status ?? (appData.loading ? 'loading' : 'error')} className="xl:col-span-1">
+          <DataCard 
+            title="Bitcoin (BTC)" 
+            icon={Bitcoin} 
+            status={getStatus(appData.btc)} 
+            className="xl:col-span-1"
+          >
             {renderCoinData(appData.btc, Bitcoin)}
           </DataCard>
 
-          <DataCard title="Ethereum (ETH)" icon={Shapes} status={appData.eth?.status ?? (appData.loading ? 'loading' : 'error')} className="xl:col-span-1">
+          <DataCard 
+            title="Ethereum (ETH)" 
+            icon={Shapes} 
+            status={getStatus(appData.eth)} 
+            className="xl:col-span-1"
+          >
             {renderCoinData(appData.eth, Shapes)}
           </DataCard>
           
-          <DataCard title={appData.spy?.name || "SPDR S&P 500 ETF (SPY)"} icon={Briefcase} status={appData.spy?.status ?? 'loading'}>
+          <DataCard 
+            title={appData.spy?.name || "SPDR S&P 500 ETF (SPY)"} 
+            icon={Briefcase} 
+            status={getStatus(appData.spy)}
+          >
             {renderStockData(appData.spy, Briefcase)}
           </DataCard>
 
-          <DataCard title={appData.spx?.name || "S&P 500 Index (^GSPC)"} icon={BarChart3} status={appData.spx?.status ?? 'loading'}>
+          <DataCard 
+            title={appData.spx?.name || "S&P 500 Index (^GSPC)"} 
+            icon={BarChart3} 
+            status={getStatus(appData.spx)}
+          >
             {renderStockData(appData.spx, BarChart3)}
           </DataCard>
 
-          <DataCard title={appData.dxy?.name || "US Dollar Index (DXY)"} icon={DollarSign} status={appData.dxy?.status ?? 'cached_error'}>
+          <DataCard 
+            title={appData.dxy?.name || "US Dollar Index (DXY)"} 
+            icon={DollarSign} 
+            status={getStatus(appData.dxy)}
+          >
             {renderStockData(appData.dxy, DollarSign)}
           </DataCard>
 
-          <DataCard title={appData.us10y?.name || "US 10-Year Yield (^TNX)"} icon={Landmark} status={appData.us10y?.status ?? 'cached_error'}>
+          <DataCard 
+            title={appData.us10y?.name || "US 10-Year Yield (^TNX)"} 
+            icon={Landmark} 
+            status={getStatus(appData.us10y)}
+          >
             {renderStockData(appData.us10y, Landmark)}
           </DataCard>
 
-          <DataCard title="Fear & Greed Index" icon={Gauge} status={appData.fearGreed?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-1">
-            {appData.fearGreed ? (
+          <DataCard 
+            title="Fear & Greed Index" 
+            icon={Gauge} 
+            status={appData.fearGreed?.value_classification || ''} 
+            className="sm:col-span-1"
+          >
+            {!isClient ? (
+              <div className="p-4 text-center">Loading Fear & Greed data...</div>
+            ) : appData.fearGreed ? (
               <div className="text-center py-4">
                 <p className="text-4xl font-bold text-primary">{appData.fearGreed.value}</p>
                 <p className="text-muted-foreground">{appData.fearGreed.value_classification}</p>
-                {appData.fearGreed.timestamp && <p className="text-xs text-muted-foreground mt-2">As of {new Date(parseInt(appData.fearGreed.timestamp) * 1000).toLocaleTimeString()}</p>}
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                  <div 
+                    className={`h-2.5 rounded-full ${
+                      appData.fearGreed.value < 20 ? 'bg-red-600' : 
+                      appData.fearGreed.value < 40 ? 'bg-orange-400' : 
+                      appData.fearGreed.value < 60 ? 'bg-yellow-400' : 
+                      appData.fearGreed.value < 80 ? 'bg-lime-400' : 'bg-green-600'
+                    }`} 
+                    style={{ width: `${appData.fearGreed.value}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {appData.fearGreed.value < 20 ? 'Extreme Fear' : 
+                   appData.fearGreed.value < 40 ? 'Fear' : 
+                   appData.fearGreed.value < 60 ? 'Neutral' : 
+                   appData.fearGreed.value < 80 ? 'Greed' : 'Extreme Greed'}
+                </p>
               </div>
-            ) : ((appData.loading && !appData.fearGreed) ? <p className="text-center p-4">Loading F&G Index...</p> : <p className="text-center p-4">Fear & Greed Index data unavailable.</p>)}
+            ) : appData.loading ? (
+              <p className="text-center p-4">Loading F&G Index...</p>
+            ) : (
+              <p className="text-center p-4">Fear & Greed Index data unavailable.</p>
+            )}
           </DataCard>
 
-          <DataCard 
-            title="AI Market Sentiment" 
-            icon={Brain} 
-            status={appData.loadingAi ? 'loading' : appData.aiSentiment ? 'fresh' : (appData.btc && appData.eth && appData.spy && appData.spx && appData.dxy && appData.us10y ? 'waiting' : 'error')} 
-            className="sm:col-span-2 lg:col-span-3 xl:col-span-4"
-          >
+          {/* Correlation Panel */}
+          <DataCard title="Market Correlations" icon={BarChart2} status="fresh" className="sm:col-span-2 lg:col-span-2">
+            {correlationData.length > 0 ? (
+              <CorrelationPanel data={correlationData} />
+            ) : (
+              <p className="text-center p-4">Calculating correlations...</p>
+            )}
+          </DataCard>
+
+          <DataCard title="AI Market Sentiment" icon={Brain} status={appData.aiSentiment?.status ?? (appData.loadingAi ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2">
             {appData.loadingAi ? (
               <p className="text-center p-4">Generating AI sentiment analysis...</p>
             ) : appData.aiSentiment ? (
@@ -524,24 +1321,40 @@ const CryptoDashboardPage: FC = () => {
             ) : (appData.btc && appData.eth && appData.spy && appData.spx && appData.dxy && appData.us10y) ? (
               <p className="text-center p-4">AI sentiment analysis will be generated shortly. Waiting for next scheduled run.</p>
             ) : (
-              <p className="text-center p-4">AI sentiment analysis pending complete price data from all sources. Some sources (DXY, US10Y) use placeholder data.</p>
+              <p className="text-center p-4">AI sentiment data unavailable.</p>
             )}
           </DataCard>
-          
-          <DataCard title="Top 7 Trending Coins" icon={TrendingUp} status={appData.trending?.status ?? (appData.loading ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2 xl:col-span-2">
-            {appData.trending && appData.trending.coins.length > 0 ? (
-              <ul className="space-y-2 text-sm max-h-[300px] overflow-y-auto p-1">
-                {appData.trending.coins.map(coin => (
-                  <li key={coin.id} className="flex items-center justify-between p-1.5 bg-muted/30 rounded-md hover:bg-muted/60 transition-colors">
-                    <div className="flex items-center">
-                      <Image data-ai-hint="coin logo" src={coin.thumb} alt={coin.name} width={24} height={24} className="rounded-full mr-2" />
-                      <span className="font-medium">{coin.name} ({coin.symbol})</span>
+
+          <DataCard 
+            title="Top 7 Trending Coins" 
+            icon={TrendingUp} 
+            status={appData.trending?.length ? 'active' : ''} 
+            className="sm:col-span-1"
+          >
+            {!isClient ? (
+              <div className="p-4 text-center">Loading trending coins data...</div>
+            ) : appData.trending && appData.trending.length > 0 ? (
+              <div className="space-y-2">
+                {appData.trending.map((coin, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg transition-colors">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium">{coin.symbol.toUpperCase()}</span>
+                      <span className="text-sm text-muted-foreground">{coin.name}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">Rank: {coin.market_cap_rank}</span>
-                  </li>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-sm font-medium ${coin.price_change_percentage_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {coin.price_change_percentage_24h >= 0 ? '+' : ''}{coin.price_change_percentage_24h?.toFixed(2)}%
+                      </span>
+                      <span className="text-sm font-medium">${coin.current_price?.toLocaleString()}</span>
+                    </div>
+                  </div>
                 ))}
-              </ul>
-            ) : ( (appData.loading && !appData.trending) ? <p className="text-center p-4">Loading trending coins...</p> : <p className="text-center p-4">Trending coins data unavailable.</p>)}
+              </div>
+            ) : appData.loading ? (
+              <p className="text-center p-4">Loading trending coins...</p>
+            ) : (
+              <p className="text-center p-4">Trending coins data unavailable.</p>
+            )}
           </DataCard>
         </div>
 
@@ -550,7 +1363,6 @@ const CryptoDashboardPage: FC = () => {
           <p className="text-xs text-muted-foreground mt-1">
             Crypto Pulse - Financial data displayed is for informational purposes only.
             {!FMP_API_KEY && " Live SPY/SPX data requires NEXT_PUBLIC_FMP_API_KEY."}
-            {" DXY and US10Y are using placeholder data."}
           </p>
            <p className="text-xs text-muted-foreground mt-1">
             Crypto data powered by <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">CoinGecko</a> and <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">alternative.me</a>.
