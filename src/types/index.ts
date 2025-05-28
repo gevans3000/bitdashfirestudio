@@ -17,6 +17,8 @@ export interface CoinData {
   ma50?: number;
   ma200?: number;
   maCrossover?: 'bullish' | 'bearish';
+  rsi14?: number;
+  signal?: 'buy' | 'sell' | 'hold';
 }
 
 export interface StockData {
@@ -29,6 +31,8 @@ export interface StockData {
   volume: number;
   lastUpdated?: string; // ISO string
   status: 'fresh' | 'cached_error' | 'error' | 'loading';
+  rsi14?: number;
+  signal?: 'buy' | 'sell' | 'hold';
 }
 
 export interface TrendingCoinItem {

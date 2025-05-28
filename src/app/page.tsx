@@ -10,7 +10,7 @@ import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketS
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
 import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
 import { CorrelationPanel } from '@/components/CorrelationPanel';
-import { simpleMovingAverage } from '@/lib/indicators';
+import { simpleMovingAverage, rsi } from '@/lib/indicators';
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
 const ALPHA_VANTAGE_API_KEY = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || 'demo'; // Get a free key from Alpha Vantage if needed
@@ -236,7 +236,9 @@ const CryptoDashboardPage: FC = () => {
       const ma50 = simpleMovingAverage(prices, 50)
       const ma200 = simpleMovingAverage(prices, 200)
       const maCrossover = ma50 > ma200 ? 'bullish' : 'bearish'
-      const result = { ma50, ma200, maCrossover, lastUpdated: new Date().toISOString() };
+      const rsi14 = rsi(prices, 14)
+      const signal = rsi14 <= 30 ? 'buy' : rsi14 >= 70 ? 'sell' : 'hold'
+      const result = { ma50, ma200, maCrossover, rsi14, signal, lastUpdated: new Date().toISOString() };
       
       // Cache the result
       localStorage.setItem(CACHE_KEY, JSON.stringify({
@@ -258,6 +260,22 @@ const CryptoDashboardPage: FC = () => {
       }
       return null;
     }
+  }, [])
+
+  const fetchStockRsi = useCallback(async (symbol: string) => {
+    try {
+      if (!FMP_API_KEY) return null
+      const res = await fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${encodeURIComponent(symbol)}?timeseries=20&apikey=${FMP_API_KEY}`)
+      if (!res.ok) return null
+      const data = await res.json()
+      if (Array.isArray(data.historical)) {
+        const prices = data.historical.slice(0, 15).map((p: any) => p.close).reverse()
+        return rsi(prices, 14)
+      }
+    } catch (e) {
+      console.error('Error fetching RSI for', symbol, e)
+    }
+    return null
   }, [])
 
   // Fetch US10Y data from our API route
@@ -472,7 +490,9 @@ const CryptoDashboardPage: FC = () => {
             ma50: maData?.ma50,
             ma200: maData?.ma200,
             maCrossover: maData?.maCrossover,
-          };
+            rsi14: maData?.rsi14,
+            signal: maData?.signal,
+          }
         } else { partialError = true; if (newBtcData) newBtcData.status = 'cached_error'; console.error("Bitcoin data not found."); }
 
         if (ethApi) {
@@ -622,13 +642,20 @@ const CryptoDashboardPage: FC = () => {
             const spyDataArray = await spyResponse.json();
             if (spyDataArray && spyDataArray.length > 0) {
               const spyApiData = spyDataArray[0];
+              const spyRsi = await fetchStockRsi('SPY')
               newSpyData = {
-                id: spyApiData.symbol, name: spyApiData.name || "SPDR S&P 500 ETF", symbol: spyApiData.symbol,
-                price: spyApiData.price, change: spyApiData.change, changePercent: spyApiData.changesPercentage,
-                volume: spyApiData.volume, 
+                id: spyApiData.symbol,
+                name: spyApiData.name || 'SPDR S&P 500 ETF',
+                symbol: spyApiData.symbol,
+                price: spyApiData.price,
+                change: spyApiData.change,
+                changePercent: spyApiData.changesPercentage,
+                volume: spyApiData.volume,
                 lastUpdated: spyApiData.timestamp ? new Date(spyApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
-              };
+                rsi14: spyRsi ?? undefined,
+                signal: spyRsi != null ? (spyRsi <= 30 ? 'buy' : spyRsi >= 70 ? 'sell' : 'hold') : undefined,
+              }
             } else { 
               if (newSpyData) newSpyData.status = 'cached_error'; else newSpyData = getMockStockData('SPY');
               localStockErrorParts.push("SPY data not found in FMP response."); 
@@ -651,13 +678,20 @@ const CryptoDashboardPage: FC = () => {
             const spxDataArray = await spxResponse.json();
             if (spxDataArray && spxDataArray.length > 0) {
               const spxApiData = spxDataArray[0];
+              const spxRsi = await fetchStockRsi('^GSPC')
               newSpxData = {
-                id: spxApiData.symbol, name: spxApiData.name || "S&P 500 Index", symbol: spxApiData.symbol,
-                price: spxApiData.price, change: spxApiData.change, changePercent: spxApiData.changesPercentage,
+                id: spxApiData.symbol,
+                name: spxApiData.name || 'S&P 500 Index',
+                symbol: spxApiData.symbol,
+                price: spxApiData.price,
+                change: spxApiData.change,
+                changePercent: spxApiData.changesPercentage,
                 volume: spxApiData.volume,
                 lastUpdated: spxApiData.timestamp ? new Date(spxApiData.timestamp * 1000).toISOString() : new Date().toISOString(),
                 status: 'fresh',
-              };
+                rsi14: spxRsi ?? undefined,
+                signal: spxRsi != null ? (spxRsi <= 30 ? 'buy' : spxRsi >= 70 ? 'sell' : 'hold') : undefined,
+              }
             } else { 
               if (newSpxData) newSpxData.status = 'cached_error'; else newSpxData = getMockStockData('^GSPC');
               localStockErrorParts.push("^GSPC data not found in FMP response."); 
@@ -884,11 +918,37 @@ const CryptoDashboardPage: FC = () => {
               unit={coin.symbol.toUpperCase()} 
               isLoading={coin.status === 'loading'} 
             />
-            <ValueDisplay 
-              label="Market Cap" 
-              value={coin.marketCap ?? 'N/A'} 
-              unit={coin.symbol.toUpperCase()} 
-              isLoading={coin.status === 'loading'} 
+            <ValueDisplay
+              label="Market Cap"
+              value={coin.marketCap ?? 'N/A'}
+              unit={coin.symbol.toUpperCase()}
+              isLoading={coin.status === 'loading'}
+            />
+            <ValueDisplay
+              label="RSI (14)"
+              value={coin.rsi14?.toFixed(2) ?? 'N/A'}
+              valueClassName={
+                coin.rsi14 !== undefined
+                  ? coin.rsi14 >= 70
+                    ? 'text-red-500'
+                    : coin.rsi14 <= 30
+                      ? 'text-green-500'
+                      : ''
+                  : ''
+              }
+              isLoading={coin.status === 'loading'}
+            />
+            <ValueDisplay
+              label="Signal"
+              value={coin.signal ? coin.signal.toUpperCase() : 'N/A'}
+              valueClassName={
+                coin.signal === 'buy'
+                  ? 'text-green-500'
+                  : coin.signal === 'sell'
+                    ? 'text-red-500'
+                    : ''
+              }
+              isLoading={coin.status === 'loading'}
             />
             {/* Always render MA section but hide if no data */}
             <div className={!coin.ma50 || !coin.ma200 ? 'hidden' : ''}>
@@ -968,12 +1028,38 @@ const CryptoDashboardPage: FC = () => {
             />
             {/* Always render volume but hide if 0 */}
             <div className={!stock.volume ? 'hidden' : ''}>
-              <ValueDisplay 
-                label="Volume" 
-                value={stock.volume} 
-                isLoading={stock.status === 'loading'} 
+              <ValueDisplay
+                label="Volume"
+                value={stock.volume}
+                isLoading={stock.status === 'loading'}
               />
             </div>
+            <ValueDisplay
+              label="RSI (14)"
+              value={stock.rsi14?.toFixed(2) ?? 'N/A'}
+              valueClassName={
+                stock.rsi14 !== undefined
+                  ? stock.rsi14 >= 70
+                    ? 'text-red-500'
+                    : stock.rsi14 <= 30
+                      ? 'text-green-500'
+                      : ''
+                  : ''
+              }
+              isLoading={stock.status === 'loading'}
+            />
+            <ValueDisplay
+              label="Signal"
+              value={stock.signal ? stock.signal.toUpperCase() : 'N/A'}
+              valueClassName={
+                stock.signal === 'buy'
+                  ? 'text-green-500'
+                  : stock.signal === 'sell'
+                    ? 'text-red-500'
+                    : ''
+              }
+              isLoading={stock.status === 'loading'}
+            />
             {isPlaceholder && (
               <p className="text-xs text-muted-foreground/80 text-center pt-1">
                 (Using placeholder data)
