@@ -96,6 +96,13 @@
 - [ ] Document all settings
 - [ ] Add UI for live adjustments
 
+### 7. Arbitrage Alerts
+- [ ] Add npm script `arbitrage-server`
+- [ ] Document `NEXT_PUBLIC_ARBITRAGE_API` usage
+- [ ] Toggle polling with colored switch
+- [ ] Mount arbitrage card on dashboard
+- [ ] Include `@types/express` in dev deps
+
 ## Testing & Validation
 - [ ] Unit tests for indicators
 - [ ] Backtesting framework
