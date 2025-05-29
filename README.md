@@ -87,6 +87,17 @@ npm run build
 npm start
 ```
 
+## Arbitrage Alerts
+
+An additional Express server polls multiple exchanges for BTC/USDT arbitrage opportunities.
+
+```bash
+# Start the arbitrage polling service
+npm run arbitrage-server
+```
+
+The React dashboard polls this service at `NEXT_PUBLIC_ARBITRAGE_API` (default `http://localhost:3001/api/arbitrage`). Set this environment variable if the service runs on a different host or port.
+
 ## License
 
 MIT

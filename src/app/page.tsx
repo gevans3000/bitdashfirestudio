@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useRef, type FC, type ElementType } f
 import Image from 'next/image';
 import DashboardHeader from '@/components/DashboardHeader';
 import DataCard from '@/components/DataCard';
+import ArbAlertCard from '@/components/ArbAlertCard';
 import ValueDisplay from '@/components/ValueDisplay';
 import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketSentimentAnalysisOutput as AISentimentData, TrendingCoinItem } from '@/types';
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
@@ -1413,8 +1414,11 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">Loading trending coins...</p>
             ) : (
               <p className="text-center p-4">Trending coins data unavailable.</p>
-            )}
+          )}
           </DataCard>
+          <div className="sm:col-span-1">
+            <ArbAlertCard />
+          </div>
         </div>
 
         <footer className="text-center mt-8 py-4 border-t">
