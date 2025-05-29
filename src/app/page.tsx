@@ -10,6 +10,7 @@ import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketS
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
 import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
 import { CorrelationPanel } from '@/components/CorrelationPanel';
+import ArbAlertCard from '@/components/ArbAlertCard';
 import {
   simpleMovingAverage,
   rsi,
@@ -1384,10 +1385,10 @@ const CryptoDashboardPage: FC = () => {
             )}
           </DataCard>
 
-          <DataCard 
-            title="Top 7 Trending Coins" 
-            icon={TrendingUp} 
-            status={appData.trending?.length ? 'active' : ''} 
+          <DataCard
+            title="Top 7 Trending Coins"
+            icon={TrendingUp}
+            status={appData.trending?.length ? 'active' : ''}
             className="sm:col-span-1"
           >
             {!isClient ? (
@@ -1415,6 +1416,9 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">Trending coins data unavailable.</p>
             )}
           </DataCard>
+          <div className="sm:col-span-1">
+            <ArbAlertCard />
+          </div>
         </div>
 
         <footer className="text-center mt-8 py-4 border-t">

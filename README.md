@@ -46,6 +46,17 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 3. Monitor technical indicators
 4. Use signals to inform trading decisions
 
+### Arbitrage Alerts
+
+1. Start the arbitrage polling service:
+   ```bash
+   npm run arbitrage-server
+   ```
+   The server listens on port 3001 by default.
+2. Set `NEXT_PUBLIC_ARBITRAGE_API` in your environment if the endpoint differs.
+   The dashboard defaults to `http://localhost:3001/api/arbitrage`.
+3. Toggle the "Arbitrage Opportunity" card to begin polling every 10 seconds.
+
 ### Macro Data Refresh Demo
 
 For a simple example that fetches macro data only when you click refresh, visit
