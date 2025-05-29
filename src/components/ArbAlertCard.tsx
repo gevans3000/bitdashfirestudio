@@ -1,0 +1,103 @@
+'use client'
+
+import { useEffect, useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+
+interface Arbitrage {
+  buy: string;
+  sell: string;
+  buyPrice: number;
+  sellPrice: number;
+  spread: number;
+  netProfit: number;
+}
+
+export default function ArbAlertCard() {
+  const [arb, setArb] = useState<Arbitrage | null>(null);
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const fetchArb = async () => {
+      try {
+        const res = await fetch('/api/arbitrage');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.buy) {
+          setArb(data);
+        } else {
+          setArb(null);
+        }
+      } catch (err) {
+        console.error('Failed to fetch arbitrage', err);
+      }
+    };
+    let interval: NodeJS.Timeout | null = null;
+    if (enabled) {
+      fetchArb();
+      interval = setInterval(fetchArb, 10000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [enabled]);
+
+  return (
+    <Card className="max-w-sm">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div>
+          <CardTitle>Arbitrage Opportunity</CardTitle>
+          {arb && (
+            <CardDescription>
+              Buy on {arb.buy}, sell on {arb.sell}
+            </CardDescription>
+          )}
+        </div>
+        <Switch
+          checked={enabled}
+          onCheckedChange={setEnabled}
+          className={enabled ? 'bg-green-600' : 'bg-red-600'}
+        />
+      </CardHeader>
+      <CardContent className="space-y-1 text-sm">
+        {arb ? (
+          <>
+            <div className="flex justify-between">
+              <span>Buy Price</span>
+              <span>${arb.buyPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Sell Price</span>
+              <span>${arb.sellPrice.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Spread</span>
+              <span>${arb.spread.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-semibold">
+              <span>Net Profit</span>
+              <span>${arb.netProfit.toFixed(2)}</span>
+            </div>
+          </>
+        ) : (
+          <div>No opportunity found.</div>
+        )}
+      </CardContent>
+      {arb && (
+        <CardFooter>
+          <Button asChild>
+            <a href="#">Go to Trade</a>
+          </Button>
+        </CardFooter>
+      )}
+    </Card>
+  );
+}
