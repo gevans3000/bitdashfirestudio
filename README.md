@@ -90,7 +90,3 @@ npm start
 ## License
 
 MIT
-
-## Backtest Results
-
-Using 5-minute BTC data from CoinGecko (90 days) the strategy achieved roughly a 55% win rate on historical candles. Run `npm run backtest` to reproduce.

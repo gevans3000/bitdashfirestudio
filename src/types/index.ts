@@ -77,12 +77,3 @@ export interface AppData {
   loading: boolean; // Global loading state for the initial "simulated" fetch
   loadingAi: boolean;
 }
-
-export interface TradeSignal {
-  asset: 'BTC';
-  interval: '5m';
-  type: 'BUY' | 'SELL';
-  reason: string;
-  price: number;
-  ts: number;
-}
