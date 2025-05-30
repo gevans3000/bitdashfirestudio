@@ -9,7 +9,7 @@ interface Props {
 export default function MarketChart({ asset, interval }: Props) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (!(window as any).TradingView) {
+    if (!window.TradingView) {
       const script = document.createElement('script');
       script.src = 'https://s3.tradingview.com/tv.js';
       script.onload = () => init();
@@ -19,7 +19,6 @@ export default function MarketChart({ asset, interval }: Props) {
     }
 
     function init() {
-      // @ts-ignore
       new window.TradingView.widget({
         symbol: asset + 'USDT',
         interval: interval.replace('m', ''),
