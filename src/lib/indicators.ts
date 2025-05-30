@@ -61,3 +61,21 @@ export function calculateVolumeProfile(
     volume,
   }))
 }
+
+export function bollingerBands(
+  closes: number[],
+  period: number,
+  stdDev: number
+): { upper: number; middle: number; lower: number } {
+  const middle = simpleMovingAverage(closes, period);
+  const slice = closes.slice(-period);
+  const variance = slice.reduce((a, c) => a + Math.pow(c - middle, 2), 0) / slice.length;
+  const sd = Math.sqrt(variance);
+  const upper = middle + sd * stdDev;
+  const lower = middle - sd * stdDev;
+  return { upper, middle, lower };
+}
+
+export function volumeSMA(volumes: number[], period: number): number {
+  return simpleMovingAverage(volumes, period);
+}
