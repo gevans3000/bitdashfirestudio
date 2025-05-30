@@ -8,7 +8,10 @@ export class Orchestrator {
     DataCollector: () => {},
     IndicatorEngine: () => {},
     SignalGenerator: () => {},
+    UIRenderer: () => {},
     AlertLogger: () => {},
+    Backtester: () => {},
+    QATester: () => {},
   };
 
   register(role: AgentRole, handler: Handler): void {
