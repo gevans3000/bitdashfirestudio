@@ -1,0 +1,11 @@
+{
+  "emaFast": 10,
+  "emaSlow": 50,
+  "rsiPeriod": 14,
+  "rsiBuy": 30,
+  "rsiSell": 70,
+  "bbPeriod": 20,
+  "bbStdDev": 2,
+  "volumeMult": 1.5,
+  "signalCooldownMin": 15
+}

@@ -10,6 +10,18 @@ import type { AppData, CoinData, StockData, TrendingData, FearGreedData, MarketS
 import { marketSentimentAnalysis } from '@/ai/flows/market-sentiment-analysis';
 import { Bitcoin, Brain, Briefcase, Gauge, Shapes, TrendingUp, BarChart3, DollarSign, Landmark, BarChart2 } from 'lucide-react';
 import { CorrelationPanel } from '@/components/CorrelationPanel';
+import SignalCard from '@/components/SignalCard';
+import MarketChart from '@/components/MarketChart';
+import SignalHistory from '@/components/SignalHistory';
+import { Orchestrator } from '@/lib/agents/Orchestrator';
+import { DataCollector } from '@/lib/agents/DataCollector';
+import { IndicatorEngine } from '@/lib/agents/IndicatorEngine';
+import { SignalGenerator } from '@/lib/agents/SignalGenerator';
+import { AlertLogger } from '@/lib/agents/AlertLogger';
+import type { AgentMessage } from '@/types/agent';
+import type { TradeSignal } from '@/types';
+import type { Candle } from '@/lib/data/binanceWs';
+import type { ComputedIndicators } from '@/lib/signals';
 import {
   simpleMovingAverage,
   rsi,
@@ -93,9 +105,23 @@ const loadInitialData = (): AppData => {
 
 const CryptoDashboardPage: FC = () => {
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
+  }, []);
+  useEffect(() => {
+    const bus = new Orchestrator();
+    const dc = new DataCollector(bus);
+    const ie = new IndicatorEngine(bus);
+    const sg = new SignalGenerator(bus);
+    const al = new AlertLogger();
+    bus.register('IndicatorEngine', m => ie.handle(m as AgentMessage<Candle>));
+    bus.register('SignalGenerator', m =>
+      sg.handle(m as AgentMessage<ComputedIndicators>)
+    );
+    bus.register('AlertLogger', m => al.handle(m as AgentMessage<TradeSignal>));
+    bus.register('DataCollector', () => {});
+    dc.start();
   }, []);
   const [appData, setAppData] = useState<AppData>(loadInitialData);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -1271,13 +1297,17 @@ const CryptoDashboardPage: FC = () => {
         {renderErrorMessage()}
 
         <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <DataCard 
-            title="Bitcoin (BTC)" 
-            icon={Bitcoin} 
-            status={getStatus(appData.btc)} 
+          <DataCard
+            title="Bitcoin (BTC)"
+            icon={Bitcoin}
+            status={getStatus(appData.btc)}
             className="xl:col-span-1"
           >
             {renderCoinData(appData.btc, Bitcoin)}
+          </DataCard>
+          <SignalCard />
+          <DataCard title="Signal History" icon={Brain} status="fresh" className="xl:col-span-1">
+            <SignalHistory />
           </DataCard>
 
           <DataCard 
@@ -1365,6 +1395,9 @@ const CryptoDashboardPage: FC = () => {
             ) : (
               <p className="text-center p-4">Calculating correlations...</p>
             )}
+          </DataCard>
+          <DataCard title="BTC Chart" icon={BarChart3} status="fresh" className="sm:col-span-2 lg:col-span-2">
+            <MarketChart asset="BTC" interval="5m" />
           </DataCard>
 
           <DataCard title="AI Market Sentiment" icon={Brain} status={appData.aiSentiment?.status ?? (appData.loadingAi ? 'loading' : 'error')} className="sm:col-span-2 lg:col-span-2">
