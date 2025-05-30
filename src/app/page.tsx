@@ -18,6 +18,10 @@ import { DataCollector } from '@/lib/agents/DataCollector';
 import { IndicatorEngine } from '@/lib/agents/IndicatorEngine';
 import { SignalGenerator } from '@/lib/agents/SignalGenerator';
 import { AlertLogger } from '@/lib/agents/AlertLogger';
+import type { Candle } from '@/lib/data/binanceWs';
+import type { ComputedIndicators } from '@/lib/signals';
+import type { TradeSignal } from '@/types';
+import type { AgentMessage } from '@/types/agent';
 import {
   simpleMovingAverage,
   rsi,
@@ -111,9 +115,9 @@ const CryptoDashboardPage: FC = () => {
     const ie = new IndicatorEngine(bus);
     const sg = new SignalGenerator(bus);
     const al = new AlertLogger();
-    bus.register('IndicatorEngine', m => ie.handle(m as any));
-    bus.register('SignalGenerator', m => sg.handle(m as any));
-    bus.register('AlertLogger', m => al.handle(m as any));
+    bus.register('IndicatorEngine', m => ie.handle(m as AgentMessage<Candle>));
+    bus.register('SignalGenerator', m => sg.handle(m as AgentMessage<ComputedIndicators>));
+    bus.register('AlertLogger', m => al.handle(m as AgentMessage<TradeSignal>));
     bus.register('DataCollector', () => {});
     dc.start();
   }, []);

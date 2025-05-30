@@ -1,12 +1,12 @@
 import { fetchBackfill } from '@/lib/data/coingecko';
-import { computeIndicators, evaluateSignal } from '@/lib/signals';
+import { computeIndicators, evaluateSignal, type ComputedIndicators } from '@/lib/signals';
 import type { TradeSignal } from '@/types';
 
 async function run() {
   const candles = await fetchBackfill();
   const closes: number[] = [];
   const volumes: number[] = [];
-  let prev: any = null;
+  let prev: ComputedIndicators | null = null;
   let lastSignal = 0;
   const signals: TradeSignal[] = [];
   for (const c of candles) {
