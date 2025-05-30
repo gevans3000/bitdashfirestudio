@@ -11,4 +11,7 @@ export type AgentRole =
   | 'DataCollector'
   | 'IndicatorEngine'
   | 'SignalGenerator'
-  | 'AlertLogger';
+  | 'UIRenderer'
+  | 'AlertLogger'
+  | 'Backtester'
+  | 'QATester';
