@@ -4,7 +4,7 @@
 
 > A lightweight, free-API, TypeScript/Next.js system that emits high-quality BUY/SELL signals.
 > Agents listed below must **coordinate asynchronously** via typed JSON messages (see schema).
-
+> YOU MUST MAKE SURE ALL CONFLICTS RESOLVED ARE PREVENTED when I am to click "View Pull Request"
 ---
 
 ## 0. Global Constraints
