@@ -43,8 +43,8 @@ export function validateDXY(dxyValue: number): boolean {
 let cachedDXY: { value: number; source: string; timestamp: number } | null = null;
 
 export async function fetchDXY(): Promise<{ value: number; source: string }> {
-  // Return cached data if it's fresh (less than 1 hour old)
-  if (cachedDXY && (Date.now() - cachedDXY.timestamp < 3600000)) {
+  // Return cached data if it's fresh (less than 15 minutes old)
+  if (cachedDXY && (Date.now() - cachedDXY.timestamp < 900000)) {
     return { value: cachedDXY.value, source: `${cachedDXY.source} (cached)` };
   }
 

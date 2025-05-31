@@ -3,7 +3,7 @@
 > **Note:** Focused on essential trading features for Bitcoin and SPX/SPY
 
 ## Top Priority Tasks
-- [ ] Integrate real-time DXY data from FRED API and cache for 15 minutes
+- [x] Integrate real-time DXY data from FRED API and cache for 15 minutes
 - [ ] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
 - [ ] Display rolling 1-hour BTC vs SPX/SPY correlations, refresh every 5 minutes
 - [ ] Add 1-hour ATR widget with alert when ATR > 1.5× 20-day average

@@ -159,7 +159,7 @@ const CryptoDashboardPage: FC = () => {
   // Fetch DXY data from our API route
   const fetchDXYData = useCallback(async (forceRefresh = false) => {
     const CACHE_KEY = 'dxy_data';
-    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
+    const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes cache
     
     // Set loading state
     setAppData(prev => ({
