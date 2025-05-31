@@ -24,12 +24,14 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 ## Getting Started
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/bitdash-firestudio.git
    cd bitdash-firestudio
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -51,7 +53,8 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 For a simple example that fetches macro data only when you click refresh, visit
 `/refresh-demo` after starting the development server. This page displays the
 current US Dollar Index (DXY) and 10-Year Treasury Yield using the free FRED
-API through the project's API routes.
+API through the project's API routes. DXY data is cached for 15 minutes on the
+server to respect rate limits.
 
 ## Data Sources
 
