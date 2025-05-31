@@ -2,6 +2,17 @@
 
 > **Note:** Focused on essential trading features for Bitcoin and SPX/SPY
 
+## Top Priority Tasks
+- [ ] Integrate real-time DXY data from FRED API and cache for 15 minutes
+- [ ] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
+- [ ] Display rolling 1-hour BTC vs SPX/SPY correlations, refresh every 5 minutes
+- [ ] Add 1-hour ATR widget with alert when ATR > 1.5× 20-day average
+- [ ] Create liquidity tab showing BTC funding rates and order book depth
+- [ ] Build signal matrix combining volatility, correlation and macro data
+- [ ] Backtest signal performance (win rate, profit factor) over 90 days
+- [ ] Forecast next 30-day BTC/SPX correlation trend with confidence interval
+- [ ] Implement EMA crossovers, Bollinger Bands, ATR and MACD indicators
+
 ## Core Trading Features
 
 ### 1. Price Data
