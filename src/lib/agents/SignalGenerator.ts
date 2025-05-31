@@ -1,15 +1,15 @@
 import { AgentMessage } from '@/types/agent';
 import type { TradeSignal } from '@/types';
-import { evaluateSignal } from '@/lib/signals';
+import { evaluateSignal, type ComputedIndicators } from '@/lib/signals';
 import { Orchestrator } from './Orchestrator';
 
 export class SignalGenerator {
-  private prev: any = null;
+  private prev: ComputedIndicators | null = null;
   private lastSignal = 0;
 
   constructor(private bus: Orchestrator) {}
 
-  handle(msg: AgentMessage<any>): void {
+  handle(msg: AgentMessage<ComputedIndicators>): void {
     if (msg.type !== 'INDICATORS_5M') return;
     const indicators = msg.payload;
     const signal = evaluateSignal(this.prev, indicators, indicators.close, indicators.volume, this.lastSignal);
