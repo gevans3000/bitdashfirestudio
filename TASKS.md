@@ -3,7 +3,8 @@
 > **Note:** Focused on essential trading features for Bitcoin and SPX/SPY
 
 ## Top Priority Tasks
-- [ ] Integrate real-time DXY data from FRED API and cache for 15 minutes
+
+- [x] Integrate real-time DXY data from FRED API and cache for 15 minutes
 - [ ] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
 - [ ] Display rolling 1-hour BTC vs SPX/SPY correlations, refresh every 5 minutes
 - [ ] Add 1-hour ATR widget with alert when ATR > 1.5× 20-day average
@@ -16,6 +17,7 @@
 ## Core Trading Features
 
 ### 1. Price Data
+
 - [x] BTC/USD price chart
 - [x] SPX/SPY price chart
 - [ ] Add 50/200 MA crossovers
@@ -24,36 +26,44 @@
 - [ ] Implement Ichimoku Cloud
 
 ### 2. Technical Indicators
+
 #### Trend Indicators
+
 - [ ] 20/50/200 EMA crossovers
 - [ ] Ichimoku Cloud components
 - [ ] Support/Resistance levels
 
 #### Momentum Indicators
+
 - [ ] RSI (14 period)
 - [ ] MACD (12,26,9)
 - [ ] Stochastic Oscillator
 
 #### Volatility Indicators
+
 - [ ] Bollinger Bands (20,2)
 - [ ] ATR (14) for position sizing
 
 ### 3. Volume & Liquidity
+
 - [ ] On-chain transaction count & volume (CoinGecko)
 - [ ] SPY average daily volume (Yahoo Finance)
 - [ ] Order book depth visualization (Binance/IEX)
 
 ### 4. Market Sentiment
+
 - [x] Crypto Fear & Greed Index
 - [ ] VIX index integration
 - [ ] Market breadth indicators
 
 ### 5. Correlation Analysis
+
 - [ ] BTC vs SPY/SPX correlation (1h, 1d)
 - [ ] Correlation heatmap
 - [ ] Decoupling alerts
 
 ### 6. Macro Indicators
+
 - [x] 10-Year Treasury Yield
 - [ ] Fed funds rate calendar
 - [ ] Economic calendar integration
@@ -61,6 +71,7 @@
 ## Development Tasks
 
 ### 1. Data Layer
+
 - [ ] Create data fetchers for each source:
   - [ ] CoinGecko (crypto data)
   - [ ] Yahoo Finance (stocks, VIX)
@@ -70,6 +81,7 @@
 - [ ] Add rate limiting (5 calls/min per endpoint)
 
 ### 2. Indicator Engine
+
 - [ ] Set up technical indicators library
 - [ ] Create indicator calculation utilities:
   - [ ] EMA/MA calculations
@@ -79,6 +91,7 @@
   - [ ] ATR calculation
 
 ### 3. Signal Generation
+
 - [ ] Define signal interface
 - [ ] Implement signal rules:
   - [ ] EMA crossovers
@@ -88,6 +101,7 @@
 - [ ] Create signal history logging
 
 ### 4. UI Components
+
 - [ ] Dashboard cards for:
   - [ ] Indicator status
   - [ ] Current signals
@@ -98,27 +112,32 @@
   - [ ] Timeframe selection
 
 ### 5. Alerting System
+
 - [ ] Toast notifications for signals
 - [ ] Signal history panel
 - [ ] Custom alert configuration
 
 ### 6. Configuration
+
 - [ ] Create config file for thresholds
 - [ ] Document all settings
 - [ ] Add UI for live adjustments
 
 ## Testing & Validation
+
 - [ ] Unit tests for indicators
 - [ ] Backtesting framework
 - [ ] Historical data validation
 - [ ] Performance testing
 
 ## Documentation
+
 - [ ] API documentation
 - [ ] User guide
 - [ ] Development setup guide
 
 ## Free APIs & Data Sources
+
 - **CoinGecko**: BTC metrics, on-chain data
 - **Binance**: Real-time BTC data
 - **Yahoo Finance**: SPY, ^GSPC, VIX, DXY
@@ -128,20 +147,24 @@
 - **TradingView**: Chart widgets
 
 ### 4. Data Management
+
 - [ ] Basic error handling
 - [ ] Simple caching (5 min)
 - [ ] Single data source per asset
 
 ## Current Focus
+
 - [ ] Implement RSI indicator
 - [ ] Add moving averages
 - [ ] Set up basic buy/sell signals
 
 ## Recent Updates
+
 - 2025-05-22: Initial dashboard with price charts
 - 2025-05-21: Set up basic project structure
 
 ### 3. End-to-End Testing
+
 - [ ] Complete trading signal workflow
 - [ ] Alert delivery and notifications
 - [ ] Data synchronization across components
@@ -150,6 +173,7 @@
 ## Deployment & Monitoring
 
 ### 1. Trading Infrastructure
+
 - [ ] Set up dedicated market data feeds
 - [ ] Implement rate limiting for API calls
 - [ ] Configure real-time data processing
@@ -157,6 +181,7 @@
 - [ ] Document trading hours and maintenance windows
 
 ### 2. Performance Monitoring
+
 - [ ] Monitor signal accuracy and performance
 - [ ] Track latency in data processing
 - [ ] Monitor alert delivery success rates
@@ -164,6 +189,7 @@
 - [ ] Monitor system resource usage during high volatility
 
 ## Commit Guidelines
+
 1. **Type**: Use conventional commit types (feat, fix, docs, etc.)
 2. **Scope**: Specify the area of changes (auth, ui, db, etc.)
 3. **Message**: Clear, concise description of changes
@@ -171,6 +197,7 @@
 5. **Footer**: Reference issues or breaking changes
 
 Example:
+
 ```
 feat(auth): add Google OAuth login
 
