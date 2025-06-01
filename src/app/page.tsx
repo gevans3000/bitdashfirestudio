@@ -38,6 +38,7 @@ import { CorrelationPanel } from "@/components/CorrelationPanel";
 import SignalCard from "@/components/SignalCard";
 import MarketChart from "@/components/MarketChart";
 import SignalHistory from "@/components/SignalHistory";
+import AtrWidget from "@/components/AtrWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -194,13 +195,18 @@ const CryptoDashboardPage: FC = () => {
     bus.register("DataCollector", () => {});
     dc.start();
   }, []);
-  const [appData, setAppData] = useState<AppData>(loadInitialData);
+  const [appData, setAppData] = useState<AppData>(initialAppData);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [correlationData, setCorrelationData] = useState<
     Array<{ pair: string; value: number; timeFrame: string }>
   >([]);
   const appDataRef = useRef(appData);
   const hasInitialized = useRef(false);
+
+  // Load saved data after mount to avoid hydration mismatch
+  useEffect(() => {
+    setAppData(loadInitialData());
+  }, []);
 
   // Save to localStorage whenever appData changes
   useEffect(() => {
@@ -1751,6 +1757,7 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">Calculating correlations...</p>
             )}
           </DataCard>
+          <AtrWidget />
           <SignalCard />
           <DataCard
             title="Signal History"
