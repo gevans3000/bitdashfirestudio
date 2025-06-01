@@ -5,7 +5,7 @@
 ## Top Priority Tasks
 
 - [x] Integrate real-time DXY data from FRED API and cache for 15 minutes
-- [ ] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
+- [x] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
 - [x] Display rolling 1-hour BTC vs SPX/SPY correlations, refresh every 5 minutes
 - [ ] Add 1-hour ATR widget with alert when ATR > 1.5× 20-day average
 - [ ] Create liquidity tab showing BTC funding rates and order book depth
