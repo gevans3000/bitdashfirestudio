@@ -1,3 +1,4 @@
+'use client';
 import { type FC, ReactNode } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
