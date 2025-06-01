@@ -1632,14 +1632,14 @@ const CryptoDashboardPage: FC = () => {
           >
             {renderCoinData(appData.btc, Bitcoin)}
           </DataCard>
-          <SignalCard />
+          
           <DataCard
-            title="Signal History"
-            icon={Brain}
+            title="BTC Chart"
+            icon={BarChart3}
             status="fresh"
-            className="xl:col-span-1"
+            className="sm:col-span-2 lg:col-span-2"
           >
-            <SignalHistory />
+            <MarketChart asset="BTC" interval="5m" />
           </DataCard>
 
           <DataCard
@@ -1751,13 +1751,14 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">Calculating correlations...</p>
             )}
           </DataCard>
+          <SignalCard />
           <DataCard
-            title="BTC Chart"
-            icon={BarChart3}
+            title="Signal History"
+            icon={Brain}
             status="fresh"
-            className="sm:col-span-2 lg:col-span-2"
+            className="xl:col-span-1"
           >
-            <MarketChart asset="BTC" interval="5m" />
+            <SignalHistory />
           </DataCard>
 
           <DataCard
