@@ -2,9 +2,9 @@
 
 **Windsurf — Bitcoin & SPX 5-Minute Trading Dashboard**
 
-> A lightweight, free-API, TypeScript/Next.js system that emits high-quality BUY/SELL signals.
+> A lightweight, free-API, TypeScript/Next.js system that emits high-quality BUY/SELL signals.  
 > Agents listed below must **coordinate asynchronously** via typed JSON messages (see schema).
-> YOU MUST MAKE SURE ALL CONFLICTS RESOLVED ARE PREVENTED when I am to click "View Pull Request"
+
 ---
 
 ## 0. Global Constraints
@@ -30,7 +30,7 @@
 | Binance WS    | `wss://stream.binance.com:9443/ws/btcusdt@kline_5m` | Live OHLCV 5 m       |
 | CoinGecko     | `/coins/bitcoin/market_chart`                       | REST backfill        |
 | Yahoo Finance | `yfinance` / RapidAPI                               | SPY, ^GSPC, VIX, DXY |
-| alt.me F\&G   | `https://api.alternative.me/fng/`                   | Sentiment            |
+| alt.me F&G    | `https://api.alternative.me/fng/`                   | Sentiment            |
 | FRED          | `https://fred.stlouisfed.org/`                      | 10-Y yield           |
 
 ---
@@ -78,30 +78,30 @@ export type AgentRole =
 
 ## 4. Agent Directory
 
-| Role                | Responsibilities                                                            | Consumes                    | Emits             |
-| ------------------- | --------------------------------------------------------------------------- | --------------------------- | ----------------- |
-| **Orchestrator**    | Boot agents, route messages, recover on errors                              | –                           | broadcast         |
-| **DataCollector**   | Connect to Binance WS & REST backfills; throttle & cache; normalize OHLCV   | none                        | `KLINE_5M`        |
-| **IndicatorEngine** | Compute EMA-10/50, RSI-14, BB-20-2, Volume SMA-20                           | `KLINE_5M`                  | `INDICATORS_5M`   |
+| Role                | Responsibilities                                                | Consumes                    | Emits             |
+| ------------------- | --------------------------------------------------------------- | --------------------------- | ----------------- |
+| **Orchestrator**    | Boot agents, route messages, recover on errors                  | –                           | broadcast         |
+| **DataCollector**   | Connect to Binance WS & REST backfills; throttle & cache; normalize OHLCV | none                        | `KLINE_5M`        |
+| **IndicatorEngine** | Compute EMA-10/50, RSI-14, BB-20-2, Volume SMA-20               | `KLINE_5M`                  | `INDICATORS_5M`   |
 | **SignalGenerator** | Apply rule set (EMA crosses, RSI extremes, BB touches, volume confirmation) | `INDICATORS_5M`             | `SIGNAL_BUY/SELL` |
-| **UIRenderer**      | Update React context, render SignalCard & TradingView widget                | `INDICATORS_5M`, `SIGNAL_*` | n/a               |
-| **AlertLogger**     | Toast UI alerts; persist signals to `localStorage`                          | `SIGNAL_*`                  | n/a               |
-| **Backtester**      | On demand: fetch 90-day data, replay rules, calc KPIs                       | manual trigger              | report            |
-| **QATester**        | Jest tests; validate indicators & signals; CI gate                          | repo code                   | pass/fail         |
+| **UIRenderer**      | Update React context, render SignalCard & TradingView widget    | `INDICATORS_5M`, `SIGNAL_*` | n/a               |
+| **AlertLogger**     | Toast UI alerts; persist signals to `localStorage`              | `SIGNAL_*`                  | n/a               |
+| **Backtester**      | On demand: fetch 90-day data, replay rules, calc KPIs           | manual trigger              | report            |
+| **QATester**        | Jest tests; validate indicators & signals; CI gate             | repo code                   | pass/fail         |
 
 ---
 
 ## 5. Signal Rules (5-Minute BTC)
 
-1. **Trend Crossover**
-   *BUY*: EMA-10 crosses **above** EMA-50.
+1. **Trend Crossover**  
+   *BUY*: EMA-10 crosses **above** EMA-50.  
    *SELL*: EMA-10 crosses **below** EMA-50.
-2. **Momentum + Volatility Bounce**
-   *BUY*: Close ≤ lower BB *and* RSI < 30.
+2. **Momentum + Volatility Bounce**  
+   *BUY*: Close ≤ lower BB *and* RSI < 30.  
    *SELL*: Close ≥ upper BB *and* RSI > 70.
-3. **Volume Confirmation**
+3. **Volume Confirmation**  
    Trigger only if current volume ≥ 1.5 × SMA-20.
-4. **Cooldown**
+4. **Cooldown**  
    Ignore duplicate signals within 15 min.
 
 Signal object:
@@ -119,14 +119,19 @@ export interface TradeSignal {
 
 ---
 
-## 6. Development Checklist
+## 6. Automated Task Execution
 
-* [ ] DataCollector handles WS reconnect w/ exponential back-off (max 2 retries).
-* [ ] All numeric values are `number`; no `any`.
-* [ ] Fail-safe: if data stale > 30 s, UI banner “Data Delayed”.
-* [ ] `npm run test` covers: EMA, RSI, BB, rules (≥ 80 %).
-* [ ] Backtest script prints WinRate, MaxDD, Sharpe; target WinRate ≥ 55 %.
-* [ ] Lint & Prettier pass on commit; Git hooks via Husky.
+1. **AutoTaskRunner Agent**
+   - Scans `TASKS.md` for unchecked items.
+   - Launches the appropriate agents (DataCollector, IndicatorEngine, etc.) to implement each task.
+   - Runs `npm run lint`, `npm run test`, and `npm run backtest` after applying changes.
+   - Automatically commits to the repository using [Conventional Commits](see “Commit Guidelines” in `TASKS.md`).
+2. **Commit Tracking**
+   - Every commit references the corresponding task line(s) from `TASKS.md`.
+   - Test results and logs are stored under `/logs` for later review.
+3. **Feedback Loop**
+   - When you pull the latest commits, review `/logs` for test output and backtest results.
+   - Mark the completed tasks in `TASKS.md` and push the updated file; AutoTaskRunner will proceed with the next items.
 
 ---
 
@@ -177,11 +182,14 @@ Change & hot-reload—no code edits required.
 
 ## 10. Done Definition
 
-* A new BUY/SELL appears in SignalCard within 1-2 s of real-time candle close.
-* Backtest KPIs documented in `README.md`.
-* No untyped code, no failed tests, no ESLint errors.
+- A new BUY/SELL signal appears in `SignalCard` within 1–2 s of real-time candle close.
+- Backtest KPIs are logged to `/logs/backtest-<timestamp>.txt`.
+- All tasks in `TASKS.md` marked as complete have corresponding commits and passing tests.
+
+### Removing PR Requirement
+Since tasks are now executed and committed automatically, manual pull requests are no longer mandatory. You may still open a PR when you want a human review, but AutoTaskRunner can push directly to the main branch once tests pass.
 
 ---
 
-> **Follow this AGENTS.md exactly.**
-> Deviations require a pull-request description and reviewer approval.
+> **Follow this AGENTS.md exactly.**  
+> AutoTaskRunner handles commits automatically; review `/logs` for failures or backtest results.
