@@ -518,58 +518,44 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
-  // Calculate correlation between two data series
-  const calculateCorrelation = useCallback(
-    (x: number[], y: number[]): number => {
-      if (x.length !== y.length || x.length === 0) return 0;
+  const fetchCorrelationData = useCallback(async (force = false) => {
+    const CACHE_KEY = "correlation_data";
+    const CACHE_DURATION = 5 * 60 * 1000;
 
-      const n = x.length;
-      const xMean = x.reduce((a, b) => a + b, 0) / n;
-      const yMean = y.reduce((a, b) => a + b, 0) / n;
-
-      let num = 0;
-      let denomX = 0;
-      let denomY = 0;
-
-      for (let i = 0; i < n; i++) {
-        const xDiff = x[i] - xMean;
-        const yDiff = y[i] - yMean;
-        num += xDiff * yDiff;
-        denomX += xDiff * xDiff;
-        denomY += yDiff * yDiff;
+    if (!force) {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          setCorrelationData(data);
+          return;
+        }
       }
-
-      return num / Math.sqrt(denomX * denomY);
-    },
-    [],
-  );
-
-  // Update correlation data when prices change
-  useEffect(() => {
-    if (appData.btc?.price && appData.spx?.price && appData.spy?.price) {
-      // Simple correlation using current prices (in a real app, use historical data)
-      const btcPrice = appData.btc.price;
-      const spxPrice = appData.spx.price;
-      const spyPrice = appData.spy.price;
-
-      // In a real app, you would use historical data points
-      // This is a simplified example using just the current prices
-      const btcSpxCorrelation = calculateCorrelation([btcPrice], [spxPrice]);
-      const btcSpyCorrelation = calculateCorrelation([btcPrice], [spyPrice]);
-      const spxSpyCorrelation = calculateCorrelation([spxPrice], [spyPrice]);
-
-      setCorrelationData([
-        { pair: "BTC/SPX", value: btcSpxCorrelation, timeFrame: "1h" },
-        { pair: "BTC/SPY", value: btcSpyCorrelation, timeFrame: "1h" },
-        { pair: "SPX/SPY", value: spxSpyCorrelation, timeFrame: "1h" },
-      ]);
     }
-  }, [
-    appData.btc?.price,
-    appData.spx?.price,
-    appData.spy?.price,
-    calculateCorrelation,
-  ]);
+
+    try {
+      const res = await fetch("/api/correlation", {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error("API error");
+      const json = await res.json();
+      setCorrelationData(json.data);
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ data: json.data, timestamp: Date.now() }),
+      );
+    } catch (e) {
+      console.error("Error fetching correlation data:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCorrelationData().catch(console.error);
+    const id = setInterval(() => {
+      fetchCorrelationData().catch(console.error);
+    }, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [fetchCorrelationData]);
 
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
