@@ -1,33 +1,42 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+
+// Caches data for 1 hour
+interface CachedData {
+  payload: Record<string, any>;
+  timestamp: number;
+}
+
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+let cache: CachedData | null = null;
 
 // Fallback data in case API fails
 const FALLBACK_US10Y = {
-  id: 'us10y',
-  name: '10-Year Treasury Yield',
-  symbol: 'US10Y',
+  id: "us10y",
+  name: "10-Year Treasury Yield",
+  symbol: "US10Y",
   price: 4.25, // Example fallback value
   change: -0.02,
   changePercent: -0.47,
   volume: 0,
   lastUpdated: new Date().toISOString(),
-  status: 'cached',
-  source: 'fallback'
+  status: "cached",
+  source: "fallback",
 };
 
 // CORS headers
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 // Helper function to fetch with retry
 async function fetchWithRetry(url: string, retries = 3, delay = 1000) {
   for (let i = 0; i < retries; i++) {
     try {
-      const response = await fetch(url, { 
+      const response = await fetch(url, {
         next: { revalidate: 300 },
-        cache: 'no-store' // Ensure we don't get cached responses
+        cache: "no-store", // Ensure we don't get cached responses
       });
       if (response.ok) {
         const data = await response.json();
@@ -36,90 +45,66 @@ async function fetchWithRetry(url: string, retries = 3, delay = 1000) {
     } catch (error) {
       console.warn(`Attempt ${i + 1} failed:`, error);
     }
-    if (i < retries - 1) await new Promise(resolve => setTimeout(resolve, delay));
+    if (i < retries - 1)
+      await new Promise((resolve) => setTimeout(resolve, delay));
   }
   throw new Error(`Failed after ${retries} retries`);
 }
 
 export async function GET() {
-  const apiKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
-  
+  if (cache && Date.now() - cache.timestamp < CACHE_DURATION) {
+    return NextResponse.json(
+      { ...cache.payload, status: "cached" },
+      { headers: corsHeaders },
+    );
+  }
+
+  const apiKey = process.env.NEXT_PUBLIC_FRED_API_KEY;
+
   if (!apiKey) {
-    console.warn('ALPHA_VANTAGE_API_KEY is not configured, using fallback data');
+    console.warn("FRED_API_KEY is not configured, using fallback data");
     return NextResponse.json(FALLBACK_US10Y, {
-      headers: corsHeaders
+      headers: corsHeaders,
     });
   }
 
   try {
-    // Fetch 10-year treasury yield from Alpha Vantage
-    const response = await fetchWithRetry(
-      `https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=10year&apikey=${apiKey}`
-    );
+    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${apiKey}&file_type=json&limit=2&sort_order=desc`;
+    const data = await fetchWithRetry(url);
+    const obs = data?.observations;
+    const latest = parseFloat(obs?.[0]?.value);
+    const prev = obs?.[1] ? parseFloat(obs[1].value) : NaN;
 
-    // Parse the Alpha Vantage response
-    const seriesData = response?.data || [];
-    
-    if (!Array.isArray(seriesData) || seriesData.length === 0) {
-      console.warn('No data returned from Alpha Vantage API');
-      return NextResponse.json(FALLBACK_US10Y, { 
-        headers: corsHeaders 
-      });
+    if (isNaN(latest)) {
+      throw new Error("Invalid US10Y data from FRED");
     }
-    
-    // Sort data by date in descending order
-    const sortedData = [...seriesData].sort((a, b) => 
-      new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
-    
-    // Get the most recent data point
-    const latestData = sortedData[0];
-    const currentYield = parseFloat(latestData.value);
-    
-    if (isNaN(currentYield)) {
-      console.warn('Invalid yield data from Alpha Vantage');
-      return NextResponse.json(FALLBACK_US10Y, { 
-        headers: corsHeaders 
-      });
-    }
-    
-    // Get previous day's close for change calculation
-    let previousYield = currentYield * 0.99; // Default to 1% change if we can't get previous data
-    
-    if (sortedData.length > 1) {
-      const prevYield = parseFloat(sortedData[1].value);
-      if (!isNaN(prevYield)) {
-        previousYield = prevYield;
-      }
-    }
-    
-    // Calculate change from previous day
-    const change = currentYield - previousYield;
-    const changePercent = previousYield !== 0 ? (change / previousYield) * 100 : 0;
-    
+
+    const change = !isNaN(prev) ? latest - prev : 0;
+    const changePercent =
+      !isNaN(prev) && prev !== 0 ? (change / prev) * 100 : 0;
+
     const result = {
-      id: 'us10y',
-      name: '10-Year Treasury Yield',
-      symbol: 'US10Y',
-      price: parseFloat(currentYield.toFixed(4)),
+      id: "us10y",
+      name: "10-Year Treasury Yield",
+      symbol: "US10Y",
+      price: parseFloat(latest.toFixed(4)),
       change: parseFloat(change.toFixed(4)),
       changePercent: parseFloat(changePercent.toFixed(2)),
       volume: 0,
-      lastUpdated: latestData.date || new Date().toISOString(),
-      status: 'fresh',
-      source: 'Alpha Vantage'
+      lastUpdated: obs?.[0]?.date || new Date().toISOString(),
+      status: "fresh",
+      source: "FRED",
     };
 
-    console.log('US10Y Data:', result); // Debug log
-    
-    return NextResponse.json(result, { 
-      headers: corsHeaders 
+    cache = { payload: result, timestamp: Date.now() };
+
+    return NextResponse.json(result, {
+      headers: corsHeaders,
     });
-    
   } catch (error) {
-    console.error('Error in US10Y API route:', error);
-    return NextResponse.json(FALLBACK_US10Y, { 
-      headers: corsHeaders 
+    console.error("Error in US10Y API route:", error);
+    return NextResponse.json(FALLBACK_US10Y, {
+      headers: corsHeaders,
     });
   }
 }
@@ -127,6 +112,6 @@ export async function GET() {
 // Handle OPTIONS request for CORS preflight
 export async function OPTIONS() {
   return new NextResponse(null, {
-    headers: corsHeaders
+    headers: corsHeaders,
   });
 }
