@@ -36,21 +36,21 @@ export default function OrderBookWidget() {
   return (
     <DataCard title="Order Book Depth" className="sm:col-span-2 lg:col-span-2">
       {data ? (
-        <div className="flex justify-around text-sm">
-          <div className="text-center">
-            <p className="font-medium text-green-600">Bids</p>
-            <p>{bidTotal.toFixed(2)}</p>
+        <>
+          <div className="flex justify-around text-sm">
+            <div className="text-center">
+              <p className="font-medium text-green-600">Bids</p>
+              <p>{bidTotal.toFixed(2)}</p>
+            </div>
+            <div className="text-center">
+              <p className="font-medium text-red-600">Asks</p>
+              <p>{askTotal.toFixed(2)}</p>
+            </div>
           </div>
-          <div className="text-center">
-            <p className="font-medium text-red-600">Asks</p>
-            <p>{askTotal.toFixed(2)}</p>
-          </div>
-        </div>
-        {imbalance && (
-          <p className="text-center text-xs mt-2 font-medium">
-            {imbalance}
-          </p>
-        )}
+          {imbalance && (
+            <p className="text-center text-xs mt-2 font-medium">{imbalance}</p>
+          )}
+        </>
       ) : (
         <p className="text-center p-4">Loading depth...</p>
       )}
