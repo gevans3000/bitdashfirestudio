@@ -1,4 +1,4 @@
-import { exponentialMovingAverage, rsi, bollingerBands, volumeSMA } from '../lib/indicators';
+import { exponentialMovingAverage, rsi, bollingerBands, volumeSMA, averageTrueRange, OHLC } from '../lib/indicators';
 
 describe('indicator calculations', () => {
   it('ema', () => {
@@ -15,6 +15,15 @@ describe('indicator calculations', () => {
   });
   it('volumeSMA', () => {
     const val = volumeSMA([1,2,3,4,5], 3);
+    expect(val).toBeGreaterThan(0);
+  });
+  it('ATR', () => {
+    const data: OHLC[] = [
+      { high: 2, low: 1, close: 1.5 },
+      { high: 3, low: 1.5, close: 2 },
+      { high: 4, low: 2, close: 3 },
+    ];
+    const val = averageTrueRange(data, 2);
     expect(val).toBeGreaterThan(0);
   });
 });

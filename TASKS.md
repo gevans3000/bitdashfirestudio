@@ -44,7 +44,7 @@
 ### 🛠 Technical Indicators
 - [ ] RSI (14)
 - [ ] MACD (12, 26, 9)
-- [ ] ATR (14) for position sizing
+- [x] ATR (14) for position sizing
 
 ### 💧 Volume & Liquidity
 - [ ] BTC funding-rates widget

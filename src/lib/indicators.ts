@@ -79,3 +79,28 @@ export function bollingerBands(
 export function volumeSMA(volumes: number[], period: number): number {
   return simpleMovingAverage(volumes, period);
 }
+
+export interface OHLC {
+  high: number;
+  low: number;
+  close: number;
+}
+
+export function trueRange(curr: OHLC, prevClose: number): number {
+  const highLow = curr.high - curr.low;
+  const highClose = Math.abs(curr.high - prevClose);
+  const lowClose = Math.abs(curr.low - prevClose);
+  return Math.max(highLow, highClose, lowClose);
+}
+
+export function averageTrueRange(data: OHLC[], period: number): number {
+  if (data.length < period + 1) return 0;
+  const trs: number[] = [];
+  for (let i = data.length - period; i < data.length; i++) {
+    const prev = data[i - 1];
+    const curr = data[i];
+    trs.push(trueRange(curr, prev.close));
+  }
+  const sum = trs.reduce((a, b) => a + b, 0);
+  return sum / period;
+}
