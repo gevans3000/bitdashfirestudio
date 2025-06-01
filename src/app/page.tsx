@@ -195,13 +195,18 @@ const CryptoDashboardPage: FC = () => {
     bus.register("DataCollector", () => {});
     dc.start();
   }, []);
-  const [appData, setAppData] = useState<AppData>(loadInitialData);
+  const [appData, setAppData] = useState<AppData>(initialAppData);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [correlationData, setCorrelationData] = useState<
     Array<{ pair: string; value: number; timeFrame: string }>
   >([]);
   const appDataRef = useRef(appData);
   const hasInitialized = useRef(false);
+
+  // Load saved data after mount to avoid hydration mismatch
+  useEffect(() => {
+    setAppData(loadInitialData());
+  }, []);
 
   // Save to localStorage whenever appData changes
   useEffect(() => {

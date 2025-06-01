@@ -33,7 +33,9 @@ export default function SignalCard() {
         <div className="text-center py-4">
           <p className="text-2xl font-bold">{signal.type}</p>
           <p className="text-sm text-muted-foreground">{signal.reason}</p>
-          <p className="text-sm">@ {signal.price.toFixed(2)}</p>
+          <p className="text-sm">
+            @ {signal.price !== undefined ? signal.price.toFixed(2) : 'N/A'}
+          </p>
         </div>
       ) : (
         <p className="text-center p-4">No signals yet.</p>
