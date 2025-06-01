@@ -39,6 +39,7 @@ import SignalCard from "@/components/SignalCard";
 import MarketChart from "@/components/MarketChart";
 import SignalHistory from "@/components/SignalHistory";
 import AtrWidget from "@/components/AtrWidget";
+import OrderBookWidget from "@/components/OrderBookWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -1751,14 +1752,15 @@ const CryptoDashboardPage: FC = () => {
             status="fresh"
             className="sm:col-span-2 lg:col-span-2"
           >
-            {correlationData.length > 0 ? (
-              <CorrelationPanel data={correlationData} />
-            ) : (
-              <p className="text-center p-4">Calculating correlations...</p>
-            )}
-          </DataCard>
-          <AtrWidget />
-          <SignalCard />
+          {correlationData.length > 0 ? (
+            <CorrelationPanel data={correlationData} />
+          ) : (
+            <p className="text-center p-4">Calculating correlations...</p>
+          )}
+        </DataCard>
+        <OrderBookWidget />
+        <AtrWidget />
+        <SignalCard />
           <DataCard
             title="Signal History"
             icon={Brain}
