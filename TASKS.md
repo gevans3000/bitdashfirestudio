@@ -1,209 +1,127 @@
-# BitDash Firestudio - Trading Tasks
+# BitDash Firestudio – TASKS.md
 
-> **Note:** Focused on essential trading features for Bitcoin and SPX/SPY
+> **Goal:** Optimize 5-minute BTC scalping (with SPX context) through small, atomic tasks Codex can execute autonomously.
 
-## Top Priority Tasks
+---
 
-- [x] Integrate real-time DXY data from FRED API and cache for 15 minutes
-- [x] Fetch 10-Year Treasury Yield (US10Y) from Treasury/FRED and update hourly
-- [x] Display rolling 1-hour BTC vs SPX/SPY correlations, refresh every 5 minutes
-- [ ] Add 1-hour ATR widget with alert when ATR > 1.5× 20-day average
-- [ ] Create liquidity tab showing BTC funding rates and order book depth
-- [ ] Build signal matrix combining volatility, correlation and macro data
-- [ ] Backtest signal performance (win rate, profit factor) over 90 days
-- [ ] Forecast next 30-day BTC/SPX correlation trend with confidence interval
-- [ ] Implement EMA crossovers, Bollinger Bands, ATR and MACD indicators
+## 🚀 Top-Priority Enhancements
 
-## Core Trading Features
+### ✅ Immediate Scalping Data
+- [ ] **Binance Order-Book Depth**
+  - [ ] Real-time depth widget (bid/ask imbalance)
+  - [ ] Highlight significant buy/sell walls
+- [ ] **Volume-Spike Detection**
+  - [ ] Color-coded spike overlay on chart
+  - [ ] Threshold alerts for abnormal volume
+- [ ] **VWAP (Volume-Weighted Avg Price)**
+  - [ ] Real-time VWAP calculation
+  - [ ] Price-to-VWAP deviation indicator (%)
 
-### 1. Price Data
+### 📊 Advanced Technical Indicators
+- [ ] **Stochastic RSI**
+  - [ ] Overbought/oversold alerts (20 / 80)
+- [ ] **Order-Flow Analysis (Cumulative Delta)**
+  - [ ] Real-time delta visual
+  - [ ] Buy/Sell pressure meter
 
-- [x] BTC/USD price chart
+### 📅 Session & Time Awareness
+- [ ] **Market-Session Timers**
+  - [ ] NYSE/NASDAQ open/close countdown
+  - [ ] Asian / EU session highlights
+
+---
+
+## 🔥 Core Trading Features
+
+### 📈 Price Data & Chart Enhancements
+- [x] BTC/USD 5-minute price chart
 - [x] SPX/SPY price chart
-- [ ] Add 50/200 MA crossovers
-- [ ] Show volume profile
-- [ ] Add exponential moving averages (20, 50, 200-period EMA)
-- [ ] Implement Ichimoku Cloud
+- [ ] EMA crossovers (10/20/50/200)
+- [ ] Bollinger Bands (20, 2)
+- [ ] Volume-profile visualization
+- [ ] Ichimoku Cloud overlay
 
-### 2. Technical Indicators
-
-#### Trend Indicators
-
-- [ ] 20/50/200 EMA crossovers
-- [ ] Ichimoku Cloud components
-- [ ] Support/Resistance levels
-
-#### Momentum Indicators
-
-- [ ] RSI (14 period)
-- [ ] MACD (12,26,9)
-- [ ] Stochastic Oscillator
-
-#### Volatility Indicators
-
-- [ ] Bollinger Bands (20,2)
+### 🛠 Technical Indicators
+- [ ] RSI (14)
+- [ ] MACD (12, 26, 9)
 - [ ] ATR (14) for position sizing
 
-### 3. Volume & Liquidity
+### 💧 Volume & Liquidity
+- [ ] BTC funding-rates widget
+- [ ] On-chain BTC txn count (CoinGecko)
+- [ ] SPY volume (Yahoo Finance)
 
-- [ ] On-chain transaction count & volume (CoinGecko)
-- [ ] SPY average daily volume (Yahoo Finance)
-- [ ] Order book depth visualization (Binance/IEX)
+### 🎯 Sentiment & Correlation
+- [x] Crypto Fear-&-Greed Index
+- [ ] Short-term Crypto-Twitter sentiment
+- [ ] Real-time liquidations & open interest
+- [ ] Rolling BTC / SPX correlation (1 h)
 
-### 4. Market Sentiment
-
-- [x] Crypto Fear & Greed Index
-- [ ] VIX index integration
-- [ ] Market breadth indicators
-
-### 5. Correlation Analysis
-
-- [ ] BTC vs SPY/SPX correlation (1h, 1d)
-- [ ] Correlation heatmap
-- [ ] Decoupling alerts
-
-### 6. Macro Indicators
-
+### 📊 Macro Indicators
 - [x] 10-Year Treasury Yield
-- [ ] Fed funds rate calendar
-- [ ] Economic calendar integration
+- [ ] Fed-funds-rate schedule
+- [ ] Economic-event calendar
 
-## Development Tasks
+---
 
-### 1. Data Layer
+## 📚 Data-Management Layer
 
-- [ ] Create data fetchers for each source:
-  - [ ] CoinGecko (crypto data)
-  - [ ] Yahoo Finance (stocks, VIX)
-  - [ ] FRED (macro data)
-  - [ ] Binance/IEX (order book)
-- [ ] Implement caching (15-30s for REST, WebSocket where available)
-- [ ] Add rate limiting (5 calls/min per endpoint)
+### ⚙️ Data Fetchers
+- [ ] Binance WS (order-book & OHLCV)
+- [ ] CoinGecko (historical BTC)
+- [ ] Yahoo Finance (SPX/SPY/VIX/DXY)
+- [ ] FRED (macro series)
 
-### 2. Indicator Engine
+### 🔄 Caching & Rate-Limiting
+- [ ] Cache REST calls 15-30 s
+- [ ] Enforce ≤ 5 calls/min/endpoint
 
-- [ ] Set up technical indicators library
-- [ ] Create indicator calculation utilities:
-  - [ ] EMA/MA calculations
-  - [ ] RSI implementation
-  - [ ] MACD implementation
-  - [ ] Bollinger Bands
-  - [ ] ATR calculation
+---
 
-### 3. Signal Generation
+## 🚨 Alerts & Notifications
+- [ ] Toast notifications on signals
+- [ ] Custom alert-config panel
+- [ ] Integrated quick-entry trade journal
+- [ ] Historical signal annotations on chart
 
-- [ ] Define signal interface
-- [ ] Implement signal rules:
-  - [ ] EMA crossovers
-  - [ ] RSI thresholds
-  - [ ] Volume confirmation
-  - [ ] Correlation-based signals
-- [ ] Create signal history logging
+---
 
-### 4. UI Components
+## 🧪 Testing & Validation
 
-- [ ] Dashboard cards for:
-  - [ ] Indicator status
-  - [ ] Current signals
-  - [ ] Market conditions
-- [ ] Enhanced charting:
-  - [ ] TradingView widget integration
-  - [ ] Custom indicator toggles
-  - [ ] Timeframe selection
+### 🔍 Indicator Tests
+- [ ] Unit tests for each indicator
+- [ ] Validate results on historical data
 
-### 5. Alerting System
+### 📈 Backtesting & Analytics
+- [ ] Real-time strategy backtester (90 days)
+  - [ ] Win-rate, profit-factor, drawdown
 
-- [ ] Toast notifications for signals
-- [ ] Signal history panel
-- [ ] Custom alert configuration
+---
 
-### 6. Configuration
-
-- [ ] Create config file for thresholds
-- [ ] Document all settings
-- [ ] Add UI for live adjustments
-
-## Testing & Validation
-
-- [ ] Unit tests for indicators
-- [ ] Backtesting framework
-- [ ] Historical data validation
-- [ ] Performance testing
-
-## Documentation
-
-- [ ] API documentation
+## 📖 Documentation & Configuration
+- [ ] API docs
 - [ ] User guide
-- [ ] Development setup guide
+- [ ] Dev setup guide
+- [ ] Threshold & rule config (`signals.json`)
+- [ ] Document every config param
 
-## Free APIs & Data Sources
+---
 
-- **CoinGecko**: BTC metrics, on-chain data
-- **Binance**: Real-time BTC data
-- **Yahoo Finance**: SPY, ^GSPC, VIX, DXY
-- **IEX Cloud**: SPY price & volume (50k calls/mo free)
-- **FRED**: US10Y, macro data
-- **alternative.me**: Crypto Fear & Greed Index
-- **TradingView**: Chart widgets
+## 🖥 UI Enhancements
+- [ ] Proximity indicators (key levels, pivots, VWAP)
+- [ ] Customisable TradingView widget
+- [ ] One-click indicator toggles
 
-### 4. Data Management
+---
 
-- [ ] Basic error handling
-- [ ] Simple caching (5 min)
-- [ ] Single data source per asset
+## ⚡ Performance & Monitoring
+- [ ] Real-time strategy-performance tracker
+- [ ] Monitor data latency & system load
 
-## Current Focus
+---
 
-- [ ] Implement RSI indicator
-- [ ] Add moving averages
-- [ ] Set up basic buy/sell signals
-
-## Recent Updates
-
-- 2025-05-22: Initial dashboard with price charts
-- 2025-05-21: Set up basic project structure
-
-### 3. End-to-End Testing
-
-- [ ] Complete trading signal workflow
-- [ ] Alert delivery and notifications
-- [ ] Data synchronization across components
-- [ ] Performance under market volatility
-
-## Deployment & Monitoring
-
-### 1. Trading Infrastructure
-
-- [ ] Set up dedicated market data feeds
-- [ ] Implement rate limiting for API calls
-- [ ] Configure real-time data processing
-- [ ] Set up backup data sources
-- [ ] Document trading hours and maintenance windows
-
-### 2. Performance Monitoring
-
-- [ ] Monitor signal accuracy and performance
-- [ ] Track latency in data processing
-- [ ] Monitor alert delivery success rates
-- [ ] Track user engagement with signals
-- [ ] Monitor system resource usage during high volatility
-
-## Commit Guidelines
-
-1. **Type**: Use conventional commit types (feat, fix, docs, etc.)
-2. **Scope**: Specify the area of changes (auth, ui, db, etc.)
-3. **Message**: Clear, concise description of changes
-4. **Body**: Detailed explanation (if needed)
-5. **Footer**: Reference issues or breaking changes
-
-Example:
-
-```
-feat(auth): add Google OAuth login
-
-- Implement Google OAuth provider
-- Add login/logout flows
-- Update user session management
-
-Closes #123
-```
+## 🎯 Definition of Done
+- All priority widgets & indicators visible and functional.
+- BUY/SELL signals render in UI ≤ 2 s after candle close.
+- Backtest & test logs saved under `/logs`.
+- Each completed task auto-committed with passing tests and Conventional-Commit message.
