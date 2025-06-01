@@ -38,6 +38,7 @@ import { CorrelationPanel } from "@/components/CorrelationPanel";
 import SignalCard from "@/components/SignalCard";
 import MarketChart from "@/components/MarketChart";
 import SignalHistory from "@/components/SignalHistory";
+import AtrWidget from "@/components/AtrWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -1751,6 +1752,7 @@ const CryptoDashboardPage: FC = () => {
               <p className="text-center p-4">Calculating correlations...</p>
             )}
           </DataCard>
+          <AtrWidget />
           <SignalCard />
           <DataCard
             title="Signal History"
