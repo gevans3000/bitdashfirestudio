@@ -1,87 +1,42 @@
-AGENTS.md
+# AGENTS.md
 
-Windsurf — Bitcoin & SPX 5-Minute Trading Dashboard
+**Windsurf — Bitcoin & SPX 5-Minute Trading Dashboard**
 
-A lightweight TypeScript/Next.js trading system emitting reliable BUY/SELL signals.Agents collaborate asynchronously via typed JSON messaging.
+> A lightweight TypeScript/Next.js trading system emitting reliable BUY/SELL signals.
+> Agents collaborate asynchronously via typed JSON messaging.
 
-0. Global Constraints
+---
 
-Key
+## 0. Global Constraints
 
-Value
+| Key              | Value                                      |
+| ---------------- | ------------------------------------------ |
+| Language         | TypeScript 5 (strict mode)                 |
+| REST call limits | ≤ 5 req/min/endpoint                       |
+| Cache TTL        | 15 s (REST)                                |
+| WebSockets       | Single stream per asset                    |
+| Secrets          | `.env.local` only                          |
+| Formatting       | Prettier, ESLint (2-space, 100-char lines) |
+| Data history     | 90 days backfill (for backtests)           |
+| Target assets    | BTC-USDT (Binance), SPY, ^GSPC (Yahoo)     |
 
-Language
+---
 
-TypeScript 5 (strict mode)
+## 1. Free Data Sources
 
-REST call limits
+| Source        | URL / Channel                                       | Data Type             |
+| ------------- | --------------------------------------------------- | --------------------- |
+| Binance WS    | `wss://stream.binance.com:9443/ws/btcusdt@kline_5m` | Real-time OHLCV 5m    |
+| CoinGecko     | `/coins/bitcoin/market_chart`                       | Historical REST OHLCV |
+| Yahoo Finance | `yfinance` / RapidAPI                               | SPY, ^GSPC, VIX, DXY  |
+| alt.me F\&G   | `https://api.alternative.me/fng/`                   | Market sentiment      |
+| FRED          | `https://fred.stlouisfed.org/`                      | 10-Y yield            |
 
-≤ 5 req/min/endpoint
+---
 
-Cache TTL
+## 2. Project Structure
 
-15 s (REST)
-
-WebSockets
-
-Single stream per asset
-
-Secrets
-
-.env.local only
-
-Formatting
-
-Prettier, ESLint (2-space, 100-char lines)
-
-Data history
-
-90 days backfill (for backtests)
-
-Target assets
-
-BTC-USDT (Binance), SPY, ^GSPC (Yahoo)
-
-1. Free Data Sources
-
-Source
-
-URL / Channel
-
-Data Type
-
-Binance WS
-
-wss://stream.binance.com:9443/ws/btcusdt@kline_5m
-
-Real-time OHLCV 5m
-
-CoinGecko
-
-/coins/bitcoin/market_chart
-
-Historical REST OHLCV
-
-Yahoo Finance
-
-yfinance / RapidAPI
-
-SPY, ^GSPC, VIX, DXY
-
-alt.me F&G
-
-https://api.alternative.me/fng/
-
-Market sentiment
-
-FRED
-
-https://fred.stlouisfed.org/
-
-10-Y yield
-
-2. Project Structure
-
+```
 /app            – Next.js pages & routing
 /components     – React widgets
 /lib
@@ -93,9 +48,13 @@ https://fred.stlouisfed.org/
 /types          – Global type definitions
 /scripts        – CLI scripts (backtest, lint, test)
 /logs           – Automated test/backtest logs
+```
 
-3. Messaging Schema (/types/agent.ts)
+---
 
+## 3. Messaging Schema (`/types/agent.ts`)
+
+```typescript
 export interface AgentMessage<T = any> {
   from: AgentRole;
   to: AgentRole | 'broadcast';
@@ -114,113 +73,46 @@ export type AgentRole =
   | 'Backtester'
   | 'QATester'
   | 'AutoTaskRunner';
+```
 
-4. Agent Directory
+---
 
-Role
+## 4. Agent Directory
 
-Responsibilities
+| Role                | Responsibilities                                                 | Input                       | Output            |
+| ------------------- | ---------------------------------------------------------------- | --------------------------- | ----------------- |
+| **Orchestrator**    | Manage agent lifecycles & error recovery                         | -                           | All messages      |
+| **DataCollector**   | Fetch & normalize OHLCV, enforce caching & throttling            | None                        | `KLINE_5M`        |
+| **IndicatorEngine** | Calculate EMA, RSI, Bollinger Bands, Volume averages             | `KLINE_5M`                  | `INDICATORS_5M`   |
+| **SignalGenerator** | Apply trade rules to indicators                                  | `INDICATORS_5M`             | `SIGNAL_BUY/SELL` |
+| **UIRenderer**      | Render UI widgets (React), update trading views                  | `INDICATORS_5M`, `SIGNAL_*` | None              |
+| **AlertLogger**     | Log alerts to UI & persist signals locally                       | `SIGNAL_*`                  | None              |
+| **Backtester**      | Run simulations on historical data                               | Manual trigger              | Backtest report   |
+| **QATester**        | Run Jest tests & validate results; gates CI                      | Repository state            | Pass/fail report  |
+| **AutoTaskRunner**  | Automate task execution, lint/test/backtest, auto-commit results | `TASKS.md`                  | Automated commits |
 
-Input
+---
 
-Output
+## 5. Trading Rules
 
-Orchestrator
+1. **EMA Crossover:**
 
-Manage agent lifecycles & error recovery
+   * BUY: EMA-10 crosses above EMA-50.
+   * SELL: EMA-10 crosses below EMA-50.
+2. **RSI & Bollinger Bounce:**
 
--
+   * BUY: Price ≤ lower Bollinger & RSI < 30.
+   * SELL: Price ≥ upper Bollinger & RSI > 70.
+3. **Volume Check:**
 
-All messages
+   * Signals valid only if volume ≥ 1.5× volume SMA-20.
+4. **Cooldown:**
 
-DataCollector
-
-Fetch & normalize OHLCV, enforce caching & throttling
-
-None
-
-KLINE_5M
-
-IndicatorEngine
-
-Calculate EMA, RSI, Bollinger Bands, Volume averages
-
-KLINE_5M
-
-INDICATORS_5M
-
-SignalGenerator
-
-Apply trade rules to indicators
-
-INDICATORS_5M
-
-SIGNAL_BUY/SELL
-
-UIRenderer
-
-Render UI widgets (React), update trading views
-
-INDICATORS_5M, SIGNAL_*
-
-None
-
-AlertLogger
-
-Log alerts to UI & persist signals locally
-
-SIGNAL_*
-
-None
-
-Backtester
-
-Run simulations on historical data
-
-Manual trigger
-
-Backtest report
-
-QATester
-
-Run Jest tests & validate results; gates CI
-
-Repository state
-
-Pass/fail report
-
-AutoTaskRunner
-
-Automate task execution, lint/test/backtest, auto-commit results
-
-TASKS.md
-
-Automated commits
-
-5. Trading Rules
-
-EMA Crossover:
-
-BUY: EMA-10 crosses above EMA-50.
-
-SELL: EMA-10 crosses below EMA-50.
-
-RSI & Bollinger Bounce:
-
-BUY: Price ≤ lower Bollinger & RSI < 30.
-
-SELL: Price ≥ upper Bollinger & RSI > 70.
-
-Volume Check:
-
-Signals valid only if volume ≥ 1.5× volume SMA-20.
-
-Cooldown:
-
-15-min minimum interval between identical signals.
+   * 15-min minimum interval between identical signals.
 
 Signal object:
 
+```typescript
 export interface TradeSignal {
   asset: 'BTC';
   interval: '5m';
@@ -229,51 +121,44 @@ export interface TradeSignal {
   price: number;
   ts: number;
 }
+```
 
-6. Commit Memory & Automation
+---
 
-Use structured commits (Conventional Commits):
+## 6. Commit Memory & Automation
 
-feat(indicator): add RSI calculation (#42)
+* Use structured commits (Conventional Commits):
 
-Calculates RSI per project rules.
+  ```
+  feat(indicator): add RSI calculation (#42)
 
-AutoTaskRunner scans TASKS.md:
+  Calculates RSI per project rules.
+  ```
+* AutoTaskRunner scans `TASKS.md`:
 
-Executes tasks, runs tests & backtests.
+  * Executes tasks, runs tests & backtests.
+  * Logs outcomes to `/logs`.
+  * Commits referencing completed tasks.
+* Codex uses commit history as structured memory.
 
-Logs outcomes to /logs.
+---
 
-Commits referencing completed tasks.
+## 7. Local Commands
 
-Codex uses commit history as structured memory.
+| Command            | Purpose                  |
+| ------------------ | ------------------------ |
+| `npm run dev`      | Start development server |
+| `npm run test`     | Run unit tests (Jest)    |
+| `npm run backtest` | Execute backtesting      |
+| `npm run lint`     | Format and lint          |
 
-7. Local Commands
+---
 
-Command
-
-Purpose
-
-npm run dev
-
-Start development server
-
-npm run test
-
-Run unit tests (Jest)
-
-npm run backtest
-
-Execute backtesting
-
-npm run lint
-
-Format and lint
-
-8. Configuration (/config/signals.json)
+## 8. Configuration (`/config/signals.json`)
 
 Editable signal thresholds (hot-reloadable):
 
+```json
 {
   "emaFast": 10,
   "emaSlow": 50,
@@ -285,13 +170,17 @@ Editable signal thresholds (hot-reloadable):
   "volumeMult": 1.5,
   "signalCooldownMin": 15
 }
+```
 
-9. Definition of Done
+---
 
-BUY/SELL signals visible in UI within 1–2 s.
+## 9. Definition of Done
 
-Logs in /logs for test/backtest outcomes.
+* BUY/SELL signals visible in UI within 1–2 s.
+* Logs in `/logs` for test/backtest outcomes.
+* Completed `TASKS.md` items auto-committed and verified.
 
-Completed TASKS.md items auto-committed and verified.
+---
 
-Follow exactly as specified.Commits automatically track and document changes; review /logs regularly.
+> **Follow exactly as specified.**
+> Commits automatically track and document changes; review `/logs` regularly.
