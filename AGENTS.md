@@ -140,6 +140,7 @@ export interface TradeSignal {
   * Logs outcomes to `/logs`.
   * Commits referencing completed tasks.
 * Codex uses commit history as structured memory.
+* Always run `npm ci` once at session start before lint/test.
 
 ---
 
