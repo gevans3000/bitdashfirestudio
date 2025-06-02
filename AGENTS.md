@@ -132,22 +132,20 @@ export interface TradeSignal {
 
   Calculates RSI per project rules.
   ```
-* AutoTaskRunner scans `TASKS.md`:
+* AutoTaskRunner loops over `TASKS.md`:
 
-  * Executes tasks, runs tests & backtests.
-  * Logs outcomes to `/logs`.
-  * Commits referencing completed tasks.
-* Codex uses commit history as structured memory.
-* Always run `npm ci` once at session start before lint/test.
-* Each commit body must contain **333 tokens**. Use two paragraphs:
-  * `What I did` – summarize the changes.
-  * `What's next` – forecast upcoming steps.
-  * If short, pad with the word `context` until 333 tokens.
-* `scripts/autoTaskRunner.js` automates the cycle:
-  * Reads the next unchecked task.
-  * Runs `npm run lint`, `npm run test`, and `npm run backtest`.
-  * Logs outputs to `/logs` and sets `error_flag` on failure.
-  * Commits with header `Task <number>` and pushes to `main` when tests pass.
+  * Executes each unchecked task sequentially.
+  * Runs lint, test and backtest for every task.
+  * Logs command output to `/logs` and marks failures in `signals.json`.
+  * Commits to `main` with a **333-token** summary describing what was done and what comes next.
+  * After committing, the script rebases onto the latest `main` and pushes.
+* Codex uses commit bodies as persistent memory. Each summary serves as a retrospective and prospective context anchor.
+* Run `npm ci` once at session start before lint/test.
+* Use two-paragraph commit bodies:
+  * `What I did` – describe the task work.
+  * `What's next` – outline upcoming steps.
+  * Pad with `context` until exactly 333 tokens.
+* `scripts/autoTaskRunner.js` continues until no open tasks remain.
 
 ---
 
