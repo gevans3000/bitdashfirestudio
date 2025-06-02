@@ -38,7 +38,7 @@
 - [x] SPX/SPY price chart
 - [x] EMA crossovers (10/20/50/200)
 - [x] Bollinger Bands (20, 2)
-- [ ] Volume-profile visualization
+- [x] Volume-profile visualization
 - [ ] Ichimoku Cloud overlay
 
 ### 🛠 Technical Indicators
