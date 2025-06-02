@@ -44,6 +44,7 @@ import StochRsiWidget from "@/components/StochRsiWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
+import SessionTimerWidget from "@/components/SessionTimerWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -1768,6 +1769,7 @@ const CryptoDashboardPage: FC = () => {
         <VwapWidget />
         <StochRsiWidget />
         <AtrWidget />
+        <SessionTimerWidget />
         <SignalCard />
           <DataCard
             title="Signal History"

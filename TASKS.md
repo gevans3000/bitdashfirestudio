@@ -25,9 +25,9 @@
   - [x] Buy/Sell pressure meter
 
 ### 📅 Session & Time Awareness
-- [ ] **Market-Session Timers**
-  - [ ] NYSE/NASDAQ open/close countdown
-  - [ ] Asian / EU session highlights
+- [x] **Market-Session Timers**
+  - [x] NYSE/NASDAQ open/close countdown
+  - [x] Asian / EU session highlights
 
 ---
 
