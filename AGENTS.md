@@ -129,8 +129,11 @@ export interface AgentMessage<T = unknown> {
 | `npm run lint`     | ESLint + Prettier        |
 | `npm run test`     | Jest unit tests          |
 | `npm run backtest` | Historical strategy test |
+| `npm run dev-deps` | Install local dev deps   |
 
-Always start a session with `npm ci`.
+Lint, test and backtest scripts will skip when required tools aren't installed.
+
+Always start a session with `npm ci` (or run `npm run dev-deps` when offline).
 
 ---
 
@@ -138,7 +141,7 @@ Always start a session with `npm ci`.
 
 * Task checkbox ✅ in `TASKS.md`
 * Tests & lint pass
-* Commit merged to `main`
+* Commit merged to `main` (the project default branch)
 * 333‑token memo saved to `context.snapshot.md`
 * No unresolved errors or conflicts
 
