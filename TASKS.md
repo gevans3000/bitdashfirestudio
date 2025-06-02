@@ -7,9 +7,9 @@
 ## 🚀 Top-Priority Enhancements
 
 ### ✅ Immediate Scalping Data
-- [ ] **Binance Order-Book Depth**
-  - [ ] Real-time depth widget (bid/ask imbalance)
-  - [ ] Highlight significant buy/sell walls
+- [x] **Binance Order-Book Depth**
+  - [x] Real-time depth widget (bid/ask imbalance)
+  - [x] Highlight significant buy/sell walls
 - [ ] **Volume-Spike Detection**
   - [ ] Color-coded spike overlay on chart
   - [ ] Threshold alerts for abnormal volume
