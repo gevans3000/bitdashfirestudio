@@ -7,6 +7,17 @@
   - Attempted `npm ci` but installation failed in the offline Codex environment.
     Lint, test and backtest commands logged missing binaries.
 
+## Workflow
+1. Run `npm ci` once at the start of a session.
+2. Pick the first unchecked task below.
+3. Implement it with minimal edits.
+4. Run `npm run lint` and `npm run test`.
+5. Mark the task `[x]`.
+6. Update `signals.json` with `last_task_completed`.
+7. Commit with `Task <number>:`.
+8. Run `npm run commitlog`.
+9. If a task fails, log details in `/logs`, set `error_flag` in `signals.json` and request help.
+
 ## 🚀 Top-Priority Enhancements
 
 ### ✅ Immediate Scalping Data
@@ -174,4 +185,4 @@
 - All priority widgets & indicators visible and functional.
 - BUY/SELL signals render in UI ≤ 2 s after candle close.
 - Backtest & test logs saved under `/logs`.
-- Each completed task auto-committed with passing tests and Conventional-Commit message.
+- Each completed task auto-committed with passing tests, `Task <number>:` message and updated `signals.json`.
