@@ -41,6 +41,7 @@ import SignalHistory from "@/components/SignalHistory";
 import AtrWidget from "@/components/AtrWidget";
 import VwapWidget from "@/components/VwapWidget";
 import StochRsiWidget from "@/components/StochRsiWidget";
+import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
@@ -1790,6 +1791,7 @@ const CryptoDashboardPage: FC = () => {
         <VolumeSpikeChart />
         <OrderFlowWidget />
         <VwapWidget />
+        <BollingerWidget />
         <EmaCrossoverWidget />
         <StochRsiWidget />
         <AtrWidget />
