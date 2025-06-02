@@ -47,7 +47,7 @@
 
 ### 🛠 Technical Indicators
 
-- [ ] RSI (14)
+- [x] RSI (14)
 - [ ] MACD (12, 26, 9)
 - [x] ATR (14) for position sizing
 
