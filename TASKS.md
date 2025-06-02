@@ -8,15 +8,12 @@
     Lint, test and backtest commands logged missing binaries.
 
 ## Workflow
-1. Run `npm ci` once at session start (may fail offline).
-2. The AutoTaskRunner reads the first unchecked task below.
-3. Implement it with minimal edits.
-4. Run `npm run lint`, `npm run test` and `npm run backtest`.
-5. Mark the task `[x]`.
-6. Update `signals.json` with `last_task_completed` and commit.
-7. Commit header `Task <number>:` with a 333-token body (`What I did` / `What's next`).
-8. Run `npm run commitlog`.
-9. If any command fails, write `/logs/block-<task>.txt`, set `error_flag` in `signals.json` and halt.
+1. Execute `npm run auto` to let the AutoTaskRunner process tasks.
+2. The script loops through each unchecked item below.
+3. For every task it runs lint, test and backtest.
+4. It marks the task `[x]`, updates `signals.json` and commits with a **333-token** summary.
+5. After committing, it rebases on `main`, pushes and generates `logs/commit.log`.
+6. If any command fails, `/logs/block-<task>.txt` is written and `error_flag` is set before halting.
 
 ## 🚀 Top-Priority Enhancements
 
