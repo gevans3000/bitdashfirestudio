@@ -13,9 +13,9 @@
 - [x] **Volume-Spike Detection**
   - [x] Color-coded spike overlay on chart
   - [x] Threshold alerts for abnormal volume
-- [ ] **VWAP (Volume-Weighted Avg Price)**
-  - [ ] Real-time VWAP calculation
-  - [ ] Price-to-VWAP deviation indicator (%)
+- [x] **VWAP (Volume-Weighted Avg Price)**
+  - [x] Real-time VWAP calculation
+  - [x] Price-to-VWAP deviation indicator (%)
 
 ### 📊 Advanced Technical Indicators
 - [ ] **Stochastic RSI**
