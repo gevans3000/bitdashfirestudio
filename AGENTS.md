@@ -1,235 +1,145 @@
-# AGENTS.md
+# AGENTS.md – Codex Automation Charter
 
-**Windsurf — Bitcoin & SPX 5-Minute Trading Dashboard**
+**Project:** Windsurf · Bitcoin & SPX 5‑Minute Trading Dashboard
+**Agent:** `DevAgent` (ChatGPT Codex)
 
-> A lightweight TypeScript/Next.js trading system emitting reliable BUY/SELL signals.
-> Agents collaborate asynchronously via typed JSON messaging.
-
----
-
-## 0. Global Constraints
-
-| Key              | Value                                      |
-| ---------------- | ------------------------------------------ |
-| Language         | TypeScript 5 (strict mode)                 |
-| REST call limits | ≤ 5 req/min/endpoint                       |
-| Cache TTL        | 15 s (REST)                                |
-| WebSockets       | Single stream per asset                    |
-| Secrets          | `.env.local` only                          |
-| Formatting       | Prettier, ESLint (2-space, 100-char lines) |
-| Data history     | 90 days backfill (for backtests)           |
-| Target assets    | BTC-USDT (Binance), SPY, ^GSPC (Yahoo)     |
+> This document is the **system‑prompt on disk** that governs every Codex session. Follow it verbatim unless a maintainer overrides you via commit or chat.
 
 ---
 
-## 1. Free Data Sources
+## 0 · Hard Constraints
 
-| Source        | URL / Channel                                       | Data Type             |
-| ------------- | --------------------------------------------------- | --------------------- |
-| Binance WS    | `wss://stream.binance.com:9443/ws/btcusdt@kline_5m` | Real-time OHLCV 5m    |
-| CoinGecko     | `/coins/bitcoin/market_chart`                       | Historical REST OHLCV |
-| Yahoo Finance | `yfinance` / RapidAPI                               | SPY, ^GSPC, VIX, DXY  |
-| alt.me F\&G   | `https://api.alternative.me/fng/`                   | Market sentiment      |
-| FRED          | `https://fred.stlouisfed.org/`                      | 10-Y yield            |
+| Key              | Value / Rule                                |
+| ---------------- | ------------------------------------------- |
+| Language         | TypeScript 5 (strict)                       |
+| Framework        | Next.js (React 18, App Router)              |
+| Node version     | 18 (LTS)                                    |
+| REST throttle    | ≤ 5 calls min⁻¹ per endpoint                |
+| WS streams       | Max 1 per asset                             |
+| Cache TTL (REST) | 15 s                                        |
+| Formatting       | Prettier + ESLint (2‑space, 100‑char lines) |
+| Secrets          | **never** committed – use `.env.local`      |
+| History backfill | 90 days (for backtests)                     |
 
 ---
 
-## 2. Project Structure
+## 1 · Core Automation Loop
+
+> **Exactly two commits per session, then stop.**
+> If more tasks remain, a new session will restart the loop.
+
+1. **Bootstrap Commit**
+   a. Validate & patch this file (`AGENTS.md`) and helper files so automation rules exist.
+   b. Create `context.snapshot.md` if missing.
+   c. Ensure package scripts `lint`, `test`, `backtest` run.
+   d. Commit as `chore(bootstrap): automation rules` with a 333‑token summary.
+2. **Task Commit**
+   a. Open `TASKS.md`, pick the first `[ ]` item.
+   b. Implement **only** that task.
+   c. Run `npm ci && npm run lint && npm run test && npm run backtest`.
+   d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
+   e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
+   f. Append same summary with metadata to `context.snapshot.md`.
+   g. Rebase → merge → delete branch.
+3. **HALT** – await next prompt.
+
+**Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
+
+---
+
+## 2 · Memory Files
+
+| File                  | Purpose                                               |
+| --------------------- | ----------------------------------------------------- |
+| `context.snapshot.md` | Rolling log – every commit appends its 333‑token memo |
+| `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
+
+Codex must **read `context.snapshot.md` first** on each new session to recall context.
+
+---
+
+## 3 · Commit Format
+
+```text
+<type>(<scope>): <subject>
+
+<333‑token summary>
+
+BREAKING CHANGE: <optional>
+Closes: TASKS.md #<line‑no>
+```
+
+*Types*: `feat`, `fix`, `chore`, `docs`, `test`.
+
+---
+
+## 4 · Directory Layout
 
 ```
 /app            – Next.js pages & routing
-/components     – React widgets
+/components     – UI widgets
 /lib
-  ├─ agents     – Agent implementations
-  ├─ data       – Fetching, caching logic
-  ├─ indicators – Calculation functions
-  └─ signals    – Signal generation logic
-/config         – JSON configuration
-/types          – Global type definitions
-/scripts        – CLI scripts (backtest, lint, test)
-/logs           – Automated test/backtest logs
+  ├─ agents     – Agent logic
+  ├─ data       – WS + REST fetchers
+  ├─ indicators – TA math
+  └─ signals    – Rule engine
+/config         – JSON thresholds & keys
+/types          – Global TS types
+/scripts        – CLI (backtest, lint, test)
+/logs           – Automation logs
 ```
 
 ---
 
-## 3. Messaging Schema (`/types/agent.ts`)
+## 5 · Agents & Messaging (`/types/agent.ts`)
 
-```typescript
-export interface AgentMessage<T = any> {
+```ts
+export type AgentRole =
+  | 'Orchestrator' | 'DataCollector' | 'IndicatorEngine'
+  | 'SignalGenerator' | 'UIRenderer' | 'AlertLogger'
+  | 'TestingAgent' | 'AutoTaskRunner';
+
+export interface AgentMessage<T = unknown> {
   from: AgentRole;
   to: AgentRole | 'broadcast';
-  type: string;
+  type: string;      // e.g. "KLINE_5M" | "SIGNAL_BUY"
   payload: T;
-  ts: number;
-}
-
-export type AgentRole =
-  | 'Orchestrator'
-  | 'DataCollector'
-  | 'IndicatorEngine'
-  | 'SignalGenerator'
-  | 'UIRenderer'
-  | 'AlertLogger'
-  | 'TestingAgent'
-  | 'AutoTaskRunner';
-```
-
----
-
-## 4. Agent Directory
-
-| Role                | Responsibilities                                                 | Input                       | Output            |
-| ------------------- | ---------------------------------------------------------------- | --------------------------- | ----------------- |
-| **Orchestrator**    | Manage agent lifecycles & error recovery                         | -                           | All messages      |
-| **DataCollector**   | Fetch & normalize OHLCV, enforce caching & throttling            | None                        | `KLINE_5M`        |
-| **IndicatorEngine** | Calculate EMA, RSI, Bollinger Bands, Volume averages             | `KLINE_5M`                  | `INDICATORS_5M`   |
-| **SignalGenerator** | Apply trade rules to indicators                                  | `INDICATORS_5M`             | `SIGNAL_BUY/SELL` |
-| **UIRenderer**      | Render UI widgets (React), update trading views                  | `INDICATORS_5M`, `SIGNAL_*` | None              |
-| **AlertLogger**     | Log alerts to UI & persist signals locally                       | `SIGNAL_*`                  | None              |
-| **TestingAgent**    | Run Jest tests or backtests based on mode | Repo state or manual trigger | Test/backtest report |
-| **AutoTaskRunner**  | Automate task execution, lint/test/backtest, auto-commit results | `TASKS.md`                  | Automated commits |
-
----
-
-## 5. Trading Rules
-
-1. **EMA Crossover:**
-
-   * BUY: EMA-10 crosses above EMA-50.
-   * SELL: EMA-10 crosses below EMA-50.
-2. **RSI & Bollinger Bounce:**
-
-   * BUY: Price ≤ lower Bollinger & RSI < 30.
-   * SELL: Price ≥ upper Bollinger & RSI > 70.
-3. **Volume Check:**
-
-   * Signals valid only if volume ≥ 1.5× volume SMA-20.
-4. **Cooldown:**
-
-   * 15-min minimum interval between identical signals.
-
-Signal object:
-
-```typescript
-export interface TradeSignal {
-  asset: 'BTC';
-  interval: '5m';
-  type: 'BUY' | 'SELL';
-  reason: string;
-  price: number;
-  ts: number;
+  ts: number;        // epoch ms
 }
 ```
 
 ---
 
-## 6. Commit Memory & Automation
+## 6 · Trading Rules (5‑Minute BTC)
 
-* Use structured commits (Conventional Commits):
+1. **EMA‑10 / EMA‑50 crossover**
+2. **Bollinger + RSI extremities**
+3. **Volume ≥ 1.5 × SMA‑20**
+4. **15‑min cooldown**
 
-  ```
-  feat(indicator): add RSI calculation (#42)
-
-  Calculates RSI per project rules.
-  ```
-* AutoTaskRunner loops over `TASKS.md`:
-
-  * Executes each unchecked task sequentially.
-  * Runs lint, test and backtest for every task.
-  * Logs command output to `/logs` and marks failures in `signals.json`.
-  * Commits to `main` with a **333-token** summary describing what was done and what comes next.
-  * Writes `context.snapshot.md` containing the summary plus metadata (task ID, timestamp, file diffs, next objective).
-  * After committing, the script rebases onto the latest `main` and pushes.
-  * If lint, test or backtest fail, the agent enters a self-healing loop to correct the problem, commit an updated summary and continue.
-* Codex uses commit bodies and `context.snapshot.md` as persistent memory. Each summary serves as a retrospective and prospective context anchor.
-* Run `npm ci` once at session start before lint/test.
-* Use two-paragraph commit bodies:
-  * `What I did` – describe the task work.
-  * `What's next` – outline upcoming steps.
-  * Pad with `context` until exactly 333 tokens.
-* `scripts/autoTaskRunner.js` continues until no open tasks remain.
+*See `/config/signals.json` for thresholds.*
 
 ---
 
-## 7. Local Commands
+## 7 · Local Scripts
 
-| Command            | Purpose                  |
+| Cmd                | Action                   |
 | ------------------ | ------------------------ |
-| `npm run dev`      | Start development server |
-| `npm run test`     | Run unit tests (Jest)    |
-| `npm run backtest` | Execute backtesting      |
-| `npm run lint`     | Format and lint          |
+| `npm run dev`      | Dev server               |
+| `npm run lint`     | ESLint + Prettier        |
+| `npm run test`     | Jest unit tests          |
+| `npm run backtest` | Historical strategy test |
+
+Always start a session with `npm ci`.
 
 ---
 
-## 8. Configuration (`src/config/signals.json`)
+## 8 · Definition of Done
 
-Editable signal thresholds (hot-reloadable):
+* Task checkbox ✅ in `TASKS.md`
+* Tests & lint pass
+* Commit merged to `main`
+* 333‑token memo saved to `context.snapshot.md`
+* No unresolved errors or conflicts
 
-```json
-{
-  "emaFast": 10,
-  "emaSlow": 50,
-  "rsiPeriod": 14,
-  "rsiBuy": 30,
-  "rsiSell": 70,
-  "bbPeriod": 20,
-  "bbStdDev": 2,
-  "volumeMult": 1.5,
-  "signalCooldownMin": 15
-}
-```
-
----
-
-## 9. Definition of Done
-
-* BUY/SELL signals visible in UI within 1–2 s.
-* Logs in `/logs` for test/backtest outcomes.
-* Completed `TASKS.md` items auto-committed and verified.
-
----
-
-> **Follow exactly as specified.**
-> Commits automatically track and document changes; review `/logs` regularly.
-
----
-
-## 10. Codex Workflow Reference
-
-These additional notes are distilled from `codesetuptolearnfrom.md` to guide
-the Codex developer agent.
-
-### Task Cycle
-
-1. Open `TASKS.md` and select the first unchecked item.
-2. Read `context.snapshot.md` for recent history and next objective.
-3. Implement only that single task with small, incremental edits.
-4. Run `npm run lint` and `npm run test` when available.
-5. Mark the task as `[x]` in `TASKS.md`.
-6. Commit using `Task <number>:` followed by a short summary. Include a 333-token body that doubles as the snapshot entry.
-7. Repeat until all tasks are complete or more input is required. If a command fails, loop back to fix it and update the snapshot.
-
-### Commit Guidelines
-
-- One task per commit.
-- Keep subject lines around 50 characters and wrap body text near 72
-  characters.
-- Mention key decisions or affected modules in the commit body.
-- Never commit secrets; copy `.env.local.example` to `.env.local` locally.
-- The root `signals.json` may store `last_task_completed` or `error_flag`
-  for automation state between runs.
-
-### Initialization Prompt
-
-```
-You are an AI Developer Agent working on this repository.
-Open AGENTS.md and TASKS.md, execute the first unchecked task, mark it
-complete, commit with "Task <number>:" and continue to the next task.
-```
-
-Following this workflow keeps contributions deterministic and lightweight.
-
-Additional tips are available in `docs/CODEX_WORKFLOW.md`, including how to
-keep the container alive and generate a commit history log with
-`npm run commitlog`.
+> End of AGENTS.md – obey without deviation.
