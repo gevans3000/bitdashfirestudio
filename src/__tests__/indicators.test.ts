@@ -6,6 +6,8 @@ import {
   averageTrueRange,
   volumeWeightedAveragePrice,
   stochasticRsi,
+  cumulativeDelta,
+  buyPressurePercent,
   OHLC,
 } from '../lib/indicators';
 
@@ -46,5 +48,17 @@ describe('indicator calculations', () => {
     const val = stochasticRsi(prices, 14);
     expect(val).toBeGreaterThanOrEqual(0);
     expect(val).toBeLessThanOrEqual(100);
+  });
+  it('cumulative delta', () => {
+    const trades = [
+      { quantity: 1, isBuyerMaker: false },
+      { quantity: 2, isBuyerMaker: true },
+      { quantity: 3, isBuyerMaker: false },
+    ];
+    const delta = cumulativeDelta(trades);
+    expect(delta).toBeCloseTo(2);
+    const pressure = buyPressurePercent(trades);
+    expect(pressure).toBeGreaterThan(0);
+    expect(pressure).toBeLessThanOrEqual(100);
   });
 });

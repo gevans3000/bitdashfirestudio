@@ -20,9 +20,9 @@
 ### 📊 Advanced Technical Indicators
 - [x] **Stochastic RSI**
   - [x] Overbought/oversold alerts (20 / 80)
-- [ ] **Order-Flow Analysis (Cumulative Delta)**
-  - [ ] Real-time delta visual
-  - [ ] Buy/Sell pressure meter
+- [x] **Order-Flow Analysis (Cumulative Delta)**
+  - [x] Real-time delta visual
+  - [x] Buy/Sell pressure meter
 
 ### 📅 Session & Time Awareness
 - [ ] **Market-Session Timers**
