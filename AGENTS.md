@@ -129,8 +129,9 @@ export interface AgentMessage<T = unknown> {
 | `npm run lint`     | ESLint + Prettier        |
 | `npm run test`     | Jest unit tests          |
 | `npm run backtest` | Historical strategy test |
+| `npm run dev-deps` | Install local dev deps   |
 
-Always start a session with `npm ci`.
+Always start a session with `npm ci` (or run `npm run dev-deps` when offline).
 
 ---
 
