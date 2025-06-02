@@ -22,8 +22,8 @@
 ## Pending Tasks
 
 ### Scalper Add-ons
-- [ ] Task 17: highlight large resting orders on depth heat map
-- [ ] Task 18: display Bybit liquidation clusters
+- [x] Task 17: highlight large resting orders on depth heat map
+- [x] Task 18: display Bybit liquidation clusters
 - [ ] Task 19: chart 1 h open-interest delta
 - [ ] Task 20: add funding-rate countdown timer
 - [ ] Task 21: alert when Bollinger Band width drops below threshold
