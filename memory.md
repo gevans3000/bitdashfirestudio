@@ -1,3 +1,9 @@
 # Memory Log
 
-This file records a running history of completed tasks and key decisions. After each commit, append the 333-token summary along with the commit hash, timestamp and list of changed files. Git commit messages mirror these entries so the log acts as persistent memory. Use it alongside `context.snapshot.md` to rebuild context between sessions or recover after interruptions.
+This file records a running history of completed tasks and key decisions. After every commit append a line with:
+
+```
+<hash> | Task <id> | <summary> | <files>
+```
+
+Include the timestamp and keep the summary under 333 tokens. The Git log plus this file rebuild context when sessions restart.

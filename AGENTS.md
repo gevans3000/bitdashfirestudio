@@ -43,6 +43,7 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    c. Ensure package scripts `lint`, `test`, `backtest` run.
    d. Commit as `chore(bootstrap): automation rules` with a 333‑token summary.
    e. Append commit details to `memory.md` so the Git log mirrors persistent memory.
+   f. Record the bootstrap summary in `context.snapshot.md` for quick recall.
 2. **Task Commit**
    a. Load `task_queue.json` and `TASKS.md`, choosing the first entry with `status: "pending"`.
    b. Implement **only** that task.
@@ -50,8 +51,9 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
    e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
    f. Append the same summary with metadata to both `context.snapshot.md` and `memory.md`.
-   g. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
-   h. Rebase → merge → delete branch.
+   g. Run `npm run commitlog` to snapshot the latest Git history.
+   h. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   i. Rebase → merge → delete branch.
 3. **HALT** – await next prompt.
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
@@ -63,13 +65,13 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 | File                  | Purpose                                               |
 | --------------------- | ----------------------------------------------------- |
 | `context.snapshot.md` | Rolling log – every commit appends its 333‑token memo |
-| `memory.md`           | Append-only history of commits and key notes |
-| Git history           | Persistent record of diffs and messages |
+| `memory.md`           | Append-only history of commit summaries |
+| Git history           | Primary record of changes and context |
 | `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `context.snapshot.md`, `memory.md` and the latest git log first** on each new session to recall context.
-Use `npm run commitlog` to generate `logs/commit.log` for quick review of recent commits.
+Codex must **read `context.snapshot.md`, `memory.md` and recent commit messages** on each new session to recall context.
+Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
 
 ---
 
@@ -83,6 +85,8 @@ Use `npm run commitlog` to generate `logs/commit.log` for quick review of recent
 BREAKING CHANGE: <optional>
 Closes: TASKS.md #<line‑no>
 ```
+
+Commit subjects begin with `Task <id>:` to link history with `TASKS.md`.
 
 Every commit message doubles as persistent memory. Append the summary, commit hash and changed files to `memory.md` and `context.snapshot.md` so agents can recall which code was touched.
 *Types*: `feat`, `fix`, `chore`, `docs`, `test`.
@@ -160,5 +164,13 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 * 333‑token memo saved to `context.snapshot.md`
 * `task_queue.json` and `TASKS.md` in sync
 * No unresolved errors or conflicts
+
+---
+
+## 9 · Commit-Based Memory Workflow
+
+1. **Pre-Session** – read `context.snapshot.md`, `memory.md` and recent commits.
+2. **After Commit** – append the 333‑token summary to both memory files and run `npm run commitlog`.
+3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
 
 > End of AGENTS.md – obey without deviation.
