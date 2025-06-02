@@ -112,3 +112,11 @@ Generate a recent commit summary anytime with:
 ```bash
 npm run commitlog
 ```
+
+### Recommended Workflow
+
+1. Run `npm ci` once when you start a session.
+2. Open `TASKS.md` and complete the next task.
+3. When resuming after a break, run `npm run commitlog` to review recent commits.
+4. Test and backtest outputs are logged in `logs/`.
+
