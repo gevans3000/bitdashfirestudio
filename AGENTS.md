@@ -222,3 +222,7 @@ complete, commit with "Task <number>:" and continue to the next task.
 ```
 
 Following this workflow keeps contributions deterministic and lightweight.
+
+Additional tips are available in `docs/CODEX_WORKFLOW.md`, including how to
+keep the container alive and generate a commit history log with
+`npm run commitlog`.
