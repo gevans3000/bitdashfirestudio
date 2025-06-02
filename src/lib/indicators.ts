@@ -104,3 +104,21 @@ export function averageTrueRange(data: OHLC[], period: number): number {
   const sum = trs.reduce((a, b) => a + b, 0);
   return sum / period;
 }
+
+export function volumeWeightedAveragePrice(
+  closes: number[],
+  volumes: number[],
+  period: number,
+): number {
+  if (closes.length === 0 || volumes.length === 0) return 0;
+  const len = Math.min(period, closes.length, volumes.length);
+  const c = closes.slice(-len);
+  const v = volumes.slice(-len);
+  let pvSum = 0;
+  let volSum = 0;
+  for (let i = 0; i < len; i++) {
+    pvSum += c[i] * v[i];
+    volSum += v[i];
+  }
+  return volSum ? pvSum / volSum : 0;
+}

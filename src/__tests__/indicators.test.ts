@@ -1,4 +1,12 @@
-import { exponentialMovingAverage, rsi, bollingerBands, volumeSMA, averageTrueRange, OHLC } from '../lib/indicators';
+import {
+  exponentialMovingAverage,
+  rsi,
+  bollingerBands,
+  volumeSMA,
+  averageTrueRange,
+  volumeWeightedAveragePrice,
+  OHLC,
+} from '../lib/indicators';
 
 describe('indicator calculations', () => {
   it('ema', () => {
@@ -25,5 +33,11 @@ describe('indicator calculations', () => {
     ];
     const val = averageTrueRange(data, 2);
     expect(val).toBeGreaterThan(0);
+  });
+  it('VWAP', () => {
+    const price = [1, 2, 3];
+    const volume = [10, 10, 10];
+    const val = volumeWeightedAveragePrice(price, volume, 3);
+    expect(val).toBeCloseTo(2);
   });
 });
