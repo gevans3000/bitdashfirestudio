@@ -44,6 +44,7 @@ import StochRsiWidget from "@/components/StochRsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
+import VolumeProfileChart from "@/components/VolumeProfileChart";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
@@ -1789,6 +1790,7 @@ const CryptoDashboardPage: FC = () => {
         </DataCard>
         <OrderBookWidget />
         <VolumeSpikeChart />
+        <VolumeProfileChart />
         <OrderFlowWidget />
         <VwapWidget />
         <BollingerWidget />
