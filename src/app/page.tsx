@@ -40,6 +40,7 @@ import MarketChart from "@/components/MarketChart";
 import SignalHistory from "@/components/SignalHistory";
 import AtrWidget from "@/components/AtrWidget";
 import VwapWidget from "@/components/VwapWidget";
+import PrevDayBands from "@/components/PrevDayBands";
 import StochRsiWidget from "@/components/StochRsiWidget";
 import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
@@ -1803,6 +1804,7 @@ const CryptoDashboardPage: FC = () => {
           <FundingRateWidget />
           <TxnCountWidget />
           <VwapWidget />
+          <PrevDayBands />
           <BollingerWidget />
           <EmaCrossoverWidget />
           <RsiWidget />

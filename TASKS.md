@@ -49,9 +49,9 @@
 ---
 ### 🧩 Low-/No-cost Scalper Add-ons
 
-- [ ] **Previous Day H/L & VWAP Bands**
-  - [ ] Fetch prior-day OHLCV from Binance
-  - [ ] Plot yesterday's high, low and VWAP bands
+- [x] **Previous Day H/L & VWAP Bands**
+  - [x] Fetch prior-day OHLCV from Binance
+  - [x] Plot yesterday's high, low and VWAP bands
 - [ ] **Heat-Map of Bid/Ask Walls**
   - [ ] Build order-book heat map from depth stream
   - [ ] Highlight large resting orders
