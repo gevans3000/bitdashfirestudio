@@ -1,4 +1,7 @@
 # Context Snapshot
+#
+# This file stores the latest 333-token commit summary so Codex can reload
+# context between sessions.
 
 No tasks completed yet.
 Task: bootstrap - initial automation
