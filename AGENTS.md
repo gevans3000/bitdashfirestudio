@@ -155,7 +155,7 @@ export interface TradeSignal {
 
 ---
 
-## 8. Configuration (`/config/signals.json`)
+## 8. Configuration (`src/config/signals.json`)
 
 Editable signal thresholds (hot-reloadable):
 
@@ -210,8 +210,8 @@ the Codex developer agent.
   characters.
 - Mention key decisions or affected modules in the commit body.
 - Never commit secrets; copy `.env.local.example` to `.env.local` locally.
-- `signals.json` may store `last_task_completed` or `error_flag` for context
-  between runs.
+- The root `signals.json` may store `last_task_completed` or `error_flag`
+  for automation state between runs.
 
 ### Initialization Prompt
 

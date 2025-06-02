@@ -25,6 +25,7 @@ Task 3: Add agent interface
 ## Additional Notes
 
 - Use `.env.local.example` as a template for environment variables.
-- `signals.json` may store flags such as `last_task_completed` or `error_flag`.
+- The root `signals.json` may store flags such as `last_task_completed` or
+  `error_flag`.
 - Keep commit subjects around 50 characters and wrap body lines near 72.
 - Pause and ask for clarification if a task is unclear.

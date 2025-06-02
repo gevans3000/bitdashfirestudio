@@ -77,6 +77,12 @@ server to respect rate limits.
 /public         # Static assets
 ```
 
+## Configuration
+
+Indicator thresholds live in `src/config/signals.json` and reload on change.
+Automation state such as `last_task_completed` or `error_flag` is stored in the
+root `signals.json`.
+
 ## Development
 
 ```bash
