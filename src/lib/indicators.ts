@@ -136,3 +136,28 @@ export function stochasticRsi(prices: number[], period = 14): number {
   if (maxRsi === minRsi) return 50;
   return ((lastRsi - minRsi) / (maxRsi - minRsi)) * 100;
 }
+
+export interface AggTrade {
+  quantity: number;
+  isBuyerMaker: boolean;
+}
+
+export function cumulativeDelta(trades: AggTrade[]): number {
+  return trades.reduce(
+    (sum, t) => sum + (t.isBuyerMaker ? -t.quantity : t.quantity),
+    0,
+  );
+}
+
+export function buyPressurePercent(trades: AggTrade[]): number {
+  const buyVol = trades.reduce(
+    (sum, t) => sum + (t.isBuyerMaker ? 0 : t.quantity),
+    0,
+  );
+  const sellVol = trades.reduce(
+    (sum, t) => sum + (t.isBuyerMaker ? t.quantity : 0),
+    0,
+  );
+  const total = buyVol + sellVol;
+  return total ? (buyVol / total) * 100 : 0;
+}
