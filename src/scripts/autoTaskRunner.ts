@@ -12,6 +12,8 @@ function run(cmd: string) {
 
 const repoRoot = path.resolve(__dirname, '../..');
 const tasksPath = path.join(repoRoot, 'TASKS.md');
+const signalsPath = path.join(repoRoot, 'signals.json');
+
 const lines = fs.readFileSync(tasksPath, 'utf8').split('\n');
 const idx = lines.findIndex((line) => line.startsWith('- [ ]'));
 if (idx === -1) {
@@ -20,11 +22,30 @@ if (idx === -1) {
 }
 
 const taskLine = lines[idx];
-const taskDesc = taskLine.replace('- [ ]', '').trim();
+let taskDesc = taskLine.replace('- [ ]', '').trim();
+
+const signals = JSON.parse(fs.readFileSync(signalsPath, 'utf8')) as {
+  last_task_completed?: number | null;
+  [key: string]: any;
+};
+
+const explicit = taskDesc.match(/Task\s*(\d+)\s*:/i);
+let taskNum =
+  explicit?.[1] !== undefined
+    ? parseInt(explicit[1], 10)
+    : typeof signals.last_task_completed === 'number'
+      ? signals.last_task_completed + 1
+      : 0;
+
+if (explicit) {
+  taskDesc = taskDesc.replace(explicit[0], '').trim();
+}
 
 // mark task as completed
 lines[idx] = taskLine.replace('- [ ]', '- [x]');
 fs.writeFileSync(tasksPath, lines.join('\n'));
+signals.last_task_completed = taskNum;
+fs.writeFileSync(signalsPath, JSON.stringify(signals, null, 2) + '\n');
 
 // ensure logs directory exists
 const logDir = path.join(repoRoot, 'logs');
@@ -41,6 +62,6 @@ const backtestLog = run('npm run backtest');
 fs.writeFileSync(path.join(logDir, 'backtest.log'), backtestLog);
 
 // stage changes and commit
-execSync('git add TASKS.md logs');
-const msg = `feat(task): ${taskDesc}\n\nAutoTaskRunner completed task: ${taskDesc}`;
+execSync('git add TASKS.md logs signals.json');
+const msg = `Task ${taskNum}: ${taskDesc}\n\nAutoTaskRunner completed task ${taskNum}.`;
 execSync(`git commit -m "${msg.replace(/"/g, '\\"')}"`);
