@@ -70,8 +70,7 @@ export type AgentRole =
   | 'SignalGenerator'
   | 'UIRenderer'
   | 'AlertLogger'
-  | 'Backtester'
-  | 'QATester'
+  | 'TestingAgent'
   | 'AutoTaskRunner';
 ```
 
@@ -87,8 +86,7 @@ export type AgentRole =
 | **SignalGenerator** | Apply trade rules to indicators                                  | `INDICATORS_5M`             | `SIGNAL_BUY/SELL` |
 | **UIRenderer**      | Render UI widgets (React), update trading views                  | `INDICATORS_5M`, `SIGNAL_*` | None              |
 | **AlertLogger**     | Log alerts to UI & persist signals locally                       | `SIGNAL_*`                  | None              |
-| **Backtester**      | Run simulations on historical data                               | Manual trigger              | Backtest report   |
-| **QATester**        | Run Jest tests & validate results; gates CI                      | Repository state            | Pass/fail report  |
+| **TestingAgent**    | Run Jest tests or backtests based on mode | Repo state or manual trigger | Test/backtest report |
 | **AutoTaskRunner**  | Automate task execution, lint/test/backtest, auto-commit results | `TASKS.md`                  | Automated commits |
 
 ---
