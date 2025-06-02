@@ -5,14 +5,16 @@
 ---
 
 ## Workflow
-1. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
-2. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
-3. Each task runs lint, test and backtest.
-4. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
-5. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md`.
-6. The commit message follows `Task <number>:` so the git log stays in sync with the memory files.
-7. Use `npm run commitlog` to review recent history when resuming work.
-8. The runner rebases on `main` and pushes after each commit.
+1. Review `context.snapshot.md`, `memory.md` and `logs/commit.log` for context.
+2. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
+3. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
+4. Each task runs lint, test and backtest.
+5. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
+6. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md`.
+7. The commit message follows `Task <number>:` so the git log stays in sync with the memory files.
+8. Run `npm run commitlog` after committing to capture the latest history.
+9. Review `logs/commit.log` before starting a new session.
+10. The runner rebases on `main` and pushes after each commit.
 
 ---
 
