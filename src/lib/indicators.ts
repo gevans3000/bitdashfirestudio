@@ -122,3 +122,17 @@ export function volumeWeightedAveragePrice(
   }
   return volSum ? pvSum / volSum : 0;
 }
+
+export function stochasticRsi(prices: number[], period = 14): number {
+  if (prices.length < period + 1) return 50;
+  const rsiSeries: number[] = [];
+  for (let i = period; i < prices.length; i++) {
+    const slice = prices.slice(i - period, i + 1);
+    rsiSeries.push(rsi(slice, period));
+  }
+  const lastRsi = rsiSeries[rsiSeries.length - 1];
+  const minRsi = Math.min(...rsiSeries);
+  const maxRsi = Math.max(...rsiSeries);
+  if (maxRsi === minRsi) return 50;
+  return ((lastRsi - minRsi) / (maxRsi - minRsi)) * 100;
+}
