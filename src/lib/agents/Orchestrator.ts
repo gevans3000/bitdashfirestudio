@@ -10,8 +10,7 @@ export class Orchestrator {
     SignalGenerator: () => {},
     UIRenderer: () => {},
     AlertLogger: () => {},
-    Backtester: () => {},
-    QATester: () => {},
+    TestingAgent: () => {},
   };
 
   register(role: AgentRole, handler: Handler): void {
