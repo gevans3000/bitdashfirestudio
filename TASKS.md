@@ -31,63 +31,78 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ### Scalper Add-ons
 - [x] Task 17: highlight large resting orders on depth heat map
-- [ ] Task 18: display Bybit liquidation clusters
-- [ ] Task 19: chart 1 h open-interest delta
-- [ ] Task 20: add funding-rate countdown timer
-- [ ] Task 21: alert when Bollinger Band width drops below threshold
-- [ ] Task 22: show distance to nearest volume-profile peak
-- [ ] Task 23: compare 5 m trend with 1 h and 4 h EMAs
-- [ ] Task 24: flag upcoming high-impact economic events
-- [ ] Task 25: notify on daily Google Trends spike
-- [ ] Task 26: integrate mempool fee pressure gauge
-- [ ] Task 27: quick risk/position-size calculator
-- [ ] Task 28: session stats tracker for P&L and hit rate
+ - [ ] Task 18: connect to Bybit liquidation WebSocket
+ - [ ] Task 19: aggregate liquidations into clusters
+ - [ ] Task 20: overlay liquidation clusters on chart
+ - [ ] Task 21: fetch open-interest data from Bybit
+ - [ ] Task 22: compute 1 h open-interest delta
+ - [ ] Task 23: chart open-interest delta line
+ - [ ] Task 24: fetch funding rate schedule
+ - [ ] Task 25: display countdown timer to next funding
+ - [ ] Task 26: compute Bollinger Band width
+ - [ ] Task 27: alert when width falls below threshold
+ - [ ] Task 28: build volume profile from recent data
+ - [ ] Task 29: show distance to nearest volume peak
+ - [ ] Task 30: fetch 1 h and 4 h candles
+ - [ ] Task 31: compare 5 m EMA trend with higher timeframes
+ - [ ] Task 32: flag upcoming high-impact economic events
+ - [ ] Task 33: notify on daily Google Trends spike
+ - [ ] Task 34: integrate mempool fee pressure gauge
+ - [ ] Task 35: implement risk/position-size calculator logic
+ - [ ] Task 36: add UI for risk/position-size calculator
+ - [ ] Task 37: track trades for session stats
+ - [ ] Task 38: display session P&L and hit rate
 
 ### Volume & Liquidity
-- [ ] Task 29: fetch SPY volume using Yahoo Finance
+ - [ ] Task 39: fetch SPY volume using Yahoo Finance
+ - [ ] Task 40: correlate SPY volume with BTC moves
 
 ### Sentiment & Correlation
-- [ ] Task 30: gauge short-term Crypto-Twitter sentiment
-- [ ] Task 31: real-time liquidations and open interest
-- [ ] Task 32: rolling BTC/SPX correlation over 1 h
+ - [ ] Task 41: collect Crypto-Twitter sentiment data
+ - [ ] Task 42: compute short-term sentiment index
+ - [ ] Task 43: stream liquidations and open interest
+ - [ ] Task 44: merge liquidation and OI signals
+ - [ ] Task 45: calculate rolling BTC/SPX correlation
+ - [ ] Task 46: chart correlation over time
 
 ### Macro Indicators
-- [ ] Task 33: pull Fed funds rate schedule
-- [ ] Task 34: integrate economic-event calendar
+ - [ ] Task 47: pull Fed funds rate schedule
+ - [ ] Task 48: integrate economic-event calendar feed
 
 ### Data Management
-- [ ] Task 35: Binance WebSocket for order book and OHLCV
-- [ ] Task 36: CoinGecko historical BTC fetcher
-- [ ] Task 37: Yahoo Finance fetcher for SPX/SPY/VIX/DXY
-- [ ] Task 38: FRED macro series fetcher
-- [ ] Task 39: cache REST calls 15–30 s and enforce 5 calls/min rate limit
+ - [ ] Task 49: Binance order-book WebSocket
+ - [ ] Task 50: stream Binance OHLCV candles
+ - [ ] Task 51: CoinGecko historical BTC fetcher
+ - [ ] Task 52: Yahoo Finance fetcher for SPX/SPY/VIX/DXY
+ - [ ] Task 53: FRED macro series fetcher
+ - [ ] Task 54: caching layer with 15 s TTL and rate limits
 
 ### Alerts & Notifications
-- [ ] Task 40: toast alerts on generated signals
-- [ ] Task 41: configurable alert panel
-- [ ] Task 42: quick-entry trade journal
-- [ ] Task 43: annotate historical signals on the chart
+ - [ ] Task 55: show toast alerts on signals
+ - [ ] Task 56: configurable alert panel
+ - [ ] Task 57: quick-entry trade journal
+ - [ ] Task 58: annotate historical signals on the chart
 
 ### Testing & Validation
-- [ ] Task 44: unit tests for each indicator
-- [ ] Task 45: validate indicator results on historical data
-- [ ] Task 46: real-time backtester with win rate and drawdown metrics
+ - [ ] Task 59: unit tests for each indicator
+ - [ ] Task 60: validate indicators on historical data
+ - [ ] Task 61: real-time backtester with metrics
 
 ### Documentation & Configuration
-- [ ] Task 47: generate API reference documentation
-- [ ] Task 48: create user guide
-- [ ] Task 49: write developer setup guide
-- [ ] Task 50: document `signals.json` thresholds
-- [ ] Task 51: describe each configuration parameter
+ - [ ] Task 62: generate API reference documentation
+ - [ ] Task 63: create user guide
+ - [ ] Task 64: write developer setup guide
+ - [ ] Task 65: document `signals.json` thresholds
+ - [ ] Task 66: describe each configuration parameter
 
 ### UI Enhancements
-- [ ] Task 52: key-level proximity indicators
-- [ ] Task 53: customizable TradingView widget
-- [ ] Task 54: one-click indicator toggles
+ - [ ] Task 67: key-level proximity indicators
+ - [ ] Task 68: customizable TradingView widget
+ - [ ] Task 69: one-click indicator toggles
 
 ### Performance & Monitoring
-- [ ] Task 55: real-time strategy-performance tracker
-- [ ] Task 56: monitor data latency and system load
+ - [ ] Task 70: real-time strategy-performance tracker
+ - [ ] Task 71: monitor data latency and system load
 
 ---
 
