@@ -45,6 +45,7 @@ import StochRsiWidget from "@/components/StochRsiWidget";
 import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
+import OrderBookHeatmap from "@/components/OrderBookHeatmap";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import VolumeProfileChart from "@/components/VolumeProfileChart";
 import IchimokuWidget from "@/components/IchimokuWidget";
@@ -1797,6 +1798,7 @@ const CryptoDashboardPage: FC = () => {
             )}
           </DataCard>
           <OrderBookWidget />
+          <OrderBookHeatmap />
           <VolumeSpikeChart />
           <VolumeProfileChart />
           <IchimokuWidget />

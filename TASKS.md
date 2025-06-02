@@ -8,15 +8,15 @@
     Lint, test and backtest commands logged missing binaries.
 
 ## Workflow
-1. Run `npm ci` once at the start of a session.
-2. Pick the first unchecked task below.
+1. Run `npm ci` once at session start (may fail offline).
+2. The AutoTaskRunner reads the first unchecked task below.
 3. Implement it with minimal edits.
-4. Run `npm run lint` and `npm run test`.
+4. Run `npm run lint`, `npm run test` and `npm run backtest`.
 5. Mark the task `[x]`.
-6. Update `signals.json` with `last_task_completed`.
-7. Commit with `Task <number>:`.
+6. Update `signals.json` with `last_task_completed` and commit.
+7. Commit header `Task <number>:` with a 333-token body (`What I did` / `What's next`).
 8. Run `npm run commitlog`.
-9. If a task fails, log details in `/logs`, set `error_flag` in `signals.json` and request help.
+9. If any command fails, write `/logs/block-<task>.txt`, set `error_flag` in `signals.json` and halt.
 
 ## 🚀 Top-Priority Enhancements
 
@@ -53,7 +53,7 @@
   - [x] Fetch prior-day OHLCV from Binance
   - [x] Plot yesterday's high, low and VWAP bands
 - [ ] **Heat-Map of Bid/Ask Walls**
-  - [ ] Build order-book heat map from depth stream
+  - [x] Build order-book heat map from depth stream
   - [ ] Highlight large resting orders
 - [ ] **Realtime Liquidation Feed**
   - [ ] Display Bybit liquidation clusters
