@@ -34,13 +34,14 @@
    c. Ensure package scripts `lint`, `test`, `backtest` run.
    d. Commit as `chore(bootstrap): automation rules` with a 333‑token summary.
 2. **Task Commit**
-   a. Open `TASKS.md`, pick the first `[ ]` item.
+   a. Load `task_queue.json` and `TASKS.md`, choosing the first entry with `status: "pending"`.
    b. Implement **only** that task.
-   c. Run `npm ci && npm run lint && npm run test && npm run backtest`.
+   c. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
    d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
    e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
-   f. Append same summary with metadata to `context.snapshot.md`.
-   g. Rebase → merge → delete branch.
+   f. Append the same summary with metadata to both `context.snapshot.md` and `memory.md`.
+   g. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   h. Rebase → merge → delete branch.
 3. **HALT** – await next prompt.
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
@@ -52,9 +53,11 @@
 | File                  | Purpose                                               |
 | --------------------- | ----------------------------------------------------- |
 | `context.snapshot.md` | Rolling log – every commit appends its 333‑token memo |
+| `memory.md`           | Append-only history of commits and key notes |
+| `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `context.snapshot.md` first** on each new session to recall context.
+Codex must **read `context.snapshot.md` and `memory.md` first** on each new session to recall context.
 
 ---
 
@@ -131,7 +134,7 @@ export interface AgentMessage<T = unknown> {
 | `npm run backtest` | Historical strategy test |
 | `npm run dev-deps` | Install local dev deps   |
 
-Always start a session with `npm ci` (or run `npm run dev-deps` when offline).
+Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). Reuse dependencies for subsequent tasks.
 
 ---
 
