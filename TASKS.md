@@ -18,8 +18,8 @@
   - [x] Price-to-VWAP deviation indicator (%)
 
 ### 📊 Advanced Technical Indicators
-- [ ] **Stochastic RSI**
-  - [ ] Overbought/oversold alerts (20 / 80)
+- [x] **Stochastic RSI**
+  - [x] Overbought/oversold alerts (20 / 80)
 - [ ] **Order-Flow Analysis (Cumulative Delta)**
   - [ ] Real-time delta visual
   - [ ] Buy/Sell pressure meter

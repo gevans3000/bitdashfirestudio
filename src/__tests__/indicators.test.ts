@@ -5,6 +5,7 @@ import {
   volumeSMA,
   averageTrueRange,
   volumeWeightedAveragePrice,
+  stochasticRsi,
   OHLC,
 } from '../lib/indicators';
 
@@ -39,5 +40,11 @@ describe('indicator calculations', () => {
     const volume = [10, 10, 10];
     const val = volumeWeightedAveragePrice(price, volume, 3);
     expect(val).toBeCloseTo(2);
+  });
+  it('stochastic RSI', () => {
+    const prices = Array.from({ length: 30 }, (_, i) => i + 1);
+    const val = stochasticRsi(prices, 14);
+    expect(val).toBeGreaterThanOrEqual(0);
+    expect(val).toBeLessThanOrEqual(100);
   });
 });
