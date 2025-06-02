@@ -49,6 +49,7 @@ import VolumeProfileChart from "@/components/VolumeProfileChart";
 import IchimokuWidget from "@/components/IchimokuWidget";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import FundingRateWidget from "@/components/FundingRateWidget";
+import TxnCountWidget from "@/components/TxnCountWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
@@ -1800,6 +1801,7 @@ const CryptoDashboardPage: FC = () => {
           <IchimokuWidget />
           <OrderFlowWidget />
           <FundingRateWidget />
+          <TxnCountWidget />
           <VwapWidget />
           <BollingerWidget />
           <EmaCrossoverWidget />

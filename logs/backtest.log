@@ -1,4 +1,4 @@
 
 > bitdash-firestudio@1.0.0 backtest
-> ts-node src/scripts/backtest.ts
+> ts-node scripts/backtest.ts
 
