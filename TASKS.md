@@ -3,6 +3,7 @@
 > **Goal:** Optimize 5-minute BTC scalping (with SPX context) through small, atomic tasks Codex can execute autonomously.
 
 ---
+- [ ] **Task 0:** Ensure all dev dependencies are installed locally and scripts pass after `npm ci`.
 
 ## 🚀 Top-Priority Enhancements
 
