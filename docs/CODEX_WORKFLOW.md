@@ -37,3 +37,11 @@ npm run commitlog
 ```
 
 Use this log to quickly review recent work when resuming the project.
+
+## Quick Workflow Summary
+
+- Run `npm ci` once at the start of each session.
+- Execute the next unchecked task in `TASKS.md`.
+- When resuming later, run `npm run commitlog` to review recent commits.
+- Test and backtest outputs are saved to `logs/` for reference.
+
