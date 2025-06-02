@@ -36,7 +36,7 @@
 ### 📈 Price Data & Chart Enhancements
 - [x] BTC/USD 5-minute price chart
 - [x] SPX/SPY price chart
-- [ ] EMA crossovers (10/20/50/200)
+- [x] EMA crossovers (10/20/50/200)
 - [ ] Bollinger Bands (20, 2)
 - [ ] Volume-profile visualization
 - [ ] Ichimoku Cloud overlay

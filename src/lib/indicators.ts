@@ -161,3 +161,13 @@ export function buyPressurePercent(trades: AggTrade[]): number {
   const total = buyVol + sellVol;
   return total ? (buyVol / total) * 100 : 0;
 }
+
+export type EmaTrend = 'bullish' | 'bearish' | 'mixed';
+
+export function emaCrossoverState(emas: number[]): EmaTrend {
+  if (emas.length < 4) return 'mixed';
+  const [e10, e20, e50, e200] = emas;
+  if (e10 > e20 && e20 > e50 && e50 > e200) return 'bullish';
+  if (e10 < e20 && e20 < e50 && e50 < e200) return 'bearish';
+  return 'mixed';
+}
