@@ -10,6 +10,7 @@ import {
   buyPressurePercent,
   emaCrossoverState,
   ichimokuCloud,
+  macd,
   OHLC,
 } from "../lib/indicators";
 
@@ -81,5 +82,12 @@ describe("indicator calculations", () => {
     const res = ichimokuCloud(data);
     expect(res.tenkan).toBeGreaterThan(0);
     expect(res.spanA).toBeGreaterThan(0);
+  });
+  it("macd", () => {
+    const prices = Array.from({ length: 60 }, (_, i) => i + 1);
+    const res = macd(prices, 12, 26, 9);
+    expect(res.macd).toBeDefined();
+    expect(res.signal).toBeDefined();
+    expect(res.histogram).toBeDefined();
   });
 });

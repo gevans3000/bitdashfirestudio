@@ -207,3 +207,31 @@ export function ichimokuCloud(data: OHLC[]): IchimokuLines {
 
   return { tenkan, kijun, spanA, spanB, chikou };
 }
+
+export interface MacdResult {
+  macd: number;
+  signal: number;
+  histogram: number;
+}
+
+export function macd(
+  prices: number[],
+  fast = 12,
+  slow = 26,
+  signalPeriod = 9,
+): MacdResult {
+  if (prices.length < slow) {
+    return { macd: 0, signal: 0, histogram: 0 };
+  }
+  const macdSeries: number[] = [];
+  for (let i = slow - 1; i < prices.length; i++) {
+    const slice = prices.slice(0, i + 1);
+    const fastEma = exponentialMovingAverage(slice, fast);
+    const slowEma = exponentialMovingAverage(slice, slow);
+    macdSeries.push(fastEma - slowEma);
+  }
+  const macdValue = macdSeries[macdSeries.length - 1];
+  const signalValue = exponentialMovingAverage(macdSeries, signalPeriod);
+  const histogram = macdValue - signalValue;
+  return { macd: macdValue, signal: signalValue, histogram };
+}
