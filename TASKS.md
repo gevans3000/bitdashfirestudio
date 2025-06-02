@@ -11,7 +11,8 @@
 4. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
 5. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md`.
 6. The commit message follows `Task <number>:` so the git log stays in sync with the memory files.
-7. The runner rebases on `main` and pushes after each commit.
+7. Use `npm run commitlog` to review recent history when resuming work.
+8. The runner rebases on `main` and pushes after each commit.
 
 ---
 
@@ -92,3 +93,4 @@
 - Each completed task is auto-committed with a passing build and updated `signals.json`.
 - `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
+- `logs/commit.log` provides a concise memory dump via `npm run commitlog`.
