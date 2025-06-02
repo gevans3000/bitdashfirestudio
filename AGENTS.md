@@ -139,6 +139,15 @@ export interface TradeSignal {
   * Commits referencing completed tasks.
 * Codex uses commit history as structured memory.
 * Always run `npm ci` once at session start before lint/test.
+* Each commit body must contain **333 tokens**. Use two paragraphs:
+  * `What I did` – summarize the changes.
+  * `What's next` – forecast upcoming steps.
+  * If short, pad with the word `context` until 333 tokens.
+* `scripts/autoTaskRunner.js` automates the cycle:
+  * Reads the next unchecked task.
+  * Runs `npm run lint`, `npm run test`, and `npm run backtest`.
+  * Logs outputs to `/logs` and sets `error_flag` on failure.
+  * Commits with header `Task <number>` and pushes to `main` when tests pass.
 
 ---
 
