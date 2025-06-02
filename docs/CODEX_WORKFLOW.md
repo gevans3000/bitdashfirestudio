@@ -9,6 +9,7 @@ This document distills the key points from `CODEX-INSTRUCTIONS.txt` for working 
 - Include a 333-token body that doubles as the entry for `context.snapshot.md`.
 - Keep the subject line around 50 characters; wrap body lines near 72 characters.
 - Commit history, `context.snapshot.md`, and `memory.md` act as long-term memory. Review them before starting a new session.
+- Generate `logs/commit.log` via `npm run commitlog` to quickly recall recent commits.
 - Keep `task_queue.json` synchronized with `TASKS.md` so automation can resume accurately.
 - Run `npm ci` once at the start of a session. Subsequent commits can reuse the installed `node_modules`.
 

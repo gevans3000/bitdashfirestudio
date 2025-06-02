@@ -5,6 +5,15 @@
 
 > This document is the **system‑prompt on disk** that governs every Codex session. Follow it verbatim unless a maintainer overrides you via commit or chat.
 
+## Roles & Responsibilities
+
+- **Planner** – reads `task_queue.json` to prioritize and split work.
+- **Coder** – implements features and fixes according to each task.
+- **Tester** – runs lint, test and backtest commands, reporting failures.
+- **Reviewer** – checks commit quality and ensures guidelines are met.
+
+These roles operate sequentially within the `DevAgent` to keep automation predictable.
+
 ---
 
 ## 0 · Hard Constraints
@@ -60,6 +69,7 @@
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
 Codex must **read `context.snapshot.md`, `memory.md` and the latest git log first** on each new session to recall context.
+Use `npm run commitlog` to generate `logs/commit.log` for quick review of recent commits.
 
 ---
 
@@ -74,7 +84,7 @@ BREAKING CHANGE: <optional>
 Closes: TASKS.md #<line‑no>
 ```
 
-Every commit message doubles as persistent memory. Append the summary, hash and changed files to `memory.md` and `context.snapshot.md`.
+Every commit message doubles as persistent memory. Append the summary, commit hash and changed files to `memory.md` and `context.snapshot.md` so agents can recall which code was touched.
 *Types*: `feat`, `fix`, `chore`, `docs`, `test`.
 
 ---
@@ -148,6 +158,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 * `memory.md` updated with commit hash and summary
 * Commit merged to `main`
 * 333‑token memo saved to `context.snapshot.md`
+* `task_queue.json` and `TASKS.md` in sync
 * No unresolved errors or conflicts
 
 > End of AGENTS.md – obey without deviation.
