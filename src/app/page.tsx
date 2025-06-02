@@ -40,6 +40,7 @@ import MarketChart from "@/components/MarketChart";
 import SignalHistory from "@/components/SignalHistory";
 import AtrWidget from "@/components/AtrWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
+import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -1759,6 +1760,7 @@ const CryptoDashboardPage: FC = () => {
           )}
         </DataCard>
         <OrderBookWidget />
+        <VolumeSpikeChart />
         <AtrWidget />
         <SignalCard />
           <DataCard
