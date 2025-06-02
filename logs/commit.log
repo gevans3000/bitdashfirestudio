@@ -1,3 +1,7 @@
+7f94b9c 2025-06-02 chore(tasks): sync task queue
+b99a394 2025-06-02 Applying previous commit.
+5a61018 2025-06-02 docs(workflow): clarify persistent memory steps
+ab0b2fa 2025-06-02 docs(workflow): refine memory and task sync
 ee5bc9e 2025-06-02 docs(workflow): refine memory and task sync
 c409552 2025-06-02 docs(workflow): clarify commit-based memory
 796ed43 2025-06-02 chore(docs): refine automation memory rules
@@ -14,7 +18,3 @@ ee0d620 2025-06-02 Task 14: add order book heatmap
 de8515d 2025-06-02 Task 12: refine task workflow
 a7a6b2a 2025-06-02 Delete .windsurfrules
 22f5dd0 2025-06-02 docs: add workflow summary
-b2f54dc 2025-06-02 Task 11: update autoTaskRunner commit format
-668907b 2025-06-02 docs: update signal references and add root state file
-b70f9c4 2025-06-02 Task 10: merge testing agents
-aa566ef 2025-06-02 feat(cache): add importance-based TTL
