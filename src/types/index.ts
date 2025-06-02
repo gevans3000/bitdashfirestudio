@@ -17,9 +17,11 @@ export interface CoinData {
   ma50?: number;
   ma200?: number;
   maCrossover?: 'bullish' | 'bearish';
+  ema10?: number;
   ema20?: number;
   ema50?: number;
   ema200?: number;
+  emaCrossover?: 'bullish' | 'bearish' | 'mixed';
   volumeProfilePrice?: number;
   rsi14?: number;
   signal?: 'buy' | 'sell' | 'hold';

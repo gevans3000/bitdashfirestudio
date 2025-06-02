@@ -45,6 +45,7 @@ import OrderBookWidget from "@/components/OrderBookWidget";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
+import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -59,6 +60,7 @@ import {
   rsi,
   exponentialMovingAverage,
   calculateVolumeProfile,
+  emaCrossoverState,
 } from "@/lib/indicators";
 
 const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
@@ -364,9 +366,11 @@ const CryptoDashboardPage: FC = () => {
       const ma50 = simpleMovingAverage(prices, 50);
       const ma200 = simpleMovingAverage(prices, 200);
       const maCrossover = ma50 > ma200 ? "bullish" : "bearish";
+      const ema10 = exponentialMovingAverage(prices, 10);
       const ema20 = exponentialMovingAverage(prices, 20);
       const ema50 = exponentialMovingAverage(prices, 50);
       const ema200 = exponentialMovingAverage(prices, 200);
+      const emaCrossover = emaCrossoverState([ema10, ema20, ema50, ema200]);
       const volumeProfile = calculateVolumeProfile(prices, volumes);
       const highestVolume = volumeProfile.reduce(
         (a, b) => (b.volume > a.volume ? b : a),
@@ -379,9 +383,11 @@ const CryptoDashboardPage: FC = () => {
         ma50,
         ma200,
         maCrossover,
+        ema10,
         ema20,
         ema50,
         ema200,
+        emaCrossover,
         volumeProfilePrice,
         rsi14,
         signal,
@@ -651,9 +657,11 @@ const CryptoDashboardPage: FC = () => {
             ma50: maData?.ma50,
             ma200: maData?.ma200,
             maCrossover: maData?.maCrossover,
+            ema10: maData?.ema10,
             ema20: maData?.ema20,
             ema50: maData?.ema50,
             ema200: maData?.ema200,
+            emaCrossover: maData?.emaCrossover,
             volumeProfilePrice: maData?.volumeProfilePrice,
             rsi14: maData?.rsi14,
             signal: maData?.signal,
@@ -1326,6 +1334,21 @@ const CryptoDashboardPage: FC = () => {
                 value={coin.maCrossover === "bullish" ? "Bullish" : "Bearish"}
                 isLoading={coin.status === "loading"}
               />
+              {coin.ema10 !== undefined && (
+                <ValueDisplay
+                  label="EMA 10"
+                  value={coin.ema10.toFixed(2)}
+                  unit={coin.symbol.toUpperCase()}
+                  isLoading={coin.status === "loading"}
+                />
+              )}
+              {coin.emaCrossover && (
+                <ValueDisplay
+                  label="EMA Crossover"
+                  value={coin.emaCrossover}
+                  isLoading={coin.status === "loading"}
+                />
+              )}
               {coin.ema20 !== undefined && (
                 <ValueDisplay
                   label="EMA 20"
@@ -1767,6 +1790,7 @@ const CryptoDashboardPage: FC = () => {
         <VolumeSpikeChart />
         <OrderFlowWidget />
         <VwapWidget />
+        <EmaCrossoverWidget />
         <StochRsiWidget />
         <AtrWidget />
         <SessionTimerWidget />

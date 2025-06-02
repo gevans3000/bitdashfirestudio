@@ -8,6 +8,7 @@ import {
   stochasticRsi,
   cumulativeDelta,
   buyPressurePercent,
+  emaCrossoverState,
   OHLC,
 } from '../lib/indicators';
 
@@ -60,5 +61,10 @@ describe('indicator calculations', () => {
     const pressure = buyPressurePercent(trades);
     expect(pressure).toBeGreaterThan(0);
     expect(pressure).toBeLessThanOrEqual(100);
+  });
+  it('ema crossover state', () => {
+    expect(emaCrossoverState([10, 9, 8, 7])).toBe('bullish');
+    expect(emaCrossoverState([7, 8, 9, 10])).toBe('bearish');
+    expect(emaCrossoverState([10, 8, 9, 7])).toBe('mixed');
   });
 });
