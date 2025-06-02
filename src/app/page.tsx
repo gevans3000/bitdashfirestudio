@@ -45,6 +45,7 @@ import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import VolumeProfileChart from "@/components/VolumeProfileChart";
+import IchimokuWidget from "@/components/IchimokuWidget";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
@@ -571,9 +572,12 @@ const CryptoDashboardPage: FC = () => {
 
   useEffect(() => {
     fetchCorrelationData().catch(console.error);
-    const id = setInterval(() => {
-      fetchCorrelationData().catch(console.error);
-    }, 5 * 60 * 1000);
+    const id = setInterval(
+      () => {
+        fetchCorrelationData().catch(console.error);
+      },
+      5 * 60 * 1000,
+    );
     return () => clearInterval(id);
   }, [fetchCorrelationData]);
 
@@ -1669,7 +1673,7 @@ const CryptoDashboardPage: FC = () => {
           >
             {renderCoinData(appData.btc, Bitcoin)}
           </DataCard>
-          
+
           <DataCard
             title="BTC Chart"
             icon={BarChart3}
@@ -1782,23 +1786,24 @@ const CryptoDashboardPage: FC = () => {
             status="fresh"
             className="sm:col-span-2 lg:col-span-2"
           >
-          {correlationData.length > 0 ? (
-            <CorrelationPanel data={correlationData} />
-          ) : (
-            <p className="text-center p-4">Calculating correlations...</p>
-          )}
-        </DataCard>
-        <OrderBookWidget />
-        <VolumeSpikeChart />
-        <VolumeProfileChart />
-        <OrderFlowWidget />
-        <VwapWidget />
-        <BollingerWidget />
-        <EmaCrossoverWidget />
-        <StochRsiWidget />
-        <AtrWidget />
-        <SessionTimerWidget />
-        <SignalCard />
+            {correlationData.length > 0 ? (
+              <CorrelationPanel data={correlationData} />
+            ) : (
+              <p className="text-center p-4">Calculating correlations...</p>
+            )}
+          </DataCard>
+          <OrderBookWidget />
+          <VolumeSpikeChart />
+          <VolumeProfileChart />
+          <IchimokuWidget />
+          <OrderFlowWidget />
+          <VwapWidget />
+          <BollingerWidget />
+          <EmaCrossoverWidget />
+          <StochRsiWidget />
+          <AtrWidget />
+          <SessionTimerWidget />
+          <SignalCard />
           <DataCard
             title="Signal History"
             icon={Brain}
