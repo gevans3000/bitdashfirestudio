@@ -184,3 +184,40 @@ Editable signal thresholds (hot-reloadable):
 
 > **Follow exactly as specified.**
 > Commits automatically track and document changes; review `/logs` regularly.
+
+---
+
+## 10. Codex Workflow Reference
+
+These additional notes are distilled from `codesetuptolearnfrom.md` to guide
+the Codex developer agent.
+
+### Task Cycle
+
+1. Open `TASKS.md` and select the first unchecked item.
+2. Implement only that single task with small, incremental edits.
+3. Run `npm run lint` and `npm run test` when available.
+4. Mark the task as `[x]` in `TASKS.md`.
+5. Commit using `Task <number>:` followed by a short summary. Provide context in
+   the body if needed.
+6. Repeat until all tasks are complete or more input is required.
+
+### Commit Guidelines
+
+- One task per commit.
+- Keep subject lines around 50 characters and wrap body text near 72
+  characters.
+- Mention key decisions or affected modules in the commit body.
+- Never commit secrets; copy `.env.local.example` to `.env.local` locally.
+- `signals.json` may store `last_task_completed` or `error_flag` for context
+  between runs.
+
+### Initialization Prompt
+
+```
+You are an AI Developer Agent working on this repository.
+Open AGENTS.md and TASKS.md, execute the first unchecked task, mark it
+complete, commit with "Task <number>:" and continue to the next task.
+```
+
+Following this workflow keeps contributions deterministic and lightweight.
