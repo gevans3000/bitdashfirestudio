@@ -34,12 +34,20 @@ export default function OrderBookHeatmap() {
   );
 
   const renderRows = (levels: DepthLevel[], side: 'bid' | 'ask') =>
-    levels.map((l) => (
-      <div key={`${side}-${l.price}`} className="flex text-xs" style={{ background: `rgba(${side === 'bid' ? '0,128,0' : '255,0,0'},${l.qty / maxQty})` }}>
-        <span className="flex-1 pl-1">{l.price.toFixed(2)}</span>
-        <span className="w-16 text-right pr-1">{l.qty.toFixed(3)}</span>
-      </div>
-    ));
+    levels.map((l) => {
+      const intensity = l.qty / maxQty;
+      const highlight = intensity > 0.7;
+      return (
+        <div
+          key={`${side}-${l.price}`}
+          className={`flex text-xs ${highlight ? 'ring-2 ring-yellow-400' : ''}`}
+          style={{ background: `rgba(${side === 'bid' ? '0,128,0' : '255,0,0'},${intensity})` }}
+        >
+          <span className="flex-1 pl-1">{l.price.toFixed(2)}</span>
+          <span className="w-16 text-right pr-1">{l.qty.toFixed(3)}</span>
+        </div>
+      );
+    });
 
   return (
     <DataCard title="Order Book Heatmap" className="space-y-1">

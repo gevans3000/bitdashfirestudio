@@ -22,8 +22,9 @@
     "start": "next start",
     "lint": "bash scripts/check-env.sh && eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
-    "backtest": "ts-node scripts/backtest.ts",
+    "test": "node scripts/try-cmd.js jest",
+    "backtest": "node scripts/try-cmd.js ts-node scripts/backtest.ts",
+    "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "node scripts/autoTaskRunner.js",
     "commitlog": "node scripts/commit-log.js",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest"
