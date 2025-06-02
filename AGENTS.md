@@ -138,8 +138,10 @@ export interface TradeSignal {
   * Runs lint, test and backtest for every task.
   * Logs command output to `/logs` and marks failures in `signals.json`.
   * Commits to `main` with a **333-token** summary describing what was done and what comes next.
+  * Writes `context.snapshot.md` containing the summary plus metadata (task ID, timestamp, file diffs, next objective).
   * After committing, the script rebases onto the latest `main` and pushes.
-* Codex uses commit bodies as persistent memory. Each summary serves as a retrospective and prospective context anchor.
+  * If lint, test or backtest fail, the agent enters a self-healing loop to correct the problem, commit an updated summary and continue.
+* Codex uses commit bodies and `context.snapshot.md` as persistent memory. Each summary serves as a retrospective and prospective context anchor.
 * Run `npm ci` once at session start before lint/test.
 * Use two-paragraph commit bodies:
   * `What I did` – describe the task work.
@@ -201,12 +203,12 @@ the Codex developer agent.
 ### Task Cycle
 
 1. Open `TASKS.md` and select the first unchecked item.
-2. Implement only that single task with small, incremental edits.
-3. Run `npm run lint` and `npm run test` when available.
-4. Mark the task as `[x]` in `TASKS.md`.
-5. Commit using `Task <number>:` followed by a short summary. Provide context in
-   the body if needed.
-6. Repeat until all tasks are complete or more input is required.
+2. Read `context.snapshot.md` for recent history and next objective.
+3. Implement only that single task with small, incremental edits.
+4. Run `npm run lint` and `npm run test` when available.
+5. Mark the task as `[x]` in `TASKS.md`.
+6. Commit using `Task <number>:` followed by a short summary. Include a 333-token body that doubles as the snapshot entry.
+7. Repeat until all tasks are complete or more input is required. If a command fails, loop back to fix it and update the snapshot.
 
 ### Commit Guidelines
 

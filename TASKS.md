@@ -11,9 +11,9 @@
 1. Execute `npm run auto` to let the AutoTaskRunner process tasks.
 2. The script loops through each unchecked item below.
 3. For every task it runs lint, test and backtest.
-4. It marks the task `[x]`, updates `signals.json` and commits with a **333-token** summary.
+4. It marks the task `[x]`, updates `signals.json`, writes `context.snapshot.md` with task metadata and commits with a **333-token** summary.
 5. After committing, it rebases on `main`, pushes and generates `logs/commit.log`.
-6. If any command fails, `/logs/block-<task>.txt` is written and `error_flag` is set before halting.
+6. If any command fails, the agent attempts a correction cycle. Errors are logged to `/logs/block-<task>.txt`. Once fixed, the snapshot and commit are updated before resuming.
 
 ## 🚀 Top-Priority Enhancements
 
