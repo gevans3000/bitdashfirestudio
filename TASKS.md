@@ -10,9 +10,9 @@
 - [x] **Binance Order-Book Depth**
   - [x] Real-time depth widget (bid/ask imbalance)
   - [x] Highlight significant buy/sell walls
-- [ ] **Volume-Spike Detection**
-  - [ ] Color-coded spike overlay on chart
-  - [ ] Threshold alerts for abnormal volume
+- [x] **Volume-Spike Detection**
+  - [x] Color-coded spike overlay on chart
+  - [x] Threshold alerts for abnormal volume
 - [ ] **VWAP (Volume-Weighted Avg Price)**
   - [ ] Real-time VWAP calculation
   - [ ] Price-to-VWAP deviation indicator (%)
