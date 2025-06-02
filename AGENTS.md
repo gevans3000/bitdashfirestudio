@@ -33,6 +33,7 @@
    b. Create `context.snapshot.md` if missing.
    c. Ensure package scripts `lint`, `test`, `backtest` run.
    d. Commit as `chore(bootstrap): automation rules` with a 333‑token summary.
+   e. Append commit details to `memory.md` so the Git log mirrors persistent memory.
 2. **Task Commit**
    a. Load `task_queue.json` and `TASKS.md`, choosing the first entry with `status: "pending"`.
    b. Implement **only** that task.
@@ -54,10 +55,11 @@
 | --------------------- | ----------------------------------------------------- |
 | `context.snapshot.md` | Rolling log – every commit appends its 333‑token memo |
 | `memory.md`           | Append-only history of commits and key notes |
+| Git history           | Persistent record of diffs and messages |
 | `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `context.snapshot.md` and `memory.md` first** on each new session to recall context.
+Codex must **read `context.snapshot.md`, `memory.md` and the latest git log first** on each new session to recall context.
 
 ---
 
@@ -72,6 +74,7 @@ BREAKING CHANGE: <optional>
 Closes: TASKS.md #<line‑no>
 ```
 
+Every commit message doubles as persistent memory. Append the summary, hash and changed files to `memory.md` and `context.snapshot.md`.
 *Types*: `feat`, `fix`, `chore`, `docs`, `test`.
 
 ---
@@ -142,6 +145,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 * Task checkbox ✅ in `TASKS.md`
 * Tests & lint pass
+* `memory.md` updated with commit hash and summary
 * Commit merged to `main`
 * 333‑token memo saved to `context.snapshot.md`
 * No unresolved errors or conflicts
