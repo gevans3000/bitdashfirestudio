@@ -8,9 +8,10 @@
 1. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
 2. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
 3. Each task runs lint, test and backtest.
-4. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated and both `context.snapshot.md` and `memory.md` are written.
-5. The commit message follows `Task <number>:` with a 333-token summary.
-6. The runner rebases on `main` and pushes after each commit.
+4. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
+5. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md`.
+6. The commit message follows `Task <number>:` so the git log stays in sync with the memory files.
+7. The runner rebases on `main` and pushes after each commit.
 
 ---
 
@@ -90,3 +91,4 @@
 - Test, lint and backtest logs are saved under `/logs`.
 - Each completed task is auto-committed with a passing build and updated `signals.json`.
 - `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
+- Git log mirrors TASKS.md history for quick recovery.
