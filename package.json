@@ -15,7 +15,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "backtest": "ts-node src/scripts/backtest.ts"
+    "backtest": "ts-node src/scripts/backtest.ts",
+    "auto": "ts-node src/scripts/autoTaskRunner.ts"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.8.0",
