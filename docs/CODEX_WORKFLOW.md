@@ -6,8 +6,9 @@ This document distills the key points from `CODEX-INSTRUCTIONS.txt` for working 
 
 - Each task in `TASKS.md` should be completed in a single commit.
 - Prefix commit messages with `Task <number>:` followed by a short summary.
+- Include a 333-token body that doubles as the entry for `context.snapshot.md`.
 - Keep the subject line around 50 characters; wrap body lines near 72 characters.
-- Commit history acts as long-term memory for the agent. Review recent commits before starting a new session.
+- Commit history and `context.snapshot.md` act as long-term memory. Review them before starting a new session.
 - Run `npm ci` once at the start of a session. Subsequent commits can reuse the installed `node_modules`.
 
 ## Keeping the Workspace Alive
@@ -41,7 +42,9 @@ Use this log to quickly review recent work when resuming the project.
 ## Quick Workflow Summary
 
 - Run `npm ci` once at the start of each session.
+- Review `context.snapshot.md` for the latest summary and next objective.
 - Execute the next unchecked task in `TASKS.md`.
+- After each commit the snapshot is updated with metadata.
 - When resuming later, run `npm run commitlog` to review recent commits.
-- Test and backtest outputs are saved to `logs/` for reference.
+- Test and backtest outputs are saved to `logs/` for reference. If they fail, fix and recommit.
 

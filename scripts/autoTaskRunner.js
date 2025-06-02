@@ -20,6 +20,7 @@ const tasksPath = path.join(repoRoot, 'TASKS.md');
 const signalsPath = path.join(repoRoot, 'signals.json');
 const logDir = path.join(repoRoot, 'logs');
 fs.mkdirSync(logDir, { recursive: true });
+const snapshotPath = path.join(repoRoot, 'context.snapshot.md');
 process.chdir(repoRoot);
 
 tryExec('npm ci');
@@ -69,6 +70,9 @@ while (true) {
 
   execSync('git add TASKS.md logs signals.json');
 
+  const nextIdx = lines.findIndex(l => l.startsWith('- [ ]'));
+  const nextTask = nextIdx === -1 ? 'none' : lines[nextIdx].replace('- [ ]', '').trim();
+
   function generateBody(desc) {
     const part1 = `What I did: ${desc}`;
     const part2 = `What's next: continue with the remaining tasks.`;
@@ -81,6 +85,22 @@ while (true) {
   }
 
   const body = generateBody(taskDesc).replace(/"/g, '\"');
+
+  const diffFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' })
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .join(', ');
+
+  const snapshot = `# Context Snapshot\n` +
+    `Task: ${taskNum} - ${taskDesc}\n` +
+    `Timestamp: ${new Date().toISOString()}\n` +
+    `Files: ${diffFiles}\n` +
+    `Next: ${nextTask}\n\n` +
+    `Summary:\n${body}\n`;
+
+  fs.writeFileSync(snapshotPath, snapshot);
+  execSync('git add context.snapshot.md');
   const header = `Task ${taskNum}: ${taskDesc}`;
   execSync(`git commit -m "${header}" -m "${body}"`);
 
