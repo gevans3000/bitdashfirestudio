@@ -15,6 +15,7 @@
 8. Run `npm run commitlog` after committing to capture the latest history.
 9. Review `logs/commit.log` before starting a new session.
 10. The runner rebases on `main` and pushes after each commit.
+11. Reference commit hashes from `memory.md` when creating follow-up tasks.
 
 ---
 
@@ -96,3 +97,4 @@
 - `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
 - `logs/commit.log` provides a concise memory dump via `npm run commitlog`.
+- Follow-up tasks mention the commit hash that introduced related changes.

@@ -1,20 +1,20 @@
+ee5bc9e 2025-06-02 docs(workflow): refine memory and task sync
+c409552 2025-06-02 docs(workflow): clarify commit-based memory
+796ed43 2025-06-02 chore(docs): refine automation memory rules
+314de5c 2025-06-02 chore(docs): add task queue and memory guide
+6b2492d 2025-06-02 Add files via upload
+008cd8e 2025-06-02 Add files via upload
+98191e9 2025-06-02 Merge task 17
+dd5af4c 2025-06-02 Update AGENTS.md
+c101376 2025-06-02 Task 17: reorganize TASKS
+8ce0b6c 2025-06-02 Task 16: enable context snapshot
+811cea5 2025-06-02 Task 15: enable autonomous merges
+ee0d620 2025-06-02 Task 14: add order book heatmap
+78a6f32 2025-06-02 Task 13: add previous day VWAP bands
+de8515d 2025-06-02 Task 12: refine task workflow
 a7a6b2a 2025-06-02 Delete .windsurfrules
 22f5dd0 2025-06-02 docs: add workflow summary
 b2f54dc 2025-06-02 Task 11: update autoTaskRunner commit format
 668907b 2025-06-02 docs: update signal references and add root state file
 b70f9c4 2025-06-02 Task 10: merge testing agents
 aa566ef 2025-06-02 feat(cache): add importance-based TTL
-8263f44 2025-06-02 chore: update commit log
-c573fb0 2025-06-02 Add files via upload
-64b67ad 2025-06-02 Task 9: add scalper add-on tasks
-80eafbf 2025-06-02 Task 8: add BTC txn count widget
-55ac5fa 2025-06-02 Task 0: record failed dependency install
-8ce0973 2025-06-02 Task 7: note dependency drift task
-d9fd120 2025-06-02 Task 1: add funding rate widget
-71fd69f 2025-06-02 Task 1: add MACD indicator
-ea51b7e 2025-06-02 docs: extend agent instructions
-6bc70be 2025-06-02 Delete Codex Automation System for Next.js Bitcoin Dashboard.pdf
-2452be3 2025-06-02 Add files via upload
-f151941 2025-06-02 feat(indicator): add RSI widget and API
-131b6f6 2025-06-02 feat(chart): add Ichimoku cloud overlay
-27fbef5 2025-06-02 feat(chart): add volume profile visualization

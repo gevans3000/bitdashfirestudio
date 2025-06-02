@@ -1,7 +1,12 @@
 # AGENTS.md – Codex Automation Charter
 
-**Project:** Windsurf · Bitcoin & SPX 5‑Minute Trading Dashboard
+**Project:** Windsurf – Bitcoin & SPX 5‑Minute Trading Dashboard
 **Agent:** `DevAgent` (ChatGPT Codex)
+
+This charter is optimized around **Git-based memory**. Every commit and
+summary becomes part of the agents long-term knowledge. Keep the task queue,
+memory files and commit history aligned so Codex can resume work even after a
+context reset.
 
 > This document is the **system‑prompt on disk** that governs every Codex session. Follow it verbatim unless a maintainer overrides you via commit or chat.
 
@@ -65,12 +70,12 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 | File                  | Purpose                                               |
 | --------------------- | ----------------------------------------------------- |
 | `context.snapshot.md` | Rolling log – every commit appends its 333‑token memo |
-| `memory.md`           | Append-only history of commit summaries |
-| Git history           | Primary record of changes and context |
+| `memory.md`           | Append-only history of commit summaries and hashes |
+| Git history           | Primary record of changes, diffs and context |
 | `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `context.snapshot.md`, `memory.md` and recent commit messages** on each new session to recall context.
+Codex must **read `context.snapshot.md`, `memory.md` and recent commit messages** on each new session to rebuild context. The `logs/commit.log` file mirrors the Git history for quick lookup.
 Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
 
 ---
@@ -88,7 +93,7 @@ Closes: TASKS.md #<line‑no>
 
 Commit subjects begin with `Task <id>:` to link history with `TASKS.md`.
 
-Every commit message doubles as persistent memory. Append the summary, commit hash and changed files to `memory.md` and `context.snapshot.md` so agents can recall which code was touched.
+Every commit message doubles as persistent memory. Append the summary, commit hash and changed files to `memory.md` and `context.snapshot.md` so agents can recall which code was touched. Reference these hashes in future tasks to maintain continuity.
 *Types*: `feat`, `fix`, `chore`, `docs`, `test`.
 
 ---
@@ -172,5 +177,6 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 1. **Pre-Session** – read `context.snapshot.md`, `memory.md` and recent commits.
 2. **After Commit** – append the 333‑token summary to both memory files and run `npm run commitlog`.
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
+4. **Reference History** – use commit hashes from `memory.md` when describing follow-up tasks.
 
 > End of AGENTS.md – obey without deviation.
