@@ -36,6 +36,36 @@
   - [x] Asian / EU session highlights
 
 ---
+### 🧩 Low-/No-cost Scalper Add-ons
+
+- [ ] **Previous Day H/L & VWAP Bands**
+  - [ ] Fetch prior-day OHLCV from Binance
+  - [ ] Plot yesterday's high, low and VWAP bands
+- [ ] **Heat-Map of Bid/Ask Walls**
+  - [ ] Build order-book heat map from depth stream
+  - [ ] Highlight large resting orders
+- [ ] **Realtime Liquidation Feed**
+  - [ ] Display Bybit liquidation clusters
+- [ ] **Cumulative Open-Interest Delta (1 h)**
+  - [ ] Chart 1 h open-interest delta to confirm moves
+- [ ] **Funding-Rate Countdown**
+  - [ ] Timer until next funding print
+- [ ] **Volatility "Squeeze" Meter (BB Width %)**
+  - [ ] Alert when BB width drops below threshold
+- [ ] **High-Volume Node Proximity**
+  - [ ] Show distance to nearest volume-profile peak
+- [ ] **MTF Trend Alignment**
+  - [ ] Compare 5 m trend with 1 h and 4 h EMAs
+- [ ] **Economic Calendar "Now" Bar**
+  - [ ] Flag upcoming high-impact events
+- [ ] **Google Trends 1-day Spike**
+  - [ ] Notify on sudden retail search spikes
+- [ ] **Mempool Fee Pressure**
+  - [ ] Integrate mempool fee data for sentiment
+- [ ] **Risk/Position-Size Calculator**
+  - [ ] Quick lot-sizing based on stop distance
+- [ ] **Session Stats Panel**
+  - [ ] Track running P&L, hit rate and average R:R
 
 ## 🔥 Core Trading Features
 
