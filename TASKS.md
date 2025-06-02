@@ -53,7 +53,7 @@
 
 ### 💧 Volume & Liquidity
 
-- [ ] BTC funding-rates widget
+- [x] BTC funding-rates widget
 - [ ] On-chain BTC txn count (CoinGecko)
 - [ ] SPY volume (Yahoo Finance)
 
