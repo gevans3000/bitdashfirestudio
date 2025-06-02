@@ -1,4 +1,10 @@
-ec979b0 2025-06-02 docs: add Codex workflow guide and commit log
+a7a6b2a 2025-06-02 Delete .windsurfrules
+22f5dd0 2025-06-02 docs: add workflow summary
+b2f54dc 2025-06-02 Task 11: update autoTaskRunner commit format
+668907b 2025-06-02 docs: update signal references and add root state file
+b70f9c4 2025-06-02 Task 10: merge testing agents
+aa566ef 2025-06-02 feat(cache): add importance-based TTL
+8263f44 2025-06-02 chore: update commit log
 c573fb0 2025-06-02 Add files via upload
 64b67ad 2025-06-02 Task 9: add scalper add-on tasks
 80eafbf 2025-06-02 Task 8: add BTC txn count widget
@@ -12,9 +18,3 @@ ea51b7e 2025-06-02 docs: extend agent instructions
 f151941 2025-06-02 feat(indicator): add RSI widget and API
 131b6f6 2025-06-02 feat(chart): add Ichimoku cloud overlay
 27fbef5 2025-06-02 feat(chart): add volume profile visualization
-8df8c93 2025-06-02 feat(bollinger): add bands widget and API
-0439d58 2025-06-02 feat(ema): add EMA crossover widget and API\n\nImplements EMA crossovers for 10/20/50/200 and displays trend. Updates TASKS.md.
-9128902 2025-06-02 feat(session): add market session timers
-1bab8ca 2025-06-02 feat(order-flow): add cumulative delta widget and API
-308a45f 2025-06-02 feat(indicator): add Stochastic RSI widget and API
-3a61961 2025-06-02 feat(vwap): add VWAP indicator and widget
