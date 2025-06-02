@@ -2,6 +2,8 @@
 
 > **Goal:** Optimize 5-minute BTC scalping with SPX context through small, atomic tasks Codex can execute autonomously.
 
+All tasks live in `task_queue.json` as `{ "id": number, "description": string, "status": "pending"|"done" }` objects. Keep this file synchronized with the checklist below so the harness always works from an accurate queue.
+
 ---
 
 ## Workflow
@@ -10,10 +12,10 @@
 3. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
 4. Each task runs lint, test and backtest.
 5. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
-6. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md`.
-7. The commit message follows `Task <number>:` so the git log stays in sync with the memory files.
+6. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md` using the one-line format described in `AGENTS.md`.
+7. The commit message begins with `Task <number>:` so the git log stays in sync with the memory files.
 8. Run `npm run commitlog` after committing to capture the latest history.
-9. Review `logs/commit.log` before starting a new session.
+9. Review `logs/commit.log` before starting a new session and reload recent summaries from `memory.md`.
 10. The runner rebases on `main` and pushes after each commit.
 11. Reference commit hashes from `memory.md` when creating follow-up tasks.
 

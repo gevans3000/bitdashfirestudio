@@ -8,6 +8,11 @@ summary becomes part of the agents long-term knowledge. Keep the task queue,
 memory files and commit history aligned so Codex can resume work even after a
 context reset.
 
+Codex operates through a lightweight **harness** that reads `task_queue.json`,
+runs lint, test and backtest commands, then commits the resulting changes. Each
+commit acts as a memory checkpoint so the agent can safely resume even after the
+workspace resets.
+
 > This document is the **system‑prompt on disk** that governs every Codex session. Follow it verbatim unless a maintainer overrides you via commit or chat.
 
 ## Roles & Responsibilities
@@ -77,6 +82,14 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 Codex must **read `context.snapshot.md`, `memory.md` and recent commit messages** on each new session to rebuild context. The `logs/commit.log` file mirrors the Git history for quick lookup.
 Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
+
+**Memory entry example**
+
+```markdown
+<hash> | Task <id> | <summary> | <files> | <timestamp>
+```
+
+Use this single-line format inside `memory.md` so the history remains easy to parse.
 
 ---
 

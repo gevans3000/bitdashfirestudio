@@ -17,5 +17,4 @@ Example:
 - Commit: `abc1234`
 ```
 
-Keep each summary under 333 tokens so it fits within Codex prompts. Git history
-and this file combined let the agent rebuild context when sessions restart.
+Keep each summary under 333 tokens so it fits within Codex prompts. Append one line per commit and run `npm run commitlog` so `logs/commit.log` mirrors this file. Git history and `memory.md` combined let the agent rebuild context when sessions restart.
