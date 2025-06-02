@@ -3,3 +3,4 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 > bitdash-firestudio@1.0.0 lint
 > bash scripts/check-env.sh && eslint . --ext .ts,.tsx
 
+❌ next missing – run 'npm ci'
