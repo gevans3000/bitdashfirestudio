@@ -1,4 +1,3 @@
-8490c24 | Tasks 21-27 | Added open interest fetch, delta chart, funding timer, and BB width alert | src/app/api/open-interest/route.ts etc. | 2025-06-03T00:49:46Z
 dd5af4c | Update AGENTS | Updated AGENTS.md | AGENTS.md | 2025-06-02T19:52:32Z
 98191e9 | Merge task 17 | Merge branch features | AGENTS.md, TASKS.md, context.snapshot.md, package.json, scripts/dev-deps.sh, scripts/try-cmd.js, src/components/OrderBookHeatmap.tsx | 2025-06-02T21:47:20Z
 008cd8e | Add guide | Add auto-instruct codex doc | auto-instruct-codex.md | 2025-06-02T21:57:56Z
@@ -18,3 +17,4 @@ b25124e | Task 20 | Record task 20 completion | memory.log, context.snapshot.md 
 bf9190526674efb5ddf73c162235c286be315bab | Task 28 | Implemented volume profile API with hourly data | src/lib/data/coingecko.ts, src/app/api/volume-profile/route.ts, TASKS.md, task_queue.json | 2025-06-03T02:23:52Z
 eee778d | Task 29 | Added volume peak distance component and API | AGENTS.md TASKS.md src/app/api/volume-profile/route.ts src/app/page.tsx src/components/VolumePeakDistance.tsx task_queue.json | 2025-06-03T03:02:04Z
 a3ed0a6 | remove AI tools | cleaned leftover Genkit scripts and dependencies after deleting src/ai | package.json | 2025-06-03T03:36:48Z
+ec6ae3a | remove funding rate feature | removed funding rate widget, countdown, routes | src/app/page.tsx src/components/FundingRateWidget.tsx src/components/FundingCountdown.tsx src/app/api/funding-rate/route.ts src/app/api/funding-schedule/route.ts src/lib/data/fundingSchedule.ts | 2025-06-03T05:16:50Z

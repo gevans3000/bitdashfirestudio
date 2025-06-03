@@ -32,11 +32,9 @@ import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import VolumeProfileChart from "@/components/VolumeProfileChart";
 import VolumePeakDistance from "@/components/VolumePeakDistance";
 import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
-import FundingCountdown from "@/components/FundingCountdown";
 import BbWidthAlert from "@/components/BbWidthAlert";
 import IchimokuWidget from "@/components/IchimokuWidget";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
-import FundingRateWidget from "@/components/FundingRateWidget";
 import TxnCountWidget from "@/components/TxnCountWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
@@ -755,8 +753,6 @@ const CryptoDashboardPage: FC = () => {
           <OpenInterestDeltaChart />
           <IchimokuWidget />
           <OrderFlowWidget />
-          <FundingRateWidget />
-          <FundingCountdown />
           <TxnCountWidget />
           <VwapWidget />
           <PrevDayBands />
