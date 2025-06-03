@@ -31,7 +31,6 @@ import OrderBookHeatmap from "@/components/OrderBookHeatmap";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import VolumeProfileChart from "@/components/VolumeProfileChart";
 import VolumePeakDistance from "@/components/VolumePeakDistance";
-import LiquidationClustersChart from "@/components/LiquidationClustersChart";
 import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
 import FundingCountdown from "@/components/FundingCountdown";
 import BbWidthAlert from "@/components/BbWidthAlert";
@@ -753,7 +752,6 @@ const CryptoDashboardPage: FC = () => {
           <VolumeSpikeChart />
           <VolumeProfileChart />
           <VolumePeakDistance />
-          <LiquidationClustersChart />
           <OpenInterestDeltaChart />
           <IchimokuWidget />
           <OrderFlowWidget />
