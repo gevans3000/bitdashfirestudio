@@ -32,7 +32,8 @@
 
 * Keep each block ≤ 333 tokens.
 * UTC timestamp format `YYYY‑MM‑DD HH:MM UTC`.
-* Monotonic `mem‑###` counter.
+* Monotonic `mem‑###` counter. The `mem‑ID` value is global and keeps increasing
+  even when snapshots are archived.
 * Never alter prior blocks; use append‑only semantics.
 
 ---
