@@ -23,6 +23,12 @@ workspace resets.
 - **Tester** – runs lint, test and backtest commands, reporting failures.
 - **Reviewer** – checks commit quality and ensures guidelines are met.
 
+### DocAgent
+- Responsible only for `context.snapshot.md`, `memory.log` and related docs.
+- Must read `PERSISTENT_MEMORY_GUIDE.md` first, then follow the
+  [Manual Kick-off Prompt](PERSISTENT_MEMORY_GUIDE.md#5--manual-kick-off-prompt-for-chatgpt-codex-ui).
+- Operates in four phases: analysis, consolidation, implementation and commit.
+
 These roles operate sequentially within the `DevAgent` to keep automation predictable.
 
 ---

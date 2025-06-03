@@ -33,3 +33,6 @@ ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candl
 59778e6 | improve memory append durability | PERSISTENT_MEMORY_GUIDE.md, scripts/append-memory.sh | 2025-06-03T14:38:41Z
 949ea11 | mem-002 allow memory.log edits | PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md, scripts/append-memory.sh | 2025-06-03T14:47:56Z
 2819790 | mem-004 update DocAgent protocol | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T15:43:31Z
+4387741 | mem-006 clarify DocAgent role | AGENTS.md | 2025-06-03T16:00:20Z
+3d7205c | chore log update | logs/commit.log, memory.log | 2025-06-03T16:00:36Z
+08da8e8 | chore log update | memory.log | 2025-06-03T16:01:12Z
