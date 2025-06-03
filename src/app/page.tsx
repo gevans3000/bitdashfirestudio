@@ -13,32 +13,11 @@ import DashboardHeader from "@/components/DashboardHeader";
 import DataCard from "@/components/DataCard";
 import ValueDisplay from "@/components/ValueDisplay";
 import type { AppData, CoinData } from "@/types";
-import {
-  Bitcoin,
-  Shapes,
-  BarChart2,
-} from "lucide-react";
+import { Bitcoin, Shapes, BarChart2 } from "lucide-react";
 
 import MarketChart from "@/components/MarketChart";
-import AtrWidget from "@/components/AtrWidget";
-import VwapWidget from "@/components/VwapWidget";
-import PrevDayBands from "@/components/PrevDayBands";
-import StochRsiWidget from "@/components/StochRsiWidget";
 import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
-import OrderBookWidget from "@/components/OrderBookWidget";
-import OrderBookHeatmap from "@/components/OrderBookHeatmap";
-import VolumeSpikeChart from "@/components/VolumeSpikeChart";
-import VolumeProfileChart from "@/components/VolumeProfileChart";
-import VolumePeakDistance from "@/components/VolumePeakDistance";
-import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
-import FundingCountdown from "@/components/FundingCountdown";
-import BbWidthAlert from "@/components/BbWidthAlert";
-import IchimokuWidget from "@/components/IchimokuWidget";
-import OrderFlowWidget from "@/components/OrderFlowWidget";
-import FundingRateWidget from "@/components/FundingRateWidget";
-import TxnCountWidget from "@/components/TxnCountWidget";
-import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
@@ -54,7 +33,6 @@ import {
   calculateVolumeProfile,
   emaCrossoverState,
 } from "@/lib/indicators";
-
 
 const initialAppData: AppData = {
   btc: null,
@@ -72,7 +50,15 @@ const loadInitialData = (): AppData => {
     const savedData = localStorage.getItem("cryptoDashboardData");
     if (savedData) {
       const parsed = JSON.parse(savedData);
-      const { trending: _t, fearGreed: _f, spy: _s1, spx: _s2, dxy: _d, us10y: _u, ...rest } = parsed;
+      const {
+        trending: _t,
+        fearGreed: _f,
+        spy: _s1,
+        spx: _s2,
+        dxy: _d,
+        us10y: _u,
+        ...rest
+      } = parsed;
       return {
         ...initialAppData,
         ...rest,
@@ -138,7 +124,6 @@ const CryptoDashboardPage: FC = () => {
   useEffect(() => {
     appDataRef.current = appData;
   }, [appData]);
-
 
   const fetchBtcMovingAverages = useCallback(async () => {
     const CACHE_KEY = "btc_ma_data";
@@ -221,9 +206,6 @@ const CryptoDashboardPage: FC = () => {
       return null;
     }
   }, []);
-
-
-
 
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
@@ -348,8 +330,6 @@ const CryptoDashboardPage: FC = () => {
         console.error(cryptoErrorMsg);
       }
 
-
-
       let currentGlobalError = appDataRef.current.globalError || "";
       currentGlobalError = currentGlobalError
         .split(". ")
@@ -408,10 +388,8 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
-
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
-
 
   const navItems = [
     { label: "Metric" },
@@ -597,7 +575,6 @@ const CryptoDashboardPage: FC = () => {
     );
   };
 
-
   // Handle manual refresh
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
@@ -670,9 +647,7 @@ const CryptoDashboardPage: FC = () => {
     return "loading";
   };
 
-  const hasLoadedData =
-    isClient &&
-    (appData.btc || appData.eth);
+  const hasLoadedData = isClient && (appData.btc || appData.eth);
 
   // Only render the welcome message on the client side
   const renderWelcomeMessage = () => {
@@ -730,7 +705,7 @@ const CryptoDashboardPage: FC = () => {
 
           <DataCard
             title="BTC Chart"
-            icon={BarChart3}
+            icon={BarChart2}
             status="fresh"
             className="sm:col-span-2 lg:col-span-2"
           >
@@ -746,29 +721,9 @@ const CryptoDashboardPage: FC = () => {
             {renderCoinData(appData.eth, Shapes)}
           </DataCard>
 
-
-          <OrderBookWidget />
-          <OrderBookHeatmap />
-          <VolumeSpikeChart />
-          <VolumeProfileChart />
-          <VolumePeakDistance />
-          <OpenInterestDeltaChart />
-          <IchimokuWidget />
-          <OrderFlowWidget />
-          <FundingRateWidget />
-          <FundingCountdown />
-          <TxnCountWidget />
-          <VwapWidget />
-          <PrevDayBands />
           <BollingerWidget />
           <EmaCrossoverWidget />
           <RsiWidget />
-          <StochRsiWidget />
-          <AtrWidget />
-          <SessionTimerWidget />
-          <BbWidthAlert />
-
-
         </div>
 
         <footer className="text-center mt-8 py-4 border-t">
