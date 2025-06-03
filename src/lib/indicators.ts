@@ -80,6 +80,16 @@ export function bollingerBands(
   return { upper, middle, lower };
 }
 
+export function bollingerWidth(
+  closes: number[],
+  period: number,
+  stdDev: number,
+): number {
+  const { upper, lower } = bollingerBands(closes, period, stdDev);
+  if (lower === 0) return 0;
+  return ((upper - lower) / lower) * 100;
+}
+
 export function volumeSMA(volumes: number[], period: number): number {
   return simpleMovingAverage(volumes, period);
 }
