@@ -102,7 +102,8 @@ You are Codex DocAgent. Focus solely on persistent‑memory maintenance.
 ## 6 · append-memory.sh
 
 Run `scripts/append-memory.sh "Summary" "Next goal"` to append a new memory block.
-The script reads the last `mem-###` ID in `context.snapshot.md`, increments it,
-and writes the block with the current UTC timestamp and short commit hash. It
-uses a temporary file and atomic move to avoid corruption. If the append fails,
-a log is written to `logs/memory-error-<timestamp>.txt`.
+The script reads only the last 20 lines of `context.snapshot.md` to find the most
+recent `mem-###` ID, increments it, and writes the block with the current UTC
+timestamp and short commit hash. The data is written to a temporary file, flushed
+to disk with `fsync`, and then atomically moved into place to avoid corruption.
+If the append fails, a log is written to `logs/memory-error-<timestamp>.txt`.
