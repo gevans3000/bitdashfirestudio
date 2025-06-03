@@ -1,5 +1,3 @@
-bf91905 | Task 28 | Implemented volume profile API with hourly data | src/lib/data/coingecko.ts, src/app/api/volume-profile/route.ts, TASKS.md, task_queue.json | 2025-06-03T02:23:52Z
-eee778d | Task 29 | Added volume peak distance component and API | AGENTS.md TASKS.md src/app/api/volume-profile/route.ts src/app/page.tsx src/components/VolumePeakDistance.tsx task_queue.json | 2025-06-03T03:02:04Z
 a3ed0a6 | remove AI tools | cleaned leftover Genkit scripts and dependencies after deleting src/ai | package.json | 2025-06-03T03:36:48Z
 b5ea277 | removed old liquidation modules | src/lib/data/bybitLiquidations.ts src/lib/liquidationClusters.ts | 2025-06-03T05:16:13Z
 ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candles/route.ts, src/lib/data/binanceCandles.ts, task_queue.json | 2025-06-03T05:28:46Z
@@ -18,3 +16,5 @@ ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candl
 d022778 | mem-004 refine DocAgent protocol | AGENTS.md, PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md | 2025-06-03T16:09:21Z
 66b6689 | mem-007 add CODEX_START instructions | CODEX_START.md | 2025-06-03T17:09:43Z
 53a7019 | mem-008 remove outdated memory guide | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T17:10:43Z
+e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:16:24Z
+9a1c1ad | docs(memory) align with CODEX_START | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:35:02Z

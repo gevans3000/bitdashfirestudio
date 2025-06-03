@@ -1,5 +1,5 @@
 # AGENTS.md – Codex Automation Charter
-Codex must load PERSISTENT_MEMORY_GUIDE.md before any task cycle.
+Codex must load CODEX_START.md before any task cycle.
 **Project:** Windsurf – Bitcoin & SPX 5‑Minute Trading Dashboard
 **Agent:** `DevAgent` (ChatGPT Codex)
 
@@ -25,8 +25,8 @@ workspace resets.
 
 ### DocAgent
 - Responsible only for `context.snapshot.md`, `memory.log` and related docs.
-- Must read `PERSISTENT_MEMORY_GUIDE.md` first, then follow the
-  [Manual Kick-off Prompt](PERSISTENT_MEMORY_GUIDE.md#5--manual-kick-off-prompt-for-chatgpt-codex-ui).
+- Must read `CODEX_START.md` first, then follow the
+  [Manual Kick-off Prompt](CODEX_START.md#codex-kickoff-prompt).
 - Operates in four phases: analysis, consolidation, implementation and commit.
 
 This agent safeguards the persistent-memory system. It never edits application code and focuses on one memory task per session—archiving old snapshots, appending new entries or updating memory documentation. Each commit follows the mem-ID workflow outlined in the guide.
