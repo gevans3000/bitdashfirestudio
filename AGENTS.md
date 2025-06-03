@@ -174,9 +174,8 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 * Task checkbox ✅ in `TASKS.md`
 * Tests & lint pass
-* `memory.md` updated with commit hash and summary
+* `memory.log` updated with commit hash and summary
 * Commit merged to `main`
-* 333‑token memo saved to `context.snapshot.md`
 * `task_queue.json` and `TASKS.md` in sync
 * No unresolved errors or conflicts
 
@@ -184,9 +183,9 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 ## 9 · Commit-Based Memory Workflow
 
-1. **Pre-Session** – read `context.snapshot.md`, `memory.md` and recent commits.
-2. **After Commit** – append the 333‑token summary to both memory files and run `npm run commitlog`.
+1. **Pre-Session** – read `memory.log` and recent commits.
+2. **After Commit** – append the 333‑token summary to `memory.log` and run `npm run commitlog`.
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
-4. **Reference History** – use commit hashes from `memory.md` when describing follow-up tasks.
+4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 
 > End of AGENTS.md – obey without deviation.
