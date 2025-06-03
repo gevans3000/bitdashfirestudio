@@ -11,7 +11,7 @@
   {"id": 26, "description": "compute Bollinger Band width", "status": "done"},
   {"id": 27, "description": "alert when width falls below threshold", "status": "done"},
   {"id": 28, "description": "build volume profile from recent data", "status": "done"},
-  {"id": 29, "description": "show distance to nearest volume peak", "status": "pending"},
+  {"id": 29, "description": "show distance to nearest volume peak", "status": "done"},
   {"id": 30, "description": "fetch 1 h and 4 h candles", "status": "pending"},
   {"id": 31, "description": "compare 5 m EMA trend with higher timeframes", "status": "pending"},
   {"id": 32, "description": "flag upcoming high-impact economic events", "status": "pending"},
