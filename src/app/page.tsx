@@ -18,13 +18,10 @@ import type {
   StockData,
   TrendingData,
   FearGreedData,
-  MarketSentimentAnalysisOutput as AISentimentData,
   TrendingCoinItem,
 } from "@/types";
-import { marketSentimentAnalysis } from "@/ai/flows/market-sentiment-analysis";
 import {
   Bitcoin,
-  Brain,
   Briefcase,
   Gauge,
   Shapes,
@@ -77,8 +74,6 @@ const ALPHA_VANTAGE_API_KEY =
   process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || "demo"; // Get a free key from Alpha Vantage if needed
 const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
 const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
-const AI_ANALYSIS_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
-const INITIAL_AI_ANALYSIS_DELAY_MS = 15 * 1000; // 15 seconds
 
 const getMockStockData = (symbol?: string): StockData => {
   const now = new Date().toISOString();
@@ -156,11 +151,9 @@ const initialAppData: AppData = {
   us10y: null, // Don't load any data initially
   trending: null,
   fearGreed: null,
-  aiSentiment: null,
   lastUpdated: null,
   globalError: "Click the refresh button to load the latest data",
   loading: false, // Start with loading false since we're not loading anything initially
-  loadingAi: false,
 };
 
 // Load data from localStorage on initial render
@@ -176,7 +169,6 @@ const loadInitialData = (): AppData => {
         ...initialAppData,
         ...parsed,
         loading: false,
-        loadingAi: false,
         globalError:
           parsed.globalError ||
           "Click the refresh button to load the latest data",
@@ -232,7 +224,6 @@ const CryptoDashboardPage: FC = () => {
             us10y: appData.us10y,
             trending: appData.trending,
             fearGreed: appData.fearGreed,
-            aiSentiment: appData.aiSentiment,
             lastUpdated: appData.lastUpdated,
             globalError: appData.globalError,
           }),
@@ -597,7 +588,6 @@ const CryptoDashboardPage: FC = () => {
             ...prev,
             ...data,
             loading: false,
-            loadingAi: false,
           }));
           return;
         }
@@ -608,7 +598,6 @@ const CryptoDashboardPage: FC = () => {
     setAppData((prev) => ({
       ...prev,
       loading: true,
-      loadingAi: true,
       globalError: prev.globalError?.includes("Refreshing data")
         ? prev.globalError
         : null,
@@ -1066,143 +1055,6 @@ const CryptoDashboardPage: FC = () => {
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
 
-  const runAiAnalysis = useCallback(async () => {
-    const currentData = appDataRef.current;
-    if (currentData.loadingAi) return;
-
-    const AI_CACHE_KEY = "ai_analysis";
-
-    // Try to get from cache first
-    const cached = localStorage.getItem(AI_CACHE_KEY);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < 15 * 60 * 1000) {
-        // 15 minute cache
-        setAppData((prev) => ({
-          ...prev,
-          aiSentiment: data,
-          loadingAi: false,
-        }));
-        return;
-      }
-    }
-
-    if (
-      currentData.btc &&
-      currentData.eth &&
-      currentData.spy &&
-      currentData.spx &&
-      currentData.dxy &&
-      currentData.us10y
-    ) {
-      // Only run analysis if we don't have a recent result or data has changed significantly
-      const shouldRunAnalysis =
-        !currentData.aiSentiment ||
-        Date.now() -
-          new Date(currentData.aiSentiment.timestamp || 0).getTime() >
-          15 * 60 * 1000;
-
-      if (!shouldRunAnalysis) return;
-
-      setAppData((prev) => ({ ...prev, loadingAi: true }));
-
-      try {
-        const sentimentResult = await marketSentimentAnalysis({
-          btcPrice: currentData.btc.price,
-          ethPrice: currentData.eth.price,
-          spyPrice: currentData.spy.price,
-          spxPrice: currentData.spx.price,
-          dxyPrice: currentData.dxy.price,
-          us10yPrice: currentData.us10y.price,
-        });
-
-        // Only update if we got a fresh analysis or we don't have any analysis yet
-        if (!sentimentResult.cached || !currentData.aiSentiment) {
-          setAppData((prev) => {
-            let currentGlobalError = prev.globalError || "";
-            currentGlobalError = currentGlobalError
-              .split(". ")
-              .filter(
-                (msg) => !msg.toLowerCase().includes("ai sentiment analysis"),
-              )
-              .join(". ")
-              .trim();
-
-            if (
-              currentGlobalError &&
-              !currentGlobalError.endsWith(".") &&
-              currentGlobalError.length > 0
-            ) {
-              currentGlobalError += ". ";
-            }
-
-            return {
-              ...prev,
-              aiSentiment: {
-                ...sentimentResult,
-                timestamp: new Date().toISOString(),
-              },
-              loadingAi: false,
-              globalError: currentGlobalError || null,
-            };
-          });
-        } else {
-          setAppData((prev) => ({ ...prev, loadingAi: false }));
-        }
-      } catch (error) {
-        console.error("Error in AI sentiment analysis:", error);
-        let aiErrorMsg = "AI sentiment analysis failed.";
-        if (error instanceof Error && error.message.includes("429")) {
-          aiErrorMsg = "AI sentiment analysis rate limited. Will retry later.";
-        }
-
-        setAppData((prev) => {
-          let currentGlobalError = prev.globalError || "";
-          currentGlobalError = currentGlobalError
-            .split(". ")
-            .filter(
-              (msg) =>
-                !msg
-                  .toLowerCase()
-                  .includes("ai sentiment analysis failed due to rate limits"),
-            )
-            .join(". ");
-          if (
-            currentGlobalError &&
-            !currentGlobalError.endsWith(".") &&
-            currentGlobalError.length > 0
-          )
-            currentGlobalError += ". ";
-
-          return {
-            ...prev,
-            aiSentiment: prev.aiSentiment || null,
-            loadingAi: false,
-            globalError: (currentGlobalError + aiErrorMsg).trim(),
-          };
-        });
-      }
-    } else {
-      if (!currentData.loading) {
-        setAppData((prev) => ({
-          ...prev,
-          loadingAi: false,
-          aiSentiment: null,
-        }));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const initialRunTimeout = setTimeout(() => {
-      runAiAnalysis();
-    }, INITIAL_AI_ANALYSIS_DELAY_MS);
-    const aiInterval = setInterval(runAiAnalysis, AI_ANALYSIS_INTERVAL_MS);
-    return () => {
-      clearTimeout(initialRunTimeout);
-      clearInterval(aiInterval);
-    };
-  }, [runAiAnalysis]);
 
   const navItems = [
     { label: "Metric" },
@@ -1513,7 +1365,6 @@ const CryptoDashboardPage: FC = () => {
         ...prev,
         globalError: "Refreshing data...",
         loading: true,
-        loadingAi: true,
       }));
 
       // Clear any existing errors
@@ -1543,25 +1394,6 @@ const CryptoDashboardPage: FC = () => {
           }),
         ]);
 
-      // Check if we have all required data for AI analysis
-      const hasAllData = [
-        dxyResult,
-        us10yResult,
-        cryptoResult,
-        stockResult,
-      ].every(
-        (result) => result.status === "fulfilled" && result.value !== null,
-      );
-
-      // Run AI analysis if we have all the required data
-      if (hasAllData) {
-        try {
-          await runAiAnalysis();
-        } catch (e) {
-          console.error("Error in AI analysis:", e);
-        }
-      }
-
       // Calculate refresh duration
       const refreshDuration = Date.now() - startTime;
 
@@ -1569,7 +1401,6 @@ const CryptoDashboardPage: FC = () => {
       setAppData((prev) => ({
         ...prev,
         loading: false,
-        loadingAi: false,
         lastUpdated: new Date().toISOString(),
         globalError: null,
       }));
@@ -1581,7 +1412,6 @@ const CryptoDashboardPage: FC = () => {
         ...prev,
         globalError: `Error refreshing data: ${error instanceof Error ? error.message : "Unknown error"}`,
         loading: false,
-        loadingAi: false,
       }));
     } finally {
       setIsRefreshing(false);
@@ -1812,52 +1642,6 @@ const CryptoDashboardPage: FC = () => {
           <SessionTimerWidget />
           <BbWidthAlert />
 
-          <DataCard
-            title="AI Market Sentiment"
-            icon={Brain}
-            status={
-              appData.aiSentiment?.status ??
-              (appData.loadingAi ? "loading" : "error")
-            }
-            className="sm:col-span-2 lg:col-span-2"
-          >
-            {appData.loadingAi ? (
-              <p className="text-center p-4">
-                Generating AI sentiment analysis...
-              </p>
-            ) : appData.aiSentiment ? (
-              <div className="space-y-2 text-sm p-1">
-                <ValueDisplay
-                  label="Overall Sentiment"
-                  value={appData.aiSentiment.overallSentiment}
-                />
-                <ValueDisplay
-                  label="Bitcoin (BTC) Sentiment"
-                  value={appData.aiSentiment.btcSentiment}
-                />
-                <ValueDisplay
-                  label="Ethereum (ETH) Sentiment"
-                  value={appData.aiSentiment.ethSentiment}
-                />
-                <ValueDisplay
-                  label="Stock Market Sentiment"
-                  value={appData.aiSentiment.stockMarketSentiment}
-                />
-              </div>
-            ) : appData.btc &&
-              appData.eth &&
-              appData.spy &&
-              appData.spx &&
-              appData.dxy &&
-              appData.us10y ? (
-              <p className="text-center p-4">
-                AI sentiment analysis will be generated shortly. Waiting for
-                next scheduled run.
-              </p>
-            ) : (
-              <p className="text-center p-4">AI sentiment data unavailable.</p>
-            )}
-          </DataCard>
 
           <DataCard
             title="Top 7 Trending Coins"

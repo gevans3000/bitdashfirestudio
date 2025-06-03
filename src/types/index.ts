@@ -1,4 +1,3 @@
-import type { MarketSentimentAnalysisOutput as AiSentimentOutput } from '@/ai/flows/market-sentiment-analysis';
 
 // Removed detailed indicators as basic free APIs don't usually provide them.
 export interface CoinData {
@@ -62,8 +61,6 @@ export interface FearGreedData {
   status: 'fresh' | 'cached_error' | 'error' | 'loading';
 }
 
-export interface MarketSentimentAnalysisOutput extends AiSentimentOutput {}
-
 export interface AppData {
   btc: CoinData | null;
   eth: CoinData | null;
@@ -73,11 +70,9 @@ export interface AppData {
   us10y: StockData | null;
   trending: TrendingData | null;
   fearGreed: FearGreedData | null;
-  aiSentiment: MarketSentimentAnalysisOutput | null;
   lastUpdated: string | null; // Timestamp of the last successful simulated fetch
   globalError: string | null; // For errors fetching the main /api/dashboard
   loading: boolean; // Global loading state for the initial "simulated" fetch
-  loadingAi: boolean;
 }
 
 export interface TradeSignal {
