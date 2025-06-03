@@ -98,3 +98,11 @@ You are Codex DocAgent. Focus solely on persistent‑memory maintenance.
 * [ ] Verify **only allowed files** changed.
 
 > **Remember:** No application code edits. Your sole domain is documentation & memory integrity.
+
+## 6 · append-memory.sh
+
+Run `scripts/append-memory.sh "Summary" "Next goal"` to append a new memory block.
+The script reads the last `mem-###` ID in `context.snapshot.md`, increments it,
+and writes the block with the current UTC timestamp and short commit hash. It
+uses a temporary file and atomic move to avoid corruption. If the append fails,
+a log is written to `logs/memory-error-<timestamp>.txt`.
