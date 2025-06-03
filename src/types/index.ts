@@ -44,10 +44,6 @@ export interface StockData {
 export interface AppData {
   btc: CoinData | null;
   eth: CoinData | null;
-  spy: StockData | null;
-  spx: StockData | null;
-  dxy: StockData | null;
-  us10y: StockData | null;
   lastUpdated: string | null; // Timestamp of the last successful simulated fetch
   globalError: string | null; // For errors fetching the main /api/dashboard
   loading: boolean; // Global loading state for the initial "simulated" fetch
