@@ -167,8 +167,11 @@ export interface AgentMessage<T = unknown> {
 | `npm run test`     | Jest unit tests          |
 | `npm run backtest` | Historical strategy test |
 | `npm run dev-deps` | Install local dev deps   |
+| `npm run commitlog` | Update `logs/commit.log` |
+| `npm run auto` | Process tasks via AutoTaskRunner |
+| `npm run bootstrap` | Install deps then lint, test and backtest |
 
-Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). Reuse dependencies for subsequent tasks. If installation fails due to missing network access, continue using the helper scripts which skip missing binaries so lint, test and backtest do not block commits.
+Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). `bash scripts/check-env.sh` verifies that `next`, `jest` and `ts-node` are available. The helper `scripts/try-cmd.js` is used by lint, test and backtest commands to skip missing binaries so automation never blocks.
 
 ---
 
@@ -185,8 +188,8 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 ## 9 · Commit-Based Memory Workflow
 
-1. **Pre-Session** – read `memory.log` and recent commits.
-2. **After Commit** – append the 333‑token summary to `memory.log` and run `npm run commitlog`.
+1. **Pre-Session** – run `npm run dev-deps` if `node_modules` is missing, then read `memory.log` and recent commits.
+2. **After Commit** – append the 333‑token summary to `memory.log`, run `npm run commitlog` and continue with `npm run auto` when applicable.
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
 4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 
