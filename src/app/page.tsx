@@ -12,20 +12,11 @@ import Image from "next/image";
 import DashboardHeader from "@/components/DashboardHeader";
 import DataCard from "@/components/DataCard";
 import ValueDisplay from "@/components/ValueDisplay";
-import type {
-  AppData,
-  CoinData,
-  StockData,
-  TrendingData,
-  FearGreedData,
-  TrendingCoinItem,
-} from "@/types";
+import type { AppData, CoinData, StockData } from "@/types";
 import {
   Bitcoin,
   Briefcase,
-  Gauge,
   Shapes,
-  TrendingUp,
   BarChart3,
   DollarSign,
   Landmark,
@@ -149,8 +140,6 @@ const initialAppData: AppData = {
   spx: null,
   dxy: null, // Don't load any data initially
   us10y: null, // Don't load any data initially
-  trending: null,
-  fearGreed: null,
   lastUpdated: null,
   globalError: "Click the refresh button to load the latest data",
   loading: false, // Start with loading false since we're not loading anything initially
@@ -164,10 +153,10 @@ const loadInitialData = (): AppData => {
     const savedData = localStorage.getItem("cryptoDashboardData");
     if (savedData) {
       const parsed = JSON.parse(savedData);
-      // Ensure we have the latest structure with all required fields
+      const { trending: _t, fearGreed: _f, ...rest } = parsed;
       return {
         ...initialAppData,
-        ...parsed,
+        ...rest,
         loading: false,
         globalError:
           parsed.globalError ||
@@ -222,8 +211,6 @@ const CryptoDashboardPage: FC = () => {
             spx: appData.spx,
             dxy: appData.dxy,
             us10y: appData.us10y,
-            trending: appData.trending,
-            fearGreed: appData.fearGreed,
             lastUpdated: appData.lastUpdated,
             globalError: appData.globalError,
           }),
@@ -609,19 +596,14 @@ const CryptoDashboardPage: FC = () => {
     let cryptoErrorMsg: string | null = null;
 
     try {
-      const [marketDataResponse, trendingResponse, fearGreedResponse] =
-        await Promise.allSettled([
-          fetch(
-            "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum&order=market_cap_desc&per_page=2&page=1&sparkline=false&price_change_percentage=24h",
-          ),
-          fetch("https://api.coingecko.com/api/v3/search/trending"),
-          fetch("https://api.alternative.me/fng/?limit=1"),
-        ]);
+      const [marketDataResponse] = await Promise.allSettled([
+        fetch(
+          "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum&order=market_cap_desc&per_page=2&page=1&sparkline=false&price_change_percentage=24h",
+        ),
+      ]);
 
       let newBtcData: CoinData | null = prevData.btc;
       let newEthData: CoinData | null = prevData.eth;
-      let newTrendingData: TrendingData | null = prevData.trending;
-      let newFearGreedData: FearGreedData | null = prevData.fearGreed;
 
       if (
         marketDataResponse.status === "fulfilled" &&
@@ -698,70 +680,7 @@ const CryptoDashboardPage: FC = () => {
         console.error(cryptoErrorMsg);
       }
 
-      if (
-        trendingResponse.status === "fulfilled" &&
-        trendingResponse.value.ok
-      ) {
-        const trendingApi = await trendingResponse.value.json();
-        if (trendingApi.coins && trendingApi.coins.length > 0) {
-          anyDataFetched = true;
-          newTrendingData = {
-            coins: trendingApi.coins.slice(0, 7).map(
-              (coin: { item: any }): TrendingCoinItem => ({
-                id: coin.item.id,
-                name: coin.item.name,
-                symbol: coin.item.symbol.toUpperCase(),
-                market_cap_rank: coin.item.market_cap_rank,
-                thumb: coin.item.thumb,
-                price_btc: coin.item.price_btc,
-              }),
-            ),
-            status: "fresh",
-          };
-        } else {
-          if (newTrendingData) newTrendingData.status = "cached_error";
-          else partialError = true;
-        }
-      } else {
-        partialError = true;
-        if (newTrendingData) newTrendingData.status = "cached_error";
-        const errorText =
-          trendingResponse.status === "rejected"
-            ? trendingResponse.reason
-            : trendingResponse.value?.statusText ||
-              "trending coins fetch error";
-        cryptoErrorMsg = `${cryptoErrorMsg || ""}Failed to fetch trending coins: ${errorText}. `;
-        console.error("Failed to fetch trending coins:", errorText);
-      }
 
-      if (
-        fearGreedResponse.status === "fulfilled" &&
-        fearGreedResponse.value.ok
-      ) {
-        const fearGreedApi = await fearGreedResponse.value.json();
-        if (fearGreedApi.data && fearGreedApi.data.length > 0) {
-          anyDataFetched = true;
-          const fgValue = fearGreedApi.data[0];
-          newFearGreedData = {
-            value: fgValue.value,
-            value_classification: fgValue.value_classification,
-            timestamp: fgValue.timestamp,
-            status: "fresh",
-          };
-        } else {
-          if (newFearGreedData) newFearGreedData.status = "cached_error";
-          else partialError = true;
-        }
-      } else {
-        partialError = true;
-        if (newFearGreedData) newFearGreedData.status = "cached_error";
-        const errorText =
-          fearGreedResponse.status === "rejected"
-            ? fearGreedResponse.reason
-            : fearGreedResponse.value?.statusText || "F&G index fetch error";
-        cryptoErrorMsg = `${cryptoErrorMsg || ""}Failed to fetch F&G Index: ${errorText}. `;
-        console.error("Failed to fetch Fear & Greed Index:", errorText);
-      }
 
       let currentGlobalError = appDataRef.current.globalError || "";
       currentGlobalError = currentGlobalError
@@ -769,8 +688,6 @@ const CryptoDashboardPage: FC = () => {
         .filter(
           (msg) =>
             !msg.toLowerCase().includes("crypto") &&
-            !msg.toLowerCase().includes("trending") &&
-            !msg.toLowerCase().includes("f&g") &&
             !msg.toLowerCase().includes("ai sentiment"),
         )
         .join(". ");
@@ -799,8 +716,6 @@ const CryptoDashboardPage: FC = () => {
         ...current,
         btc: newBtcData,
         eth: newEthData,
-        trending: newTrendingData,
-        fearGreed: newFearGreedData,
         lastUpdated:
           anyDataFetched || current.lastUpdated
             ? new Date().toISOString()
@@ -818,12 +733,6 @@ const CryptoDashboardPage: FC = () => {
         ...current,
         btc: current.btc ? { ...current.btc, status: "cached_error" } : null,
         eth: current.eth ? { ...current.eth, status: "cached_error" } : null,
-        trending: current.trending
-          ? { ...current.trending, status: "cached_error" }
-          : null,
-        fearGreed: current.fearGreed
-          ? { ...current.fearGreed, status: "cached_error" }
-          : null,
         globalError: `${current.globalError ? current.globalError + " " : ""} ${errorMsg}`,
         loading: false,
         lastUpdated: current.lastUpdated || new Date().toISOString(),
@@ -1552,60 +1461,6 @@ const CryptoDashboardPage: FC = () => {
             {renderStockData(appData.us10y, Landmark)}
           </DataCard>
 
-          <DataCard
-            title="Fear & Greed Index"
-            icon={Gauge}
-            status={appData.fearGreed?.value_classification || ""}
-            className="sm:col-span-1"
-          >
-            {!isClient ? (
-              <div className="p-4 text-center">
-                Loading Fear & Greed data...
-              </div>
-            ) : appData.fearGreed ? (
-              <div className="text-center py-4">
-                <p className="text-4xl font-bold text-primary">
-                  {appData.fearGreed.value}
-                </p>
-                <p className="text-muted-foreground">
-                  {appData.fearGreed.value_classification}
-                </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                  <div
-                    className={`h-2.5 rounded-full ${
-                      appData.fearGreed.value < 20
-                        ? "bg-red-600"
-                        : appData.fearGreed.value < 40
-                          ? "bg-orange-400"
-                          : appData.fearGreed.value < 60
-                            ? "bg-yellow-400"
-                            : appData.fearGreed.value < 80
-                              ? "bg-lime-400"
-                              : "bg-green-600"
-                    }`}
-                    style={{ width: `${appData.fearGreed.value}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {appData.fearGreed.value < 20
-                    ? "Extreme Fear"
-                    : appData.fearGreed.value < 40
-                      ? "Fear"
-                      : appData.fearGreed.value < 60
-                        ? "Neutral"
-                        : appData.fearGreed.value < 80
-                          ? "Greed"
-                          : "Extreme Greed"}
-                </p>
-              </div>
-            ) : appData.loading ? (
-              <p className="text-center p-4">Loading F&G Index...</p>
-            ) : (
-              <p className="text-center p-4">
-                Fear & Greed Index data unavailable.
-              </p>
-            )}
-          </DataCard>
 
           {/* Correlation Panel */}
           <DataCard
@@ -1643,53 +1498,6 @@ const CryptoDashboardPage: FC = () => {
           <BbWidthAlert />
 
 
-          <DataCard
-            title="Top 7 Trending Coins"
-            icon={TrendingUp}
-            status={appData.trending?.length ? "active" : ""}
-            className="sm:col-span-1"
-          >
-            {!isClient ? (
-              <div className="p-4 text-center">
-                Loading trending coins data...
-              </div>
-            ) : appData.trending && appData.trending.length > 0 ? (
-              <div className="space-y-2">
-                {appData.trending.map((coin, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium">
-                        {coin.symbol.toUpperCase()}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {coin.name}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span
-                        className={`text-sm font-medium ${coin.price_change_percentage_24h >= 0 ? "text-green-500" : "text-red-500"}`}
-                      >
-                        {coin.price_change_percentage_24h >= 0 ? "+" : ""}
-                        {coin.price_change_percentage_24h?.toFixed(2)}%
-                      </span>
-                      <span className="text-sm font-medium">
-                        ${coin.current_price?.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : appData.loading ? (
-              <p className="text-center p-4">Loading trending coins...</p>
-            ) : (
-              <p className="text-center p-4">
-                Trending coins data unavailable.
-              </p>
-            )}
-          </DataCard>
         </div>
 
         <footer className="text-center mt-8 py-4 border-t">
@@ -1713,15 +1521,6 @@ const CryptoDashboardPage: FC = () => {
               className="underline hover:text-primary"
             >
               CoinGecko
-            </a>{" "}
-            and{" "}
-            <a
-              href="https://alternative.me/crypto/fear-and-greed-index/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-primary"
-            >
-              alternative.me
             </a>
             .
             {FMP_API_KEY && " SPY/SPX data powered by Financial Modeling Prep."}
