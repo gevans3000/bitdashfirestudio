@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync, execSync } = require('child_process');
+const { repoRoot, memPath } = require('./memory-utils');
 
 function run(cmd) {
   const res = spawnSync(cmd, { shell: true, encoding: 'utf8' });
@@ -15,12 +16,11 @@ function tryExec(cmd) {
   }
 }
 
-const repoRoot = path.resolve(__dirname, '..');
 const tasksPath = path.join(repoRoot, 'TASKS.md');
 const signalsPath = path.join(repoRoot, 'signals.json');
 const logDir = path.join(repoRoot, 'logs');
 fs.mkdirSync(logDir, { recursive: true });
-const memoryPath = path.join(repoRoot, 'memory.log');
+const memoryPath = memPath;
 process.chdir(repoRoot);
 
 tryExec('npm ci');
