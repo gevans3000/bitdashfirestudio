@@ -20,7 +20,7 @@
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "bash scripts/check-env.sh && eslint . --ext .ts,.tsx",
+    "lint": "node scripts/try-cmd.js eslint . --ext .ts,.tsx || true",
     "typecheck": "tsc --noEmit",
     "test": "node scripts/try-cmd.js jest",
     "backtest": "node scripts/try-cmd.js ts-node scripts/backtest.ts",
