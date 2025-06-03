@@ -40,9 +40,9 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [x] Task 24: fetch funding rate schedule
  - [x] Task 25: display countdown timer to next funding
  - [x] Task 26: compute Bollinger Band width
- - [x] Task 27: alert when width falls below threshold
- - [ ] Task 28: build volume profile from recent data
- - [ ] Task 29: show distance to nearest volume peak
+- [x] Task 27: alert when width falls below threshold
+- [x] Task 28: build volume profile from recent data
+- [ ] Task 29: show distance to nearest volume peak
  - [ ] Task 30: fetch 1 h and 4 h candles
  - [ ] Task 31: compare 5 m EMA trend with higher timeframes
  - [ ] Task 32: flag upcoming high-impact economic events
