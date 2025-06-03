@@ -10,3 +10,7 @@
 - Commit SHA: 949ea11
 - Summary: Authorized manual memory.log corrections in the guide and script
 - Next Goal: Backfill memory.log to match git
+### 2025-06-03 16:08 UTC | mem-004
+- Commit SHA: 2c87fa8
+- Summary: Refined DocAgent protocol and role summary
+- Next Goal: Check snapshot for archival

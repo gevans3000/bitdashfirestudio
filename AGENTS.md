@@ -29,6 +29,8 @@ workspace resets.
   [Manual Kick-off Prompt](PERSISTENT_MEMORY_GUIDE.md#5--manual-kick-off-prompt-for-chatgpt-codex-ui).
 - Operates in four phases: analysis, consolidation, implementation and commit.
 
+This agent safeguards the persistent-memory system. It never edits application code and focuses on one memory task per session—archiving old snapshots, appending new entries or updating memory documentation. Each commit follows the mem-ID workflow outlined in the guide.
+
 These roles operate sequentially within the `DevAgent` to keep automation predictable.
 
 ---
