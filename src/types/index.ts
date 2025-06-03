@@ -40,26 +40,6 @@ export interface StockData {
   signal?: 'buy' | 'sell' | 'hold';
 }
 
-export interface TrendingCoinItem {
-  id: string;
-  name: string;
-  symbol: string;
-  market_cap_rank: number;
-  thumb: string; // image URL from CoinGecko trending
-  price_btc?: number;
-}
-
-export interface TrendingData {
-  coins: TrendingCoinItem[];
-  status: 'fresh' | 'cached_error' | 'error' | 'loading';
-}
-
-export interface FearGreedData {
-  value: string;
-  value_classification: string;
-  timestamp?: string; // Unix timestamp string
-  status: 'fresh' | 'cached_error' | 'error' | 'loading';
-}
 
 export interface AppData {
   btc: CoinData | null;
@@ -68,8 +48,6 @@ export interface AppData {
   spx: StockData | null;
   dxy: StockData | null;
   us10y: StockData | null;
-  trending: TrendingData | null;
-  fearGreed: FearGreedData | null;
   lastUpdated: string | null; // Timestamp of the last successful simulated fetch
   globalError: string | null; // For errors fetching the main /api/dashboard
   loading: boolean; // Global loading state for the initial "simulated" fetch
