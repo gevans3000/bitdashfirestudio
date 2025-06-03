@@ -104,8 +104,9 @@ Using 5-minute BTC data from CoinGecko (90 days) the strategy achieved roughly a
 
 ## Codex Workflow
 
-See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
-Generate a recent commit summary anytime with:
+The `CODEX_START.md` guide explains how to launch Codex and maintain
+persistent memory across sessions. Generate a recent commit summary
+anytime with:
 
 ```bash
 npm run commitlog

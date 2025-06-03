@@ -78,3 +78,15 @@
 - Commit SHA: f5e545e
 - Summary: Extended README instructions to log hashes in memory files. Marked Task 91 done.
 - Next Goal: none
+### 2025-06-03 23:05 UTC | mem-021
+- Commit SHA: 38b4d2b
+- Summary: Restored CODEX_START instructions for manual kickoff and memory workflow
+- Next Goal: Implement Task 31 comparing EMA trends
+### 2025-06-03 23:11 UTC | mem-022
+- Commit SHA: 9723f8e
+- Summary: Removed obsolete memory docs (CODEX_WORKFLOW and memorymaker) to avoid duplication. Updated README to point to CODEX_START for kickoff instructions.
+- Next Goal: compare 5 m EMA trend with higher timeframes
+### 2025-06-03 23:11 UTC | mem-023
+- Commit SHA: ded31d1
+- Summary: Logged commit data for the cleanup, updating memory.log and commit log files.
+- Next Goal: compare 5 m EMA trend with higher timeframes
