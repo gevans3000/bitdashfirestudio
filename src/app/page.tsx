@@ -727,7 +727,7 @@ const CryptoDashboardPage: FC = () => {
 
           <DataCard
             title="BTC Chart"
-            icon={BarChart3}
+            icon={BarChart2}
             status="fresh"
             className="sm:col-span-2 lg:col-span-2"
           >
