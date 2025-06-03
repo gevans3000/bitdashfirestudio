@@ -110,8 +110,10 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 72: replace legacy memory files with memory.log references in docs
 - [ ] Task 73: add .env.local.example template and document usage
 - [ ] Task 74: backfill missing commit entries in memory.log and regenerate commit.log
-- [ ] Task 75: remove ccxt server and dependency, update README
+ - [ ] Task 75: remove ccxt server, ArbAlertCard, and dependency; update README
 - [ ] Task 76: fetch and cache 90-day candle history for backtests
+ - [ ] Task 77: throttle order-book polling to 60 s and limit WS refresh to 1 s
+ - [ ] Task 78: make AI sentiment analysis manual with a UI button
 
 ---
 

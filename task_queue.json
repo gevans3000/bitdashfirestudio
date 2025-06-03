@@ -57,7 +57,9 @@
   {"id": 72, "description": "replace legacy memory files with memory.log references in docs", "status": "pending"},
   {"id": 73, "description": "add .env.local.example template and document usage", "status": "pending"},
   {"id": 74, "description": "backfill missing commit entries in memory.log and regenerate commit.log", "status": "pending"},
-  {"id": 75, "description": "remove ccxt server and dependency, update README", "status": "pending"},
-  {"id": 76, "description": "fetch and cache 90-day candle history for backtests", "status": "pending"}
+  {"id": 75, "description": "remove ccxt server, ArbAlertCard, and dependency; update README", "status": "pending"},
+  {"id": 76, "description": "fetch and cache 90-day candle history for backtests", "status": "pending"},
+  {"id": 77, "description": "throttle order-book polling to 60 s and limit WS refresh to 1 s", "status": "pending"},
+  {"id": 78, "description": "make AI sentiment analysis manual with a UI button", "status": "pending"}
 ]
 
