@@ -1,7 +1,8 @@
 # AGENTS.md – Codex Automation Charter
-
+Codex must load PERSISTENT_MEMORY_GUIDE.md before any task cycle.
 **Project:** Windsurf – Bitcoin & SPX 5‑Minute Trading Dashboard
 **Agent:** `DevAgent` (ChatGPT Codex)
+
 
 This charter is optimized around **Git-based memory**. Every commit and
 summary becomes part of the agents long-term knowledge. Keep the task queue,
