@@ -20,10 +20,6 @@ import {
 } from "lucide-react";
 
 import MarketChart from "@/components/MarketChart";
-import AtrWidget from "@/components/AtrWidget";
-import VwapWidget from "@/components/VwapWidget";
-import PrevDayBands from "@/components/PrevDayBands";
-import StochRsiWidget from "@/components/StochRsiWidget";
 import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
@@ -33,12 +29,8 @@ import VolumeProfileChart from "@/components/VolumeProfileChart";
 import VolumePeakDistance from "@/components/VolumePeakDistance";
 import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
 import FundingCountdown from "@/components/FundingCountdown";
-import BbWidthAlert from "@/components/BbWidthAlert";
-import IchimokuWidget from "@/components/IchimokuWidget";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import FundingRateWidget from "@/components/FundingRateWidget";
-import TxnCountWidget from "@/components/TxnCountWidget";
-import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
@@ -753,20 +745,12 @@ const CryptoDashboardPage: FC = () => {
           <VolumeProfileChart />
           <VolumePeakDistance />
           <OpenInterestDeltaChart />
-          <IchimokuWidget />
           <OrderFlowWidget />
           <FundingRateWidget />
           <FundingCountdown />
-          <TxnCountWidget />
-          <VwapWidget />
-          <PrevDayBands />
           <BollingerWidget />
           <EmaCrossoverWidget />
           <RsiWidget />
-          <StochRsiWidget />
-          <AtrWidget />
-          <SessionTimerWidget />
-          <BbWidthAlert />
 
 
         </div>

@@ -210,30 +210,3 @@ export async function fetchUS10Y(): Promise<{ value: number; source: string }> {
     "Failed to fetch US10Y from all sources and no cache available",
   );
 }
-import { fetchBackfill } from './data/coingecko';
-import { fetchIntradayPrices } from './data/fmp';
-import { correlation } from './correlation';
-
-export async function fetchBtcLastHour(): Promise<number[]> {
-  const candles = await fetchBackfill();
-  return candles.slice(-12).map((c) => c.c);
-}
-
-// Returns correlation values for BTC vs SPX/SPY over the last hour
-export async function fetchLastHourCorrelation(): Promise<
-  Array<{ pair: string; value: number }>
-> {
-  const [btc, spy, spx] = await Promise.all([
-    fetchBtcLastHour(),
-    fetchIntradayPrices('SPY'),
-    fetchIntradayPrices('^GSPC'),
-  ]);
-  const btcSpx = correlation(btc, spx);
-  const btcSpy = correlation(btc, spy);
-  const spxSpy = correlation(spx, spy);
-  return [
-    { pair: 'BTC/SPX', value: btcSpx },
-    { pair: 'BTC/SPY', value: btcSpy },
-    { pair: 'SPX/SPY', value: spxSpy },
-  ];
-}
