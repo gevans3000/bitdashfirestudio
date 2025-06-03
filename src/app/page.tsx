@@ -12,22 +12,26 @@ import Image from "next/image";
 import DashboardHeader from "@/components/DashboardHeader";
 import DataCard from "@/components/DataCard";
 import ValueDisplay from "@/components/ValueDisplay";
-import type { AppData, CoinData, StockData } from "@/types";
+import type { AppData, CoinData } from "@/types";
 import {
   Bitcoin,
-  Briefcase,
   Shapes,
-  BarChart3,
-  DollarSign,
-  Landmark,
   BarChart2,
 } from "lucide-react";
-import { CorrelationPanel } from "@/components/CorrelationPanel";
+
 import MarketChart from "@/components/MarketChart";
 import StochRsiWidget from "@/components/StochRsiWidget";
 import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
+import VolumeSpikeChart from "@/components/VolumeSpikeChart";
+import VolumeProfileChart from "@/components/VolumeProfileChart";
+import VolumePeakDistance from "@/components/VolumePeakDistance";
+import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
+import FundingCountdown from "@/components/FundingCountdown";
 import BbWidthAlert from "@/components/BbWidthAlert";
+import IchimokuWidget from "@/components/IchimokuWidget";
+import FundingRateWidget from "@/components/FundingRateWidget";
+import TxnCountWidget from "@/components/TxnCountWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
@@ -44,86 +48,10 @@ import {
   emaCrossoverState,
 } from "@/lib/indicators";
 
-const FMP_API_KEY = process.env.NEXT_PUBLIC_FMP_API_KEY;
-const ALPHA_VANTAGE_API_KEY =
-  process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY || "demo"; // Get a free key from Alpha Vantage if needed
-const CRYPTO_FETCH_INTERVAL_MS = 60 * 1000; // 1 minute
-const STOCK_FETCH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
-
-const getMockStockData = (symbol?: string): StockData => {
-  const now = new Date().toISOString();
-  if (symbol === "SPY") {
-    return {
-      id: "spy",
-      name: "SPDR S&P 500 ETF (Mocked)",
-      symbol: "SPY",
-      price: 450,
-      change: 1.5,
-      changePercent: 0.33,
-      volume: 75000000,
-      lastUpdated: now,
-      status: "cached_error",
-    };
-  }
-  if (symbol === "^GSPC") {
-    return {
-      id: "spx",
-      name: "S&P 500 Index (Mocked)",
-      symbol: "^GSPC",
-      price: 4500,
-      change: 10,
-      changePercent: 0.22,
-      volume: 2000000000,
-      lastUpdated: now,
-      status: "cached_error",
-    };
-  }
-  if (symbol === "DX-Y.NYB" || symbol === "DXY") {
-    return {
-      id: "dxy",
-      name: "US Dollar Index (Placeholder)",
-      symbol: "DXY",
-      price: 104.5,
-      change: 0.1,
-      changePercent: 0.1,
-      volume: 0,
-      lastUpdated: now,
-      status: "cached_error",
-    };
-  }
-  if (symbol === "^TNX" || symbol === "US10Y") {
-    return {
-      id: "us10y",
-      name: "US 10-Year Yield (Placeholder)",
-      symbol: "US10Y",
-      price: 4.25,
-      change: -0.02,
-      changePercent: -0.47,
-      volume: 0,
-      lastUpdated: now,
-      status: "cached_error",
-    };
-  }
-  return {
-    id: "mock",
-    name: "Mock Stock Data",
-    symbol: "MOCK",
-    price: 100,
-    change: 1,
-    changePercent: 1,
-    volume: 1000000,
-    lastUpdated: now,
-    status: "cached_error",
-  };
-};
 
 const initialAppData: AppData = {
   btc: null,
   eth: null,
-  spy: null,
-  spx: null,
-  dxy: null, // Don't load any data initially
-  us10y: null, // Don't load any data initially
   lastUpdated: null,
   globalError: "Click the refresh button to load the latest data",
   loading: false, // Start with loading false since we're not loading anything initially
@@ -137,7 +65,7 @@ const loadInitialData = (): AppData => {
     const savedData = localStorage.getItem("cryptoDashboardData");
     if (savedData) {
       const parsed = JSON.parse(savedData);
-      const { trending: _t, fearGreed: _f, ...rest } = parsed;
+      const { trending: _t, fearGreed: _f, spy: _s1, spx: _s2, dxy: _d, us10y: _u, ...rest } = parsed;
       return {
         ...initialAppData,
         ...rest,
@@ -171,9 +99,6 @@ const CryptoDashboardPage: FC = () => {
   }, []);
   const [appData, setAppData] = useState<AppData>(initialAppData);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [correlationData, setCorrelationData] = useState<
-    Array<{ pair: string; value: number; timeFrame: string }>
-  >([]);
   const appDataRef = useRef(appData);
   const hasInitialized = useRef(false);
 
@@ -191,10 +116,6 @@ const CryptoDashboardPage: FC = () => {
           JSON.stringify({
             btc: appData.btc,
             eth: appData.eth,
-            spy: appData.spy,
-            spx: appData.spx,
-            dxy: appData.dxy,
-            us10y: appData.us10y,
             lastUpdated: appData.lastUpdated,
             globalError: appData.globalError,
           }),
@@ -211,94 +132,6 @@ const CryptoDashboardPage: FC = () => {
     appDataRef.current = appData;
   }, [appData]);
 
-  // Fetch DXY data from our API route
-  const fetchDXYData = useCallback(async (forceRefresh = false) => {
-    const CACHE_KEY = "dxy_data";
-    const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes cache
-
-    // Set loading state
-    setAppData((prev) => ({
-      ...prev,
-      dxy: prev.dxy
-        ? { ...prev.dxy, status: "loading" }
-        : { ...getMockStockData("DXY"), status: "loading" },
-    }));
-
-    // Try to get from cache first, unless force refresh
-    if (!forceRefresh) {
-      try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          // Only use cache if it's not expired
-          if (Date.now() - timestamp < CACHE_DURATION) {
-            setAppData((prev) => ({
-              ...prev,
-              dxy: { ...data, status: "cached" as const },
-            }));
-            return;
-          }
-        }
-      } catch (e) {
-        console.warn("Error reading DXY cache:", e);
-      }
-    }
-
-    try {
-      const response = await fetch("/api/dxy", {
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-        next: { revalidate: 300 }, // 5 minutes
-      });
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      // Cache the successful response
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({
-          data,
-          timestamp: Date.now(),
-        }),
-      );
-
-      setAppData((prev) => ({
-        ...prev,
-        dxy: {
-          ...data,
-          status: "fresh" as const,
-        },
-      }));
-    } catch (error) {
-      console.error("Error fetching DXY data:", error);
-      // Try to use cached data even if it's stale
-      try {
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { data } = JSON.parse(cached);
-          setAppData((prev) => ({
-            ...prev,
-            dxy: { ...data, status: "stale" as const },
-          }));
-          return;
-        }
-      } catch (e) {
-        console.warn("Failed to read from cache:", e);
-      }
-
-      // Fall back to mock data if all else fails
-      setAppData((prev) => ({
-        ...prev,
-        dxy: getMockStockData("DXY"),
-      }));
-    }
-  }, []);
 
   const fetchBtcMovingAverages = useCallback(async () => {
     const CACHE_KEY = "btc_ma_data";
@@ -382,164 +215,8 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
-  const fetchStockRsi = useCallback(async (symbol: string) => {
-    try {
-      if (!FMP_API_KEY) return null;
-      const res = await fetch(
-        `https://financialmodelingprep.com/api/v3/historical-price-full/${encodeURIComponent(symbol)}?timeseries=20&apikey=${FMP_API_KEY}`,
-      );
-      if (!res.ok) return null;
-      const data = await res.json();
-      if (Array.isArray(data.historical)) {
-        const prices = data.historical
-          .slice(0, 15)
-          .map((p: any) => p.close)
-          .reverse();
-        return rsi(prices, 14);
-      }
-    } catch (e) {
-      console.error("Error fetching RSI for", symbol, e);
-    }
-    return null;
-  }, []);
 
-  // Fetch US10Y data from our API route
-  const fetchUS10YData = useCallback(async (forceRefresh = false) => {
-    const CACHE_KEY = "us10y_data";
-    const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache
 
-    // Always try to get from cache first, unless force refresh
-    if (!forceRefresh) {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { data, timestamp } = JSON.parse(cached);
-        // Only use cache if it's not expired
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          setAppData((prev) => ({
-            ...prev,
-            us10y: { ...data, status: "cached" as const },
-          }));
-          return;
-        }
-      }
-    }
-
-    // Use fallback data if API is not available
-    const fallbackData = {
-      id: "us10y",
-      name: "10-Year Treasury Yield",
-      symbol: "US10Y",
-      price: 4.25,
-      change: -0.02,
-      changePercent: -0.47,
-      volume: 0,
-      lastUpdated: new Date().toISOString(),
-      status: "cached",
-      source: "fallback",
-    };
-
-    setAppData((prev) => ({
-      ...prev,
-      us10y: { ...fallbackData, status: "cached" as const },
-    }));
-
-    // Set loading state
-    setAppData((prev) => ({
-      ...prev,
-      us10y: prev.us10y
-        ? { ...prev.us10y, status: "loading" }
-        : { ...getMockStockData("US10Y"), status: "loading" },
-    }));
-
-    try {
-      // Use relative URL in production, absolute in development
-      const baseUrl =
-        typeof window === "undefined" ? "http://localhost:3000" : "";
-      const response = await fetch(`${baseUrl}/api/us10y`, {
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-        cache: "no-store", // Ensure we don't get cached responses
-        next: { revalidate: 0 }, // Ensure we always get fresh data
-      });
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      // Update cache
-      if (typeof window !== "undefined") {
-        localStorage.setItem(
-          "us10y_data",
-          JSON.stringify({
-            data,
-            timestamp: Date.now(),
-          }),
-        );
-      }
-
-      setAppData((prev) => ({
-        ...prev,
-        us10y: {
-          ...data,
-          status: "fresh" as const,
-          source: "Alpha Vantage (via API)",
-        },
-      }));
-    } catch (error) {
-      console.error("Error fetching US10Y data:", error);
-      // Fall back to mock data if all else fails
-      setAppData((prev) => ({
-        ...prev,
-        us10y: getMockStockData("US10Y"),
-      }));
-    }
-  }, []);
-
-  const fetchCorrelationData = useCallback(async (force = false) => {
-    const CACHE_KEY = "correlation_data";
-    const CACHE_DURATION = 5 * 60 * 1000;
-
-    if (!force) {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { data, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          setCorrelationData(data);
-          return;
-        }
-      }
-    }
-
-    try {
-      const res = await fetch("/api/correlation", {
-        cache: "no-store",
-      });
-      if (!res.ok) throw new Error("API error");
-      const json = await res.json();
-      setCorrelationData(json.data);
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({ data: json.data, timestamp: Date.now() }),
-      );
-    } catch (e) {
-      console.error("Error fetching correlation data:", e);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCorrelationData().catch(console.error);
-    const id = setInterval(
-      () => {
-        fetchCorrelationData().catch(console.error);
-      },
-      5 * 60 * 1000,
-    );
-    return () => clearInterval(id);
-  }, [fetchCorrelationData]);
 
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
@@ -724,226 +401,6 @@ const CryptoDashboardPage: FC = () => {
     }
   }, []);
 
-  const fetchStockData = useCallback(async (forceRefresh = false) => {
-    const STOCK_CACHE_KEY = "stock_data";
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
-
-    // Try to get from cache first if not forcing refresh
-    if (!forceRefresh) {
-      const cached = localStorage.getItem(STOCK_CACHE_KEY);
-      if (cached) {
-        const { data, timestamp } = JSON.parse(cached);
-        // Only use cache if it's not expired
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          setAppData((prev) => ({
-            ...prev,
-            ...data,
-            loading: false,
-          }));
-          return;
-        }
-      }
-    }
-    // Only fetch fresh data if force refresh is true
-    if (forceRefresh) {
-      await Promise.all([fetchDXYData(true), fetchUS10YData(true)]);
-    }
-
-    setAppData((prev) => ({
-      ...prev,
-      spy: prev.spy
-        ? { ...prev.spy, status: "loading" }
-        : { ...getMockStockData("SPY"), status: "loading" },
-      spx: prev.spx
-        ? { ...prev.spx, status: "loading" }
-        : { ...getMockStockData("^GSPC"), status: "loading" },
-    }));
-
-    let newSpyData: StockData | null = appDataRef.current.spy;
-    let newSpxData: StockData | null = appDataRef.current.spx;
-    const localStockErrorParts: string[] = [];
-
-    if (!FMP_API_KEY) {
-      console.warn(
-        "FMP API key (NEXT_PUBLIC_FMP_API_KEY) is not set. Using mock stock data for SPY and SPX.",
-      );
-      localStockErrorParts.push(
-        "SPY and SPX data is mocked due to missing FMP API key",
-      );
-      newSpyData = getMockStockData("SPY");
-      newSpxData = getMockStockData("^GSPC");
-    } else {
-      try {
-        const spyPromise = fetch(
-          `https://financialmodelingprep.com/stable/quote?symbol=SPY&apikey=${FMP_API_KEY}`,
-        );
-        const spxPromise = fetch(
-          `https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent("^GSPC")}&apikey=${FMP_API_KEY}`,
-        );
-
-        const [spyResponseSettled, spxResponseSettled] =
-          await Promise.allSettled([spyPromise, spxPromise]);
-
-        if (spyResponseSettled.status === "fulfilled") {
-          const spyResponse = spyResponseSettled.value;
-          if (spyResponse.ok) {
-            const spyDataArray = await spyResponse.json();
-            if (spyDataArray && spyDataArray.length > 0) {
-              const spyApiData = spyDataArray[0];
-              const spyRsi = await fetchStockRsi("SPY");
-              newSpyData = {
-                id: spyApiData.symbol,
-                name: spyApiData.name || "SPDR S&P 500 ETF",
-                symbol: spyApiData.symbol,
-                price: spyApiData.price,
-                change: spyApiData.change,
-                changePercent: spyApiData.changesPercentage,
-                volume: spyApiData.volume,
-                lastUpdated: spyApiData.timestamp
-                  ? new Date(spyApiData.timestamp * 1000).toISOString()
-                  : new Date().toISOString(),
-                status: "fresh",
-                rsi14: spyRsi ?? undefined,
-                signal:
-                  spyRsi != null
-                    ? spyRsi <= 30
-                      ? "buy"
-                      : spyRsi >= 70
-                        ? "sell"
-                        : "hold"
-                    : undefined,
-              };
-            } else {
-              if (newSpyData) newSpyData.status = "cached_error";
-              else newSpyData = getMockStockData("SPY");
-              localStockErrorParts.push("SPY data not found in FMP response.");
-            }
-          } else {
-            if (newSpyData) newSpyData.status = "cached_error";
-            else newSpyData = getMockStockData("SPY");
-            let spyError = `Failed to fetch SPY data from FMP: (status ${spyResponse.status})`;
-            if (spyResponse.status === 401 || spyResponse.status === 403)
-              spyError +=
-                ". Please check your FMP API key and ensure it has the correct permissions";
-            else if (spyResponse.status === 400)
-              spyError += ". Bad request, check symbol or API endpoint";
-            localStockErrorParts.push(spyError);
-          }
-        } else {
-          if (newSpyData) newSpyData.status = "cached_error";
-          else newSpyData = getMockStockData("SPY");
-          localStockErrorParts.push(
-            `Failed to fetch SPY data: ${spyResponseSettled.reason?.message || "Network error"}`,
-          );
-        }
-
-        if (spxResponseSettled.status === "fulfilled") {
-          const spxResponse = spxResponseSettled.value;
-          if (spxResponse.ok) {
-            const spxDataArray = await spxResponse.json();
-            if (spxDataArray && spxDataArray.length > 0) {
-              const spxApiData = spxDataArray[0];
-              const spxRsi = await fetchStockRsi("^GSPC");
-              newSpxData = {
-                id: spxApiData.symbol,
-                name: spxApiData.name || "S&P 500 Index",
-                symbol: spxApiData.symbol,
-                price: spxApiData.price,
-                change: spxApiData.change,
-                changePercent: spxApiData.changesPercentage,
-                volume: spxApiData.volume,
-                lastUpdated: spxApiData.timestamp
-                  ? new Date(spxApiData.timestamp * 1000).toISOString()
-                  : new Date().toISOString(),
-                status: "fresh",
-                rsi14: spxRsi ?? undefined,
-                signal:
-                  spxRsi != null
-                    ? spxRsi <= 30
-                      ? "buy"
-                      : spxRsi >= 70
-                        ? "sell"
-                        : "hold"
-                    : undefined,
-              };
-            } else {
-              if (newSpxData) newSpxData.status = "cached_error";
-              else newSpxData = getMockStockData("^GSPC");
-              localStockErrorParts.push(
-                "^GSPC data not found in FMP response.",
-              );
-            }
-          } else {
-            if (newSpxData) newSpxData.status = "cached_error";
-            else newSpxData = getMockStockData("^GSPC");
-            let spxError = `Failed to fetch ^GSPC data from FMP: (status ${spxResponse.status})`;
-            if (spxResponse.status === 401 || spxResponse.status === 403)
-              spxError +=
-                ". Please check your FMP API key and ensure it has the correct permissions";
-            else if (spxResponse.status === 400)
-              spxError += ". Bad request, check symbol or API endpoint";
-            localStockErrorParts.push(spxError);
-          }
-        } else {
-          if (newSpxData) newSpxData.status = "cached_error";
-          else newSpxData = getMockStockData("^GSPC");
-          localStockErrorParts.push(
-            `Failed to fetch ^GSPC data: ${spxResponseSettled.reason?.message || "Network error"}`,
-          );
-        }
-      } catch (error) {
-        console.error("Unexpected error fetching SPY/SPX stock data:", error);
-        const errorText =
-          error instanceof Error
-            ? error.message
-            : "Unknown error during SPY/SPX stock data fetch.";
-        localStockErrorParts.push(`Unexpected error: ${errorText}`);
-        if (newSpyData) newSpyData.status = "cached_error";
-        else newSpyData = getMockStockData("SPY");
-        if (newSpxData) newSpxData.status = "cached_error";
-        else newSpxData = getMockStockData("^GSPC");
-      }
-    }
-
-    const finalStockErrorMsg =
-      localStockErrorParts.length > 0
-        ? localStockErrorParts.join(". ") + "."
-        : null;
-
-    setAppData((prev) => {
-      let currentGlobalError = prev.globalError || "";
-      currentGlobalError = currentGlobalError
-        .split(". ")
-        .filter(
-          (msg) =>
-            !msg.toLowerCase().includes("stock") &&
-            !msg.toLowerCase().includes("fmp") &&
-            !msg.toLowerCase().includes("ai sentiment") &&
-            !msg
-              .toLowerCase()
-              .includes("dxy and us10y are using placeholder data"),
-        )
-        .join(". ");
-      if (
-        currentGlobalError &&
-        !currentGlobalError.endsWith(".") &&
-        currentGlobalError.length > 0
-      )
-        currentGlobalError += ". ";
-
-      const combinedError =
-        currentGlobalError +
-        (finalStockErrorMsg ? ` ${finalStockErrorMsg}` : "");
-
-      return {
-        ...prev,
-        spy: newSpyData || prev.spy,
-        spx: newSpxData || prev.spx,
-        globalError: combinedError.trim() || null,
-        lastUpdated: new Date().toISOString(),
-      };
-    });
-  }, []);
 
   // Data fetching is now handled by the refresh button click
   // No automatic data fetching on component mount
@@ -953,10 +410,6 @@ const CryptoDashboardPage: FC = () => {
     { label: "Metric" },
     { label: "Bitcoin (BTC)" },
     { label: "Ethereum (ETH)" },
-    { label: "SPY" },
-    { label: "S&P 500 (^GSPC)" },
-    { label: "US Dollar (DXY)" },
-    { label: "10-Yr Yield (US10Y)" },
   ];
 
   const renderCoinData = (
@@ -1137,113 +590,6 @@ const CryptoDashboardPage: FC = () => {
     );
   };
 
-  const renderStockData = (
-    stock: StockData | null,
-    IconComponent: ElementType,
-  ) => {
-    // Use a consistent title based on the stock symbol to prevent hydration mismatch
-    const title =
-      stock?.symbol === "SPY"
-        ? "SPDR S&P 500 ETF Trust"
-        : stock?.symbol === "^GSPC"
-          ? "S&P 500 Index"
-          : stock?.symbol === "DXY"
-            ? "US Dollar Index"
-            : stock?.symbol === "US10Y" || stock?.symbol === "^TNX"
-              ? "US 10-Year Yield"
-              : "Market Data";
-
-    // Handle server-side rendering and initial client render
-    if (typeof window === "undefined" || !isClient) {
-      return (
-        <div className="space-y-3 p-1">
-          <div className="p-4 text-center">Loading {title} data...</div>
-        </div>
-      );
-    }
-
-    // Client-side rendering after initial hydration
-    const unit =
-      stock?.symbol === "US10Y" || stock?.symbol === "^TNX" ? "%" : "USD";
-    const isPlaceholder = stock?.status === "cached_error";
-
-    return (
-      <div className="space-y-3 p-1">
-        {!stock ? (
-          <div className="p-4 text-center">Data unavailable for {title}.</div>
-        ) : (
-          <>
-            <div className="flex items-center space-x-2 mb-2">
-              <IconComponent className="h-6 w-6 text-muted-foreground" />
-              <ValueDisplay
-                label="Price"
-                value={stock.price}
-                unit={unit}
-                variant="highlight"
-                isLoading={stock.status === "loading"}
-                valueClassName="text-accent"
-              />
-            </div>
-            <ValueDisplay
-              label="Change"
-              value={stock.change?.toFixed(2) ?? "N/A"}
-              unit={unit}
-              isLoading={stock.status === "loading"}
-            />
-            <ValueDisplay
-              label="Change %"
-              value={`${stock.changePercent?.toFixed(2) ?? "0.00"}%`}
-              valueClassName={
-                (stock.changePercent ?? 0) >= 0
-                  ? "text-green-500"
-                  : "text-red-500"
-              }
-              isLoading={stock.status === "loading"}
-            />
-            {/* Always render volume but hide if 0 */}
-            <div className={!stock.volume ? "hidden" : ""}>
-              <ValueDisplay
-                label="Volume"
-                value={stock.volume}
-                isLoading={stock.status === "loading"}
-              />
-            </div>
-            <ValueDisplay
-              label="RSI (14)"
-              value={stock.rsi14?.toFixed(2) ?? "N/A"}
-              valueClassName={
-                stock.rsi14 !== undefined
-                  ? stock.rsi14 >= 70
-                    ? "text-red-500"
-                    : stock.rsi14 <= 30
-                      ? "text-green-500"
-                      : ""
-                  : ""
-              }
-              isLoading={stock.status === "loading"}
-            />
-            <ValueDisplay
-              label="Signal"
-              value={stock.signal ? stock.signal.toUpperCase() : "N/A"}
-              valueClassName={
-                stock.signal === "buy"
-                  ? "text-green-500"
-                  : stock.signal === "sell"
-                    ? "text-red-500"
-                    : ""
-              }
-              isLoading={stock.status === "loading"}
-            />
-            {isPlaceholder && (
-              <p className="text-xs text-muted-foreground/80 text-center pt-1">
-                (Using placeholder data)
-              </p>
-            )}
-          </>
-        )}
-      </div>
-    );
-  };
 
   // Handle manual refresh
   const handleRefresh = useCallback(async () => {
@@ -1267,25 +613,10 @@ const CryptoDashboardPage: FC = () => {
       }));
 
       // Fetch all data in parallel with force refresh
-      const [dxyResult, us10yResult, cryptoResult, stockResult] =
-        await Promise.allSettled([
-          fetchDXYData(true).catch((e) => {
-            console.error("Error in DXY fetch:", e);
-            return null;
-          }),
-          fetchUS10YData(true).catch((e) => {
-            console.error("Error in US10Y fetch:", e);
-            return null;
-          }),
-          fetchCryptoData(true).catch((e) => {
-            console.error("Error in crypto fetch:", e);
-            return null;
-          }),
-          fetchStockData(true).catch((e) => {
-            console.error("Error in stock fetch:", e);
-            return null;
-          }),
-        ]);
+      await fetchCryptoData(true).catch((e) => {
+        console.error("Error in crypto fetch:", e);
+        return null;
+      });
 
       // Calculate refresh duration
       const refreshDuration = Date.now() - startTime;
@@ -1334,12 +665,7 @@ const CryptoDashboardPage: FC = () => {
 
   const hasLoadedData =
     isClient &&
-    (appData.btc ||
-      appData.eth ||
-      appData.spy ||
-      appData.spx ||
-      appData.dxy ||
-      appData.us10y);
+    (appData.btc || appData.eth);
 
   // Only render the welcome message on the client side
   const renderWelcomeMessage = () => {
@@ -1413,52 +739,17 @@ const CryptoDashboardPage: FC = () => {
             {renderCoinData(appData.eth, Shapes)}
           </DataCard>
 
-          <DataCard
-            title={appData.spy?.name || "SPDR S&P 500 ETF (SPY)"}
-            icon={Briefcase}
-            status={getStatus(appData.spy)}
-          >
-            {renderStockData(appData.spy, Briefcase)}
-          </DataCard>
 
-          <DataCard
-            title={appData.spx?.name || "S&P 500 Index (^GSPC)"}
-            icon={BarChart3}
-            status={getStatus(appData.spx)}
-          >
-            {renderStockData(appData.spx, BarChart3)}
-          </DataCard>
-
-          <DataCard
-            title={appData.dxy?.name || "US Dollar Index (DXY)"}
-            icon={DollarSign}
-            status={getStatus(appData.dxy)}
-          >
-            {renderStockData(appData.dxy, DollarSign)}
-          </DataCard>
-
-          <DataCard
-            title={appData.us10y?.name || "US 10-Year Yield (^TNX)"}
-            icon={Landmark}
-            status={getStatus(appData.us10y)}
-          >
-            {renderStockData(appData.us10y, Landmark)}
-          </DataCard>
-
-
-          {/* Correlation Panel */}
-          <DataCard
-            title="Market Correlations"
-            icon={BarChart2}
-            status="fresh"
-            className="sm:col-span-2 lg:col-span-2"
-          >
-            {correlationData.length > 0 ? (
-              <CorrelationPanel data={correlationData} />
-            ) : (
-              <p className="text-center p-4">Calculating correlations...</p>
-            )}
-          </DataCard>
+         <VolumeSpikeChart />
+          <VolumeProfileChart />
+          <VolumePeakDistance />
+          <OpenInterestDeltaChart />
+          <IchimokuWidget />
+          <FundingRateWidget />
+          <FundingCountdown />
+          <TxnCountWidget />
+          <VwapWidget />
+          <PrevDayBands />
           <BollingerWidget />
           <EmaCrossoverWidget />
           <RsiWidget />
@@ -1477,8 +768,6 @@ const CryptoDashboardPage: FC = () => {
           <p className="text-xs text-muted-foreground mt-1">
             Crypto Pulse - Financial data displayed is for informational
             purposes only.
-            {!FMP_API_KEY &&
-              " Live SPY/SPX data requires NEXT_PUBLIC_FMP_API_KEY."}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             Crypto data powered by{" "}
@@ -1491,7 +780,6 @@ const CryptoDashboardPage: FC = () => {
               CoinGecko
             </a>
             .
-            {FMP_API_KEY && " SPY/SPX data powered by Financial Modeling Prep."}
           </p>
         </footer>
       </main>
