@@ -207,7 +207,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 1. Run `npm run codex` at the start of each ChatGPT session.
 2. Paste the printed context block into your first message to Codex.
-3. Craft descriptive commit messages referencing `TASKS.md`.
+3. Craft descriptive commit messages referencing `TASKS.md` and update memory files after committing.
 
 Commit messages serve as the last 333-token memory "before" and the top unchecked task becomes the 33-token goal "after".
 

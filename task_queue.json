@@ -323,5 +323,55 @@
     "id": 81,
     "description": "mem-010 record log entry",
     "status": "done"
+  },
+  {
+    "id": 82,
+    "description": "create codex_context helper script",
+    "status": "done"
+  },
+  {
+    "id": 83,
+    "description": "add codex npm alias",
+    "status": "done"
+  },
+  {
+    "id": 84,
+    "description": "document codex workflow in AGENTS.md",
+    "status": "done"
+  },
+  {
+    "id": 85,
+    "description": "refine TASKS.md template",
+    "status": "done"
+  },
+  {
+    "id": 86,
+    "description": "document codex usage routine",
+    "status": "done"
+  },
+  {
+    "id": 87,
+    "description": "refine codex_context output formatting",
+    "status": "done"
+  },
+  {
+    "id": 88,
+    "description": "enhance npm codex alias",
+    "status": "done"
+  },
+  {
+    "id": 89,
+    "description": "expand workflow notes in AGENTS.md",
+    "status": "done"
+  },
+  {
+    "id": 90,
+    "description": "clarify TASKS.md guidance wording",
+    "status": "done"
+  },
+  {
+    "id": 91,
+    "description": "extend README with persistent memory section",
+    "status": "done"
   }
 ]

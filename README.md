@@ -136,4 +136,5 @@ npm run commitlog
 1. Run `npm run codex` and copy the output block.
 2. Paste that context into the first prompt of your ChatGPT Codex session.
 3. Commit code changes with descriptive messages linked to `TASKS.md`.
+4. Record the commit hash and next objective in `context.snapshot.md` and `memory.log`.
 

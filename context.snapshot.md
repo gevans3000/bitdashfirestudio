@@ -58,3 +58,23 @@
 - Commit SHA: e5ffe2f
 - Summary: Added section in README describing how to run npm codex and feed context to Codex. Marked Task 86 done.
 - Next Goal: All tasks complete
+### 2025-06-03 21:13 UTC | mem-016
+- Commit SHA: df2da62
+- Summary: Refined codex_context.sh to list commits with bullets and updated TASKS.md and task_queue.json for Task 87.
+- Next Goal: enhance npm codex alias
+### 2025-06-03 21:14 UTC | mem-017
+- Commit SHA: c5f74b9
+- Summary: Adjusted npm codex script to call bash version for portability and marked Task 88 done.
+- Next Goal: expand workflow notes in AGENTS.md
+### 2025-06-03 21:15 UTC | mem-018
+- Commit SHA: fea2e33
+- Summary: Expanded workflow notes in AGENTS.md to remind updating memory files. Marked Task 89 done.
+- Next Goal: clarify TASKS.md guidance wording
+### 2025-06-03 21:15 UTC | mem-019
+- Commit SHA: f753b32
+- Summary: Clarified task guidance comment in TASKS.md. Marked Task 90 done.
+- Next Goal: extend README with persistent memory section
+### 2025-06-03 21:16 UTC | mem-020
+- Commit SHA: f5e545e
+- Summary: Extended README instructions to log hashes in memory files. Marked Task 91 done.
+- Next Goal: none

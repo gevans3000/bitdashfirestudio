@@ -50,3 +50,8 @@ b0aa95e | docs(tasks) categorize persistent memory | TASKS.md, task_queue.json |
 2e5ebf5 | chore(memory) refine tasks template | TASKS.md | 2025-06-03T19:45:47Z
 9013ea9 | chore(memory) document codex workflow | AGENTS.md | 2025-06-03T19:44:17Z
 e5ffe2f | chore(memory) document codex usage | README.md,TASKS.md | 2025-06-03T19:46:27Z
+df2da62 | chore(memory) refine codex context helper | scripts/codex_context.sh,TASKS.md,task_queue.json | 2025-06-03T21:13:34Z
+c5f74b9 | chore(memory) enhance npm codex alias | package.json,TASKS.md,task_queue.json | 2025-06-03T21:14:33Z
+fea2e33 | chore(memory) expand workflow notes in AGENTS.md | AGENTS.md,TASKS.md,task_queue.json | 2025-06-03T21:15:04Z
+f753b32 | chore(memory) clarify TASKS guidance | TASKS.md,task_queue.json | 2025-06-03T21:15:36Z
+f5e545e | chore(memory) extend README memory section | README.md,TASKS.md,task_queue.json | 2025-06-03T21:16:15Z
