@@ -10,7 +10,6 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 
 - BTC/USD and SPX/SPY price charts
 - Key technical indicators (RSI, Moving Averages, MACD)
-- Simple buy/sell signals
 - Clean, focused interface
 
 ## Tech Stack
@@ -47,7 +46,6 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 1. Open [http://localhost:3000](http://localhost:3000)
 2. View price charts for BTC and SPX/SPY
 3. Monitor technical indicators
-4. Use signals to inform trading decisions
 
 ### Macro Data Refresh Demo
 
@@ -82,9 +80,6 @@ services.
 
 ## Configuration
 
-Indicator thresholds live in `src/config/signals.json` and reload on change.
-Automation state such as `last_task_completed` or `error_flag` is stored in the
-root `signals.json`.
 
 ## Development
 

@@ -11,7 +11,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 2. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
 3. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
 4. Each task runs lint, test and backtest.
-5. After success the task is marked `[x]`, `signals.json` and `task_queue.json` are updated.
+5. After success the task is marked `[x]` and `task_queue.json` is updated.
 6. Append the 333‑token commit summary with hash and files to `context.snapshot.md` and `memory.md` using the one-line format described in `AGENTS.md`.
 7. The commit message begins with `Task <number>:` so the git log stays in sync with the memory files.
 8. Run `npm run commitlog` after committing to capture the latest history.
@@ -61,7 +61,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 41: collect Crypto-Twitter sentiment data
  - [ ] Task 42: compute short-term sentiment index
  - [ ] Task 43: stream liquidations and open interest
- - [ ] Task 44: merge liquidation and OI signals
+ - [ ] Task 44: merge liquidation and open-interest data
  - [ ] Task 45: calculate rolling BTC/SPX correlation
  - [ ] Task 46: chart correlation over time
 
@@ -78,10 +78,10 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 54: caching layer with 15 s TTL and rate limits
 
 ### Alerts & Notifications
- - [ ] Task 55: show toast alerts on signals
+ - [ ] Task 55: show toast alerts on key events
  - [ ] Task 56: configurable alert panel
  - [ ] Task 57: quick-entry trade journal
- - [ ] Task 58: annotate historical signals on the chart
+ - [ ] Task 58: annotate historical events on the chart
 
 ### Testing & Validation
  - [ ] Task 59: unit tests for each indicator
@@ -92,7 +92,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 62: generate API reference documentation
  - [ ] Task 63: create user guide
  - [ ] Task 64: write developer setup guide
- - [ ] Task 65: document `signals.json` thresholds
+ - [ ] Task 65: document configuration thresholds
  - [ ] Task 66: describe each configuration parameter
 
 ### UI Enhancements
@@ -108,9 +108,8 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ## Definition of Done
 - Priority widgets and indicators are functional and visible.
-- BUY/SELL signals render in the UI within two seconds of candle close.
 - Test, lint and backtest logs are saved under `/logs`.
-- Each completed task is auto-committed with a passing build and updated `signals.json`.
+ - Each completed task is auto-committed with a passing build.
 - `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
 - `logs/commit.log` provides a concise memory dump via `npm run commitlog`.
