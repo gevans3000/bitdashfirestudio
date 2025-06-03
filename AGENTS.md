@@ -203,4 +203,12 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
 4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 
+### Codex Workflow
+
+1. Run `npm run codex` at the start of each ChatGPT session.
+2. Paste the printed context block into your first message to Codex.
+3. Craft descriptive commit messages referencing `TASKS.md`.
+
+Commit messages serve as the last 333-token memory "before" and the top unchecked task becomes the 33-token goal "after".
+
 > End of AGENTS.md – obey without deviation.

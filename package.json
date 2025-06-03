@@ -25,6 +25,7 @@
     "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "node scripts/autoTaskRunner.js",
     "commitlog": "node scripts/commit-log.js",
+    "codex": "./scripts/codex_context.sh",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest"
   },
   "dependencies": {

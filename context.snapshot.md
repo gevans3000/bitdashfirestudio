@@ -42,3 +42,19 @@
 - Commit SHA: b0aa95e
 - Summary: Reorganized TASKS.md with a new Persistent Memory section listing completed mem tasks 72-81 and placed Bitcoin Dashboard categories afterward in priority order. Updated task_queue.json accordingly.
 - Next Goal: resume development with Task 31 comparing EMA trends.
+### 2025-06-03 19:42 UTC | mem-012
+- Commit SHA: 854808e
+- Summary: Added codex_context.sh to output recent commits and next task. Introduced tasks 82-86 in TASKS.md.
+- Next Goal: Add npm alias for codex context
+### 2025-06-03 19:43 UTC | mem-013
+- Commit SHA: 351641e
+- Summary: Added npm script 'codex' to run codex_context.sh for easy context retrieval.
+- Next Goal: Document codex workflow in AGENTS.md
+### 2025-06-03 19:45 UTC | mem-014
+- Commit SHA: 2e5ebf5
+- Summary: Added guidance comment to TASKS.md and marked Task 85 complete.
+- Next Goal: Document codex usage routine
+### 2025-06-03 19:46 UTC | mem-015
+- Commit SHA: e5ffe2f
+- Summary: Added section in README describing how to run npm codex and feed context to Codex. Marked Task 86 done.
+- Next Goal: All tasks complete

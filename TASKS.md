@@ -1,4 +1,5 @@
 # BitDash Firestudio – TASKS.md
+<!-- Write each task in one short line (~33 tokens) so Codex can ingest it as next objective. -->
 
 > **Goal:** Optimize 5-minute BTC scalping with SPX context through small, atomic tasks Codex can execute autonomously.
 
@@ -43,6 +44,11 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 79: mem-008 remove outdated memory guide
 - [x] Task 80: mem-009 backfill snapshot
 - [x] Task 81: mem-010 record log entry
+- [x] Task 82: create codex_context helper script
+- [x] Task 83: add codex npm alias
+- [x] Task 84: document codex workflow in AGENTS.md
+- [x] Task 85: refine TASKS.md template
+- [x] Task 86: document codex usage routine
 
 ### Bitcoin Dashboard
 

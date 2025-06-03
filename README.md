@@ -131,3 +131,9 @@ npm run commitlog
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
 | `npm run backtest` | Launch the backtest defined in `scripts/backtest.ts` |
 
+## Using Codex with Persistent Memory
+
+1. Run `npm run codex` and copy the output block.
+2. Paste that context into the first prompt of your ChatGPT Codex session.
+3. Commit code changes with descriptive messages linked to `TASKS.md`.
+
