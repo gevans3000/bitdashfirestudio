@@ -103,6 +103,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 ### Performance & Monitoring
  - [ ] Task 70: real-time strategy-performance tracker
  - [ ] Task 71: monitor data latency and system load
+ - [x] Task 72: remove open interest features
 
 ---
 

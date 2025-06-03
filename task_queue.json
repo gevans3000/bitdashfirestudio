@@ -1,57 +1,282 @@
 [
-  {"id": 17, "description": "highlight large resting orders on depth heat map", "status": "done"},
-  {"id": 18, "description": "connect to Bybit liquidation WebSocket", "status": "done"},
-  {"id": 19, "description": "aggregate liquidations into clusters", "status": "done"},
-  {"id": 20, "description": "overlay liquidation clusters on chart", "status": "done"},
-  {"id": 21, "description": "fetch open-interest data from Bybit", "status": "done"},
-  {"id": 22, "description": "compute 1 h open-interest delta", "status": "done"},
-  {"id": 23, "description": "chart open-interest delta line", "status": "done"},
-  {"id": 24, "description": "fetch funding rate schedule", "status": "done"},
-  {"id": 25, "description": "display countdown timer to next funding", "status": "done"},
-  {"id": 26, "description": "compute Bollinger Band width", "status": "done"},
-  {"id": 27, "description": "alert when width falls below threshold", "status": "done"},
-  {"id": 28, "description": "build volume profile from recent data", "status": "done"},
-  {"id": 29, "description": "show distance to nearest volume peak", "status": "done"},
-  {"id": 30, "description": "fetch 1 h and 4 h candles", "status": "pending"},
-  {"id": 31, "description": "compare 5 m EMA trend with higher timeframes", "status": "pending"},
-  {"id": 32, "description": "flag upcoming high-impact economic events", "status": "pending"},
-  {"id": 33, "description": "notify on daily Google Trends spike", "status": "pending"},
-  {"id": 34, "description": "integrate mempool fee pressure gauge", "status": "pending"},
-  {"id": 35, "description": "implement risk/position-size calculator logic", "status": "pending"},
-  {"id": 36, "description": "add UI for risk/position-size calculator", "status": "pending"},
-  {"id": 37, "description": "track trades for session stats", "status": "pending"},
-  {"id": 38, "description": "display session P&L and hit rate", "status": "pending"},
-  {"id": 39, "description": "fetch SPY volume using Yahoo Finance", "status": "pending"},
-  {"id": 40, "description": "correlate SPY volume with BTC moves", "status": "pending"},
-  {"id": 41, "description": "collect Crypto-Twitter sentiment data", "status": "pending"},
-  {"id": 42, "description": "compute short-term sentiment index", "status": "pending"},
-  {"id": 43, "description": "stream liquidations and open interest", "status": "pending"},
-  {"id": 44, "description": "merge liquidation and OI signals", "status": "pending"},
-  {"id": 45, "description": "calculate rolling BTC/SPX correlation", "status": "pending"},
-  {"id": 46, "description": "chart correlation over time", "status": "pending"},
-  {"id": 47, "description": "pull Fed funds rate schedule", "status": "pending"},
-  {"id": 48, "description": "integrate economic-event calendar feed", "status": "pending"},
-  {"id": 49, "description": "Binance order-book WebSocket", "status": "pending"},
-  {"id": 50, "description": "stream Binance OHLCV candles", "status": "pending"},
-  {"id": 51, "description": "CoinGecko historical BTC fetcher", "status": "pending"},
-  {"id": 52, "description": "Yahoo Finance fetcher for SPX/SPY/VIX/DXY", "status": "pending"},
-  {"id": 53, "description": "FRED macro series fetcher", "status": "pending"},
-  {"id": 54, "description": "caching layer with 15 s TTL and rate limits", "status": "pending"},
-  {"id": 55, "description": "show toast alerts on signals", "status": "pending"},
-  {"id": 56, "description": "configurable alert panel", "status": "pending"},
-  {"id": 57, "description": "quick-entry trade journal", "status": "pending"},
-  {"id": 58, "description": "annotate historical signals on the chart", "status": "pending"},
-  {"id": 59, "description": "unit tests for each indicator", "status": "pending"},
-  {"id": 60, "description": "validate indicators on historical data", "status": "pending"},
-  {"id": 61, "description": "real-time backtester with metrics", "status": "pending"},
-  {"id": 62, "description": "generate API reference documentation", "status": "pending"},
-  {"id": 63, "description": "create user guide", "status": "pending"},
-  {"id": 64, "description": "write developer setup guide", "status": "pending"},
-  {"id": 65, "description": "document signals.json thresholds", "status": "pending"},
-  {"id": 66, "description": "describe each configuration parameter", "status": "pending"},
-  {"id": 67, "description": "key-level proximity indicators", "status": "pending"},
-  {"id": 68, "description": "customizable TradingView widget", "status": "pending"},
-  {"id": 69, "description": "one-click indicator toggles", "status": "pending"},
-  {"id": 70, "description": "real-time strategy-performance tracker", "status": "pending"},
-  {"id": 71, "description": "monitor data latency and system load", "status": "pending"}
+  {
+    "id": 17,
+    "description": "highlight large resting orders on depth heat map",
+    "status": "done"
+  },
+  {
+    "id": 18,
+    "description": "connect to Bybit liquidation WebSocket",
+    "status": "done"
+  },
+  {
+    "id": 19,
+    "description": "aggregate liquidations into clusters",
+    "status": "done"
+  },
+  {
+    "id": 20,
+    "description": "overlay liquidation clusters on chart",
+    "status": "done"
+  },
+  {
+    "id": 21,
+    "description": "fetch open-interest data from Bybit",
+    "status": "done"
+  },
+  {
+    "id": 22,
+    "description": "compute 1 h open-interest delta",
+    "status": "done"
+  },
+  {
+    "id": 23,
+    "description": "chart open-interest delta line",
+    "status": "done"
+  },
+  {
+    "id": 24,
+    "description": "fetch funding rate schedule",
+    "status": "done"
+  },
+  {
+    "id": 25,
+    "description": "display countdown timer to next funding",
+    "status": "done"
+  },
+  {
+    "id": 26,
+    "description": "compute Bollinger Band width",
+    "status": "done"
+  },
+  {
+    "id": 27,
+    "description": "alert when width falls below threshold",
+    "status": "done"
+  },
+  {
+    "id": 28,
+    "description": "build volume profile from recent data",
+    "status": "done"
+  },
+  {
+    "id": 29,
+    "description": "show distance to nearest volume peak",
+    "status": "done"
+  },
+  {
+    "id": 30,
+    "description": "fetch 1 h and 4 h candles",
+    "status": "pending"
+  },
+  {
+    "id": 31,
+    "description": "compare 5 m EMA trend with higher timeframes",
+    "status": "pending"
+  },
+  {
+    "id": 32,
+    "description": "flag upcoming high-impact economic events",
+    "status": "pending"
+  },
+  {
+    "id": 33,
+    "description": "notify on daily Google Trends spike",
+    "status": "pending"
+  },
+  {
+    "id": 34,
+    "description": "integrate mempool fee pressure gauge",
+    "status": "pending"
+  },
+  {
+    "id": 35,
+    "description": "implement risk/position-size calculator logic",
+    "status": "pending"
+  },
+  {
+    "id": 36,
+    "description": "add UI for risk/position-size calculator",
+    "status": "pending"
+  },
+  {
+    "id": 37,
+    "description": "track trades for session stats",
+    "status": "pending"
+  },
+  {
+    "id": 38,
+    "description": "display session P&L and hit rate",
+    "status": "pending"
+  },
+  {
+    "id": 39,
+    "description": "fetch SPY volume using Yahoo Finance",
+    "status": "pending"
+  },
+  {
+    "id": 40,
+    "description": "correlate SPY volume with BTC moves",
+    "status": "pending"
+  },
+  {
+    "id": 41,
+    "description": "collect Crypto-Twitter sentiment data",
+    "status": "pending"
+  },
+  {
+    "id": 42,
+    "description": "compute short-term sentiment index",
+    "status": "pending"
+  },
+  {
+    "id": 43,
+    "description": "stream liquidations and open interest",
+    "status": "pending"
+  },
+  {
+    "id": 44,
+    "description": "merge liquidation and OI signals",
+    "status": "pending"
+  },
+  {
+    "id": 45,
+    "description": "calculate rolling BTC/SPX correlation",
+    "status": "pending"
+  },
+  {
+    "id": 46,
+    "description": "chart correlation over time",
+    "status": "pending"
+  },
+  {
+    "id": 47,
+    "description": "pull Fed funds rate schedule",
+    "status": "pending"
+  },
+  {
+    "id": 48,
+    "description": "integrate economic-event calendar feed",
+    "status": "pending"
+  },
+  {
+    "id": 49,
+    "description": "Binance order-book WebSocket",
+    "status": "pending"
+  },
+  {
+    "id": 50,
+    "description": "stream Binance OHLCV candles",
+    "status": "pending"
+  },
+  {
+    "id": 51,
+    "description": "CoinGecko historical BTC fetcher",
+    "status": "pending"
+  },
+  {
+    "id": 52,
+    "description": "Yahoo Finance fetcher for SPX/SPY/VIX/DXY",
+    "status": "pending"
+  },
+  {
+    "id": 53,
+    "description": "FRED macro series fetcher",
+    "status": "pending"
+  },
+  {
+    "id": 54,
+    "description": "caching layer with 15 s TTL and rate limits",
+    "status": "pending"
+  },
+  {
+    "id": 55,
+    "description": "show toast alerts on signals",
+    "status": "pending"
+  },
+  {
+    "id": 56,
+    "description": "configurable alert panel",
+    "status": "pending"
+  },
+  {
+    "id": 57,
+    "description": "quick-entry trade journal",
+    "status": "pending"
+  },
+  {
+    "id": 58,
+    "description": "annotate historical signals on the chart",
+    "status": "pending"
+  },
+  {
+    "id": 59,
+    "description": "unit tests for each indicator",
+    "status": "pending"
+  },
+  {
+    "id": 60,
+    "description": "validate indicators on historical data",
+    "status": "pending"
+  },
+  {
+    "id": 61,
+    "description": "real-time backtester with metrics",
+    "status": "pending"
+  },
+  {
+    "id": 62,
+    "description": "generate API reference documentation",
+    "status": "pending"
+  },
+  {
+    "id": 63,
+    "description": "create user guide",
+    "status": "pending"
+  },
+  {
+    "id": 64,
+    "description": "write developer setup guide",
+    "status": "pending"
+  },
+  {
+    "id": 65,
+    "description": "document signals.json thresholds",
+    "status": "pending"
+  },
+  {
+    "id": 66,
+    "description": "describe each configuration parameter",
+    "status": "pending"
+  },
+  {
+    "id": 67,
+    "description": "key-level proximity indicators",
+    "status": "pending"
+  },
+  {
+    "id": 68,
+    "description": "customizable TradingView widget",
+    "status": "pending"
+  },
+  {
+    "id": 69,
+    "description": "one-click indicator toggles",
+    "status": "pending"
+  },
+  {
+    "id": 70,
+    "description": "real-time strategy-performance tracker",
+    "status": "pending"
+  },
+  {
+    "id": 71,
+    "description": "monitor data latency and system load",
+    "status": "pending"
+  },
+  {
+    "id": 72,
+    "description": "remove open interest features",
+    "status": "done"
+  }
 ]
