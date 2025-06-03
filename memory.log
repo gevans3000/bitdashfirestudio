@@ -56,3 +56,4 @@ fea2e33 | chore(memory) expand workflow notes in AGENTS.md | AGENTS.md,TASKS.md,
 f753b32 | chore(memory) clarify TASKS guidance | TASKS.md,task_queue.json | 2025-06-03T21:15:36Z
 f5e545e | chore(memory) extend README memory section | README.md,TASKS.md,task_queue.json | 2025-06-03T21:16:15Z
 38b4d2b | mem-021 restore CODEX_START instructions | CODEX_START.md | 2025-06-03T23:05:26Z
+bb9b876 | docs(memory): clean persistent memory guide | memorymaker.md | 2025-06-03T23:19:59Z
