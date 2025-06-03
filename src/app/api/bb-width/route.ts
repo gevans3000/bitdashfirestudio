@@ -3,7 +3,7 @@ import { fetchBackfill } from '@/lib/data/coingecko'
 import { bollingerWidth } from '@/lib/indicators'
 
 let cache: { data: number; ts: number } | null = null
-const TTL = 15 * 1000
+const TTL = 60 * 1000
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {

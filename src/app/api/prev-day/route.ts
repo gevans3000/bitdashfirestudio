@@ -7,7 +7,7 @@ interface CacheEntry {
 }
 
 let cache: CacheEntry | null = null;
-const CACHE_DURATION = 15 * 1000; // 15 seconds
+const CACHE_DURATION = 60 * 1000; // 60 seconds
 const URL =
   'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288';
 
