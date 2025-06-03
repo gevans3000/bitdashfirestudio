@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import DashboardHeader from '@/components/DashboardHeader';
-import DataCard from '@/components/DataCard';
-import ValueDisplay from '@/components/ValueDisplay';
+import { useState } from "react";
+import DashboardHeader from "@/components/DashboardHeader";
+import DataCard from "@/components/DataCard";
+import ValueDisplay from "@/components/ValueDisplay";
 
 interface MarketData {
   price: number;
@@ -21,13 +21,13 @@ export default function RefreshDemoPage() {
     setLoading(true);
     try {
       const [dxyRes, us10yRes] = await Promise.all([
-        fetch('/api/dxy').then(res => res.json()),
-        fetch('/api/us10y').then(res => res.json())
+        fetch("/api/dxy").then((res) => res.json()),
+        fetch("/api/us10y").then((res) => res.json()),
       ]);
       setDxy(dxyRes);
       setUs10y(us10yRes);
     } catch (err) {
-      console.error('Error fetching macro data:', err);
+      console.error("Error fetching macro data:", err);
     } finally {
       setLoading(false);
     }
@@ -42,14 +42,25 @@ export default function RefreshDemoPage() {
         isLoading={loading}
       />
       <main className="container mx-auto p-4 space-y-4">
+        <p className="text-sm text-muted-foreground">
+          The primary dashboard now focuses solely on Bitcoin price and trade
+          signals. This page demonstrates on-demand data fetching for macro
+          metrics.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DataCard title="US Dollar Index (DXY)">
             {dxy ? (
               <>
                 <ValueDisplay label="Price" value={dxy.price} unit="USD" />
                 <ValueDisplay label="Change" value={dxy.change} unit="USD" />
-                <ValueDisplay label="Change %" value={`${dxy.changePercent.toFixed(2)}%`} />
-                <ValueDisplay label="Last Updated" value={new Date(dxy.lastUpdated).toLocaleString()} />
+                <ValueDisplay
+                  label="Change %"
+                  value={`${dxy.changePercent.toFixed(2)}%`}
+                />
+                <ValueDisplay
+                  label="Last Updated"
+                  value={new Date(dxy.lastUpdated).toLocaleString()}
+                />
               </>
             ) : (
               <p className="p-2 text-center">Click refresh to load data.</p>
@@ -60,8 +71,14 @@ export default function RefreshDemoPage() {
               <>
                 <ValueDisplay label="Yield" value={us10y.price} unit="%" />
                 <ValueDisplay label="Change" value={us10y.change} unit="%" />
-                <ValueDisplay label="Change %" value={`${us10y.changePercent.toFixed(2)}%`} />
-                <ValueDisplay label="Last Updated" value={new Date(us10y.lastUpdated).toLocaleString()} />
+                <ValueDisplay
+                  label="Change %"
+                  value={`${us10y.changePercent.toFixed(2)}%`}
+                />
+                <ValueDisplay
+                  label="Last Updated"
+                  value={new Date(us10y.lastUpdated).toLocaleString()}
+                />
               </>
             ) : (
               <p className="p-2 text-center">Click refresh to load data.</p>
