@@ -68,9 +68,11 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
    e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
    f. Append the same summary with metadata to `memory.log`.
-   g. Run `npm run commitlog` to snapshot the latest Git history.
-   h. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
-   i. Rebase → merge → delete branch.
+   g. Append a memory block to `context.snapshot.md` detailing the commit hash,
+      timestamp and next goal.
+   h. Run `npm run commitlog` to snapshot the latest Git history.
+   i. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   j. Rebase → merge → delete branch.
 3. **HALT** – await next prompt.
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
