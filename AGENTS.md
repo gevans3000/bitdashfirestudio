@@ -168,7 +168,7 @@ export interface AgentMessage<T = unknown> {
 | `npm run backtest` | Historical strategy test |
 | `npm run dev-deps` | Install local dev deps   |
 
-Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). Reuse dependencies for subsequent tasks. If installation fails due to missing network access, continue using the helper scripts which skip missing binaries so lint, test and backtest do not block commits.
+Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). Reuse dependencies for subsequent tasks. If installation fails due to missing network access, continue using the helper scripts which skip missing binaries so lint, test and backtest do not block commits. Run `bash scripts/check-time.sh` to compare your clock with `pool.ntp.org` so timestamps remain accurate.
 
 ---
 
