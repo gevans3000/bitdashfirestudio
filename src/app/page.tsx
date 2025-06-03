@@ -28,9 +28,6 @@ import RsiWidget from "@/components/RsiWidget";
 import BollingerWidget from "@/components/BollingerWidget";
 import OrderBookWidget from "@/components/OrderBookWidget";
 import OrderBookHeatmap from "@/components/OrderBookHeatmap";
-import VolumeSpikeChart from "@/components/VolumeSpikeChart";
-import VolumeProfileChart from "@/components/VolumeProfileChart";
-import VolumePeakDistance from "@/components/VolumePeakDistance";
 import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
 import FundingCountdown from "@/components/FundingCountdown";
 import BbWidthAlert from "@/components/BbWidthAlert";
@@ -749,9 +746,6 @@ const CryptoDashboardPage: FC = () => {
 
           <OrderBookWidget />
           <OrderBookHeatmap />
-          <VolumeSpikeChart />
-          <VolumeProfileChart />
-          <VolumePeakDistance />
           <OpenInterestDeltaChart />
           <IchimokuWidget />
           <OrderFlowWidget />
