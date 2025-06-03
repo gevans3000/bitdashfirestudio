@@ -31,16 +31,16 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ### Scalper Add-ons
 - [x] Task 17: highlight large resting orders on depth heat map
- - [ ] Task 18: connect to Bybit liquidation WebSocket
- - [ ] Task 19: aggregate liquidations into clusters
- - [ ] Task 20: overlay liquidation clusters on chart
- - [ ] Task 21: fetch open-interest data from Bybit
- - [ ] Task 22: compute 1 h open-interest delta
- - [ ] Task 23: chart open-interest delta line
- - [ ] Task 24: fetch funding rate schedule
- - [ ] Task 25: display countdown timer to next funding
- - [ ] Task 26: compute Bollinger Band width
- - [ ] Task 27: alert when width falls below threshold
+- [x] Task 18: connect to Bybit liquidation WebSocket
+- [x] Task 19: aggregate liquidations into clusters
+- [x] Task 20: overlay liquidation clusters on chart
+ - [x] Task 21: fetch open-interest data from Bybit
+ - [x] Task 22: compute 1 h open-interest delta
+ - [x] Task 23: chart open-interest delta line
+ - [x] Task 24: fetch funding rate schedule
+ - [x] Task 25: display countdown timer to next funding
+ - [x] Task 26: compute Bollinger Band width
+ - [x] Task 27: alert when width falls below threshold
  - [ ] Task 28: build volume profile from recent data
  - [ ] Task 29: show distance to nearest volume peak
  - [ ] Task 30: fetch 1 h and 4 h candles

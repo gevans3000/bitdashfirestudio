@@ -48,6 +48,10 @@ import OrderBookWidget from "@/components/OrderBookWidget";
 import OrderBookHeatmap from "@/components/OrderBookHeatmap";
 import VolumeSpikeChart from "@/components/VolumeSpikeChart";
 import VolumeProfileChart from "@/components/VolumeProfileChart";
+import LiquidationClustersChart from "@/components/LiquidationClustersChart";
+import OpenInterestDeltaChart from "@/components/OpenInterestDeltaChart";
+import FundingCountdown from "@/components/FundingCountdown";
+import BbWidthAlert from "@/components/BbWidthAlert";
 import IchimokuWidget from "@/components/IchimokuWidget";
 import OrderFlowWidget from "@/components/OrderFlowWidget";
 import FundingRateWidget from "@/components/FundingRateWidget";
@@ -1801,9 +1805,12 @@ const CryptoDashboardPage: FC = () => {
           <OrderBookHeatmap />
           <VolumeSpikeChart />
           <VolumeProfileChart />
+          <LiquidationClustersChart />
+          <OpenInterestDeltaChart />
           <IchimokuWidget />
           <OrderFlowWidget />
           <FundingRateWidget />
+          <FundingCountdown />
           <TxnCountWidget />
           <VwapWidget />
           <PrevDayBands />
@@ -1813,6 +1820,7 @@ const CryptoDashboardPage: FC = () => {
           <StochRsiWidget />
           <AtrWidget />
           <SessionTimerWidget />
+          <BbWidthAlert />
           <SignalCard />
           <DataCard
             title="Signal History"
