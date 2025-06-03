@@ -9,6 +9,7 @@
 | File / Directory             | Purpose                             | Allowed Actions                                                                           |
 | ---------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------- |
 | `context.snapshot.md`        | Live chronological memory log       | **Append‑only** new blocks                                                                |
+| `memory.log`                 | Commit summary history              | Append commit info after each commit |
 | `archive/`                   | Historical snapshots (month‑rolled) | Create new archive files, move old blocks                                                 |
 | `PERSISTENT_MEMORY_GUIDE.md` | This rule set                       | Amend wording or policy *only* to clarify memory workflow                                 |
 | `AGENTS.md`                  | Agent charter                       | Update **memory‑related sections** or references to snapshot workflow. No other sections. |
