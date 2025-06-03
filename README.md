@@ -105,10 +105,10 @@ Using 5-minute BTC data from CoinGecko (90 days) the strategy achieved roughly a
 ## Codex Workflow
 
 See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
-Generate a recent commit summary anytime with:
+To review recent commit history, run:
 
 ```bash
-npm run commitlog
+git log -n 20 --oneline
 ```
 
 ### Recommended Workflow
@@ -117,7 +117,7 @@ npm run commitlog
 2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
 4. After each commit `memory.log` is updated automatically with metadata.
-5. When resuming after a break, run `npm run commitlog` to review recent commits.
+5. When resuming after a break, run `git log -n 20 --oneline` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
 ## Automation Scripts
@@ -125,7 +125,6 @@ npm run commitlog
 | Command | Purpose |
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
-| `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |

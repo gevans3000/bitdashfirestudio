@@ -14,3 +14,11 @@
 - Commit SHA: 2c87fa8
 - Summary: Refined DocAgent protocol and role summary
 - Next Goal: Check snapshot for archival
+### 2025-06-03 17:11 UTC | mem-005
+- Commit SHA: 53a7019
+- Summary: Introduced CODEX_START.md to outline kickoff and memory workflow and removed the outdated PERSISTENT_MEMORY_GUIDE. Updated AGENTS.md so each task commit also appends a memory block to context.snapshot.md.
+- Next Goal: Ensure scripts and docs consistently reference CODEX_START for future automation.
+### 2025-06-03 17:21 UTC | mem-009
+- Commit SHA: 19f68d2
+- Summary: Consolidated memory logs by deleting `logs/commit.log` and `scripts/commit-log.js`. Removed the `commitlog` script and updated AGENTS, README, TASKS and workflow docs to use `git log` for reviewing history. AutoTaskRunner no longer calls the old script.
+- Next Goal: Verify a single memory.log suffices for future sessions.

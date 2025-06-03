@@ -104,5 +104,4 @@ while (true) {
   tryExec('git pull --rebase origin main');
   tryExec('git push origin HEAD:main');
 
-  tryExec('npm run commitlog');
 }

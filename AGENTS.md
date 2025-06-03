@@ -68,7 +68,8 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
    e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
    f. Append the same summary with metadata to `memory.log`.
-   g. Run `npm run commitlog` to snapshot the latest Git history.
+   g. Append a memory block to `context.snapshot.md` detailing the commit hash,
+      timestamp and next goal.
    h. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
    i. Rebase → merge → delete branch.
 3. **HALT** – await next prompt.
@@ -87,8 +88,7 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 | `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `memory.log` and recent commit messages** on each new session to rebuild context. The `logs/commit.log` file mirrors the Git history for quick lookup.
-Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
+Codex must **read `memory.log` and recent commit messages** on each new session to rebuild context. Use `git log` to review recent history when needed.
 
 **Memory entry example**
 
@@ -175,7 +175,6 @@ export interface AgentMessage<T = unknown> {
 | `npm run test`     | Jest unit tests          |
 | `npm run backtest` | Historical strategy test |
 | `npm run dev-deps` | Install local dev deps   |
-| `npm run commitlog` | Update `logs/commit.log` |
 | `npm run auto` | Process tasks via AutoTaskRunner |
 | `npm run bootstrap` | Install deps then lint, test and backtest |
 
@@ -197,7 +196,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 ## 9 · Commit-Based Memory Workflow
 
 1. **Pre-Session** – run `npm run dev-deps` if `node_modules` is missing, then read `memory.log` and recent commits.
-2. **After Commit** – append the 333‑token summary to `memory.log`, run `npm run commitlog` and continue with `npm run auto` when applicable.
+2. **After Commit** – append the 333‑token summary to `memory.log` and continue with `npm run auto` when applicable.
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
 4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 
