@@ -29,7 +29,9 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ## Pending Tasks
 
-### Scalper Add-ons
+### 1. Bitcoindashboard
+
+#### Scalper Add-ons
 - [x] Task 17: highlight large resting orders on depth heat map
 - [x] Task 18: connect to Bybit liquidation WebSocket
 - [x] Task 19: aggregate liquidations into clusters
@@ -53,11 +55,11 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 37: track trades for session stats
  - [ ] Task 38: display session P&L and hit rate
 
-### Volume & Liquidity
+#### Volume & Liquidity
  - [ ] Task 39: fetch SPY volume using Yahoo Finance
  - [ ] Task 40: correlate SPY volume with BTC moves
 
-### Sentiment & Correlation
+#### Sentiment & Correlation
  - [ ] Task 41: collect Crypto-Twitter sentiment data
  - [ ] Task 42: compute short-term sentiment index
  - [ ] Task 43: stream liquidations and open interest
@@ -65,11 +67,11 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 45: calculate rolling BTC/SPX correlation
  - [ ] Task 46: chart correlation over time
 
-### Macro Indicators
+#### Macro Indicators
  - [ ] Task 47: pull Fed funds rate schedule
  - [ ] Task 48: integrate economic-event calendar feed
 
-### Data Management
+#### Data Management
  - [ ] Task 49: Binance order-book WebSocket
  - [ ] Task 50: stream Binance OHLCV candles
  - [ ] Task 51: CoinGecko historical BTC fetcher
@@ -77,32 +79,39 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [ ] Task 53: FRED macro series fetcher
  - [ ] Task 54: caching layer with 15 s TTL and rate limits
 
-### Alerts & Notifications
+#### Alerts & Notifications
  - [ ] Task 55: show toast alerts on signals
  - [ ] Task 56: configurable alert panel
  - [ ] Task 57: quick-entry trade journal
  - [ ] Task 58: annotate historical signals on the chart
 
-### Testing & Validation
+#### Testing & Validation
  - [ ] Task 59: unit tests for each indicator
  - [ ] Task 60: validate indicators on historical data
  - [ ] Task 61: real-time backtester with metrics
 
-### Documentation & Configuration
+#### Documentation & Configuration
  - [ ] Task 62: generate API reference documentation
  - [ ] Task 63: create user guide
  - [ ] Task 64: write developer setup guide
  - [ ] Task 65: document `signals.json` thresholds
  - [ ] Task 66: describe each configuration parameter
 
-### UI Enhancements
+#### UI Enhancements
  - [ ] Task 67: key-level proximity indicators
  - [ ] Task 68: customizable TradingView widget
  - [ ] Task 69: one-click indicator toggles
 
-### Performance & Monitoring
+#### Performance & Monitoring
  - [ ] Task 70: real-time strategy-performance tracker
  - [ ] Task 71: monitor data latency and system load
+
+### 2. Persistent Memory
+- [ ] Task 72: replace legacy memory files with memory.log references in docs
+- [ ] Task 73: add .env.local.example template and document usage
+- [ ] Task 74: backfill missing commit entries in memory.log and regenerate commit.log
+- [ ] Task 75: remove ccxt server and dependency, update README
+- [ ] Task 76: fetch and cache 90-day candle history for backtests
 
 ---
 

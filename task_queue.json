@@ -53,5 +53,11 @@
   {"id": 68, "description": "customizable TradingView widget", "status": "pending"},
   {"id": 69, "description": "one-click indicator toggles", "status": "pending"},
   {"id": 70, "description": "real-time strategy-performance tracker", "status": "pending"},
-  {"id": 71, "description": "monitor data latency and system load", "status": "pending"}
+  {"id": 71, "description": "monitor data latency and system load", "status": "pending"},
+  {"id": 72, "description": "replace legacy memory files with memory.log references in docs", "status": "pending"},
+  {"id": 73, "description": "add .env.local.example template and document usage", "status": "pending"},
+  {"id": 74, "description": "backfill missing commit entries in memory.log and regenerate commit.log", "status": "pending"},
+  {"id": 75, "description": "remove ccxt server and dependency, update README", "status": "pending"},
+  {"id": 76, "description": "fetch and cache 90-day candle history for backtests", "status": "pending"}
 ]
+
