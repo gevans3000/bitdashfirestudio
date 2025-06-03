@@ -15,12 +15,12 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 
 ## Tech Stack
 
-- Next.js 14 (API routes handle all backend logic)
+- Next.js 14
 - React 18
 - TypeScript
 - Lightweight charting
 - Tailwind CSS
-- No separate Node.js server needed (server.js removed)
+- All backend logic handled directly by Next.js API routes
 
 ## Getting Started
 
