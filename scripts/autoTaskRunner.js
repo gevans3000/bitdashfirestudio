@@ -20,7 +20,7 @@ const tasksPath = path.join(repoRoot, 'TASKS.md');
 const signalsPath = path.join(repoRoot, 'signals.json');
 const logDir = path.join(repoRoot, 'logs');
 fs.mkdirSync(logDir, { recursive: true });
-const snapshotPath = path.join(repoRoot, 'context.snapshot.md');
+const memoryPath = path.join(repoRoot, 'memory.log');
 process.chdir(repoRoot);
 
 tryExec('npm ci');
@@ -92,17 +92,14 @@ while (true) {
     .filter(Boolean)
     .join(', ');
 
-  const snapshot = `# Context Snapshot\n` +
-    `Task: ${taskNum} - ${taskDesc}\n` +
-    `Timestamp: ${new Date().toISOString()}\n` +
-    `Files: ${diffFiles}\n` +
-    `Next: ${nextTask}\n\n` +
-    `Summary:\n${body}\n`;
-
-  fs.writeFileSync(snapshotPath, snapshot);
-  execSync('git add context.snapshot.md');
   const header = `Task ${taskNum}: ${taskDesc}`;
   execSync(`git commit -m "${header}" -m "${body}"`);
+
+  const hash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  const entry = `${hash} | Task ${taskNum} | ${taskDesc} | ${diffFiles} | ${new Date().toISOString()}\n`;
+  fs.appendFileSync(memoryPath, entry);
+  execSync(`git add ${memoryPath}`);
+  execSync(`git commit -m "chore(memory): record task ${taskNum}"`);
 
   tryExec('git pull --rebase origin main');
   tryExec('git push origin HEAD:main');

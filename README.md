@@ -116,9 +116,9 @@ npm run commitlog
 ### Recommended Workflow
 
 1. Run `npm ci` once when you start a session.
-2. Review `context.snapshot.md` for the latest 333-token summary.
+2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
-4. After each commit the snapshot is updated automatically with metadata.
+4. After each commit `memory.log` is updated automatically with metadata.
 5. When resuming after a break, run `npm run commitlog` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
