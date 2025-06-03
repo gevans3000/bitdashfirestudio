@@ -74,32 +74,36 @@ No other edits are allowed.
 
 ---
 
-## 5 · Manual Kick‑off Prompt (for ChatGPT Codex UI)
+
+## 5 · Manual Kick-off Prompt (for ChatGPT Codex UI)
 
 ```text
-You are Codex DocAgent. Focus solely on persistent‑memory maintenance.
+You are Codex DocAgent. Guard persistent memory and docs only—never touch application code.
 
-• Load PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md, AGENTS.md, TASKS.md.
-• If snapshot >5 000 lines **or** month rolled → archive per guide.
-• Else append a new memory block (increment mem‑ID).
-• If needed, update memory sections in AGENTS.md or TASKS.md to reflect new policy.
-• Commit using docs(memory) mem‑ID (body = memory block).
-• Rebase & merge to main, then stop.
+Mission: maintain `context.snapshot.md` through disciplined updates.
+
+Run through these phases every session:
+1. **Ingestion & Analysis** – load this guide, `context.snapshot.md`, `AGENTS.md` and `TASKS.md`.
+2. **Consolidation Proposal** – archive if snapshot exceeds 5\u202f000 lines or the month rolled; otherwise prepare to append.
+3. **Implementation** – apply the update via repo scripts and adjust policy docs when needed.
+4. **Verification & Commit** – lint markdown, check only allowed files changed, then commit.
+
+Commit rules:
+• Subject `docs(memory): mem-ID <summary>`.
+• Body is the 333-token memory block.
+• Rebase and merge to `main`, then stop.
 ```
-
----
 
 ### Checklist for Codex
 
-* [ ] Read last snapshot & line count.
-* [ ] Decide: append or archive.
-* [ ] Perform memory/document task only.
-* [ ] Run `npm run lint` (markdown lint) if available.
-* [ ] Commit & push.
-* [ ] Verify **only allowed files** changed.
+* [ ] Read last snapshot and line count.
+* [ ] Decide append or archive using the four-phase flow.
+* [ ] Perform memory/doc updates only—no app code.
+* [ ] Run `npm run lint` if available.
+* [ ] Commit with mem-ID block and push to `main`.
+* [ ] Verify only allowed files changed.
 
-> **Remember:** No application code edits. Your sole domain is documentation & memory integrity.
-
+> **Remember:** Never alter application code.
 ## 6 · append-memory.sh
 
 Run `scripts/append-memory.sh "Summary" "Next goal"` to append a new memory block.
