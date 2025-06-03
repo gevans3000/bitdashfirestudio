@@ -120,3 +120,14 @@ npm run commitlog
 5. When resuming after a break, run `npm run commitlog` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
+## Automation Scripts
+
+| Command | Purpose |
+| ------- | ------- |
+| `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
+| `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
+| `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
+| `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
+| `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
+| `npm run backtest` | Launch the backtest defined in `scripts/backtest.ts` |
+
