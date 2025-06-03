@@ -35,9 +35,7 @@ import {
   BarChart2,
 } from "lucide-react";
 import { CorrelationPanel } from "@/components/CorrelationPanel";
-import SignalCard from "@/components/SignalCard";
 import MarketChart from "@/components/MarketChart";
-import SignalHistory from "@/components/SignalHistory";
 import AtrWidget from "@/components/AtrWidget";
 import VwapWidget from "@/components/VwapWidget";
 import PrevDayBands from "@/components/PrevDayBands";
@@ -62,8 +60,6 @@ import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
-import { SignalGenerator } from "@/lib/agents/SignalGenerator";
-import { AlertLogger } from "@/lib/agents/AlertLogger";
 import type { Candle } from "@/lib/data/binanceWs";
 import type { ComputedIndicators } from "@/lib/signals";
 import type { TradeSignal } from "@/types";
@@ -202,16 +198,8 @@ const CryptoDashboardPage: FC = () => {
     const bus = new Orchestrator();
     const dc = new DataCollector(bus);
     const ie = new IndicatorEngine(bus);
-    const sg = new SignalGenerator(bus);
-    const al = new AlertLogger();
     bus.register("IndicatorEngine", (m) =>
       ie.handle(m as AgentMessage<Candle>),
-    );
-    bus.register("SignalGenerator", (m) =>
-      sg.handle(m as AgentMessage<ComputedIndicators>),
-    );
-    bus.register("AlertLogger", (m) =>
-      al.handle(m as AgentMessage<TradeSignal>),
     );
     bus.register("DataCollector", () => {});
     dc.start();
@@ -1823,15 +1811,6 @@ const CryptoDashboardPage: FC = () => {
           <AtrWidget />
           <SessionTimerWidget />
           <BbWidthAlert />
-          <SignalCard />
-          <DataCard
-            title="Signal History"
-            icon={Brain}
-            status="fresh"
-            className="xl:col-span-1"
-          >
-            <SignalHistory />
-          </DataCard>
 
           <DataCard
             title="AI Market Sentiment"
