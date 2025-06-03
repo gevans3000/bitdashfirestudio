@@ -41,3 +41,6 @@ d022778 | mem-004 refine DocAgent protocol | AGENTS.md, PERSISTENT_MEMORY_GUIDE.
 53a7019 | mem-008 remove outdated memory guide | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T17:10:43Z
 e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:16:24Z
 9a1c1ad | docs(memory) align with CODEX_START | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:35:02Z
+3ef091d | docs(memory) backfill snapshot | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:47:45Z
+e6aa08f | docs(memory) record mem-008 snapshot backfill | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:51:30Z
+334e253 | chore(memory) log mem-009 entry | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:52:26Z

@@ -1,6 +1,3 @@
-a3ed0a6 | remove AI tools | cleaned leftover Genkit scripts and dependencies after deleting src/ai | package.json | 2025-06-03T03:36:48Z
-b5ea277 | removed old liquidation modules | src/lib/data/bybitLiquidations.ts src/lib/liquidationClusters.ts | 2025-06-03T05:16:13Z
-ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candles/route.ts, src/lib/data/binanceCandles.ts, task_queue.json | 2025-06-03T05:28:46Z
 2813caa | Task 31 | Removed obsolete migrate-memory script | scripts/migrate-memory.js | 2025-06-03T11:06:03Z
 668e0c0 | fix(signals) | update last task completion to 31 | signals.json | 2025-06-03T11:23:26Z
 574856c | add append-memory helper | scripts/append-memory.sh, PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T14:18:37Z
@@ -18,3 +15,6 @@ d022778 | mem-004 refine DocAgent protocol | AGENTS.md, PERSISTENT_MEMORY_GUIDE.
 53a7019 | mem-008 remove outdated memory guide | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T17:10:43Z
 e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:16:24Z
 9a1c1ad | docs(memory) align with CODEX_START | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:35:02Z
+3ef091d | docs(memory) backfill snapshot | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:47:45Z
+e6aa08f | docs(memory) record mem-008 snapshot backfill | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:51:30Z
+334e253 | chore(memory) log mem-009 entry | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:52:26Z
