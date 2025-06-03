@@ -1,14 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { repoRoot, memPath, readMemoryLines } = require('./memory-utils');
 
-const repoRoot = path.resolve(__dirname, '..');
-const memPath = path.join(repoRoot, 'memory.log');
-
-let entries = [];
-if (fs.existsSync(memPath)) {
-  entries = fs.readFileSync(memPath, 'utf8').trim().split('\n').filter(Boolean);
-}
+let entries = readMemoryLines();
 let lastHash = '';
 if (entries.length) {
   const candidate = entries[entries.length - 1].split(' | ')[0];
