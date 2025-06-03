@@ -1,6 +1,6 @@
-# PERSISTENT\_MEMORY\_GUIDE.md – Codex Memory‑Maintenance Rules
+# PERSISTENT_MEMORY_GUIDE.md – Codex Memory‑Maintenance Rules
 
-> **Mission:** Maintain the repository’s persistent memory **only**.  Codex may touch *documentation and agent‑instruction* files but **must never modify application code** (TypeScript, React, configs, builds).  All activity revolves around appending or archiving memory blocks and keeping the docs that govern that workflow up‑to‑date.
+> **Mission:** Maintain the repository’s persistent memory **only**. Codex may touch _documentation and agent‑instruction_ files but **must never modify application code** (TypeScript, React, configs, builds). All activity revolves around appending or archiving memory blocks and keeping the docs that govern that workflow up‑to‑date.
 
 ---
 
@@ -10,12 +10,12 @@
 | ---------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------- |
 | `context.snapshot.md`        | Live chronological memory log       | **Append‑only** new blocks                                                                |
 | `archive/`                   | Historical snapshots (month‑rolled) | Create new archive files, move old blocks                                                 |
-| `PERSISTENT_MEMORY_GUIDE.md` | This rule set                       | Amend wording or policy *only* to clarify memory workflow                                 |
+| `PERSISTENT_MEMORY_GUIDE.md` | This rule set                       | Amend wording or policy _only_ to clarify memory workflow                                 |
 | `AGENTS.md`                  | Agent charter                       | Update **memory‑related sections** or references to snapshot workflow. No other sections. |
-| `TASKS.md`                   | Task queue                          | Add / reorder / clarify *documentation or memory* tasks. **Do NOT add code tasks.**       |
+| `TASKS.md`                   | Task queue                          | Add / reorder / clarify _documentation or memory_ tasks. **Do NOT add code tasks.**       |
 | `/logs/memory‑*.txt`         | Diagnostic logs on failure          | Auto‑generate                                                                             |
 
-> **Forbidden:** Editing any `.ts`, `.tsx`, `.js`, runtime `.json` (except archives), `/app`, `/lib`, build files, or config files unrelated to memory.  If uncertain, log an error and stop.
+> **Forbidden:** Editing any `.ts`, `.tsx`, `.js`, runtime `.json` (except archives), `/app`, `/lib`, build files, or config files unrelated to memory. If uncertain, log an error and stop.
 
 ---
 
@@ -23,6 +23,7 @@
 
 ```md
 ### 2025‑06‑05 14:12 UTC | mem‑001
+
 - **Commit SHA:** abc123f
 - **Summary:** <≤333‑token description of change>
 - **Next Goal:** <next memory or doc objective>
@@ -30,20 +31,20 @@
 
 **Rules**
 
-* Keep each block ≤ 333 tokens.
-* UTC timestamp format `YYYY‑MM‑DD HH:MM UTC`.
-* Monotonic `mem‑###` counter.
-* Never alter prior blocks; use append‑only semantics.
+- Keep each block ≤ 333 tokens.
+- UTC timestamp format `YYYY‑MM‑DD HH:MM UTC`.
+- Monotonic `mem‑###` counter.
+- Never alter prior blocks; use append‑only semantics.
 
 ---
 
 ## 3 · Commit Policy
 
-* **One memory/document task → one commit.**
-* Allowed commit types: `docs(memory)` or `chore(memory)`.
-* Subject line ≤ 50 chars and must include `mem‑ID`.
-* Commit body **must equal** the memory block being appended (plus optional diagnostics below it).
-* For changes in `AGENTS.md` or `TASKS.md`, mention them briefly in the summary.
+- **One memory/document task → one commit.**
+- Allowed commit types: `docs(memory)` or `chore(memory)`.
+- Subject line ≤ 50 chars and must include `mem‑ID`.
+- Commit body **must equal** the memory block being appended (plus optional diagnostics below it).
+- For changes in `AGENTS.md` or `TASKS.md`, mention them briefly in the summary.
 
 Example commit message:
 
@@ -63,12 +64,34 @@ docs(memory): mem‑031 archive May‑2025 snapshot
 1. **Append Snapshot** – default action on each run.
 2. **Archive Older Snapshots** – trigger when `context.snapshot.md` > 5 000 lines **or** calendar month changes:
 
-   * Move all but the last block to `archive/context_snapshot_<YYYY‑MM>.md`.
-   * Log an archive memory block.
+   - Move all but the last block to `archive/context_snapshot_<YYYY‑MM>.md`.
+   - Log an archive memory block.
+
 3. **Update Docs** – if snapshot format, counter, or archive policy needs change, update this guide (`PERSISTENT_MEMORY_GUIDE.md`) **and** the relevant memory sections of `AGENTS.md` and `TASKS.md`.
-4. **Diagnostics** – on any append/archive error, write `/logs/memory‑error‑<timestamp>.txt`.
+4. **Diagnostics** – on any append/archive error, write `/logs/memory-error-<timestamp>.txt`.
 
 No other edits are allowed.
+
+### Log Examples
+
+`memory.log` lines follow this pipe-delimited format:
+
+```
+<hash> | <task or note> | <summary> | <files> | <ISO timestamp>
+```
+
+Example:
+
+```
+abc1234 | Task 31 | Removed obsolete migrate-memory script | scripts/migrate-memory.js | 2025-06-03T11:06:03Z
+```
+
+Errors append output and stack trace to files like `logs/memory-error-2025-06-03T11-10-00Z.txt`.
+
+```
+<command output>
+Error: stack trace...
+```
 
 ---
 
@@ -89,11 +112,11 @@ You are Codex DocAgent. Focus solely on persistent‑memory maintenance.
 
 ### Checklist for Codex
 
-* [ ] Read last snapshot & line count.
-* [ ] Decide: append or archive.
-* [ ] Perform memory/document task only.
-* [ ] Run `npm run lint` (markdown lint) if available.
-* [ ] Commit & push.
-* [ ] Verify **only allowed files** changed.
+- [ ] Read last snapshot & line count.
+- [ ] Decide: append or archive.
+- [ ] Perform memory/document task only.
+- [ ] Run `npm run lint` (markdown lint) if available.
+- [ ] Commit & push.
+- [ ] Verify **only allowed files** changed.
 
 > **Remember:** No application code edits. Your sole domain is documentation & memory integrity.

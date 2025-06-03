@@ -26,3 +26,4 @@ b5ea277 | removed old liquidation modules | src/lib/data/bybitLiquidations.ts sr
 ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candles/route.ts, src/lib/data/binanceCandles.ts, task_queue.json | 2025-06-03T05:28:46Z
 2813caa | Task 31 | Removed obsolete migrate-memory script | scripts/migrate-memory.js | 2025-06-03T11:06:03Z
 668e0c0 | fix(signals) | update last task completion to 31 | signals.json | 2025-06-03T11:23:26Z
+ae72496 | Task 32 | unify memory error handling | scripts/autoTaskRunner.js, scripts/commit-log.js, PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T14:04:54Z
