@@ -44,3 +44,4 @@ e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.sna
 3ef091d | docs(memory) backfill snapshot | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:47:45Z
 e6aa08f | docs(memory) record mem-008 snapshot backfill | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:51:30Z
 334e253 | chore(memory) log mem-009 entry | context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:52:26Z
+b0aa95e | docs(tasks) categorize persistent memory | TASKS.md, task_queue.json | 2025-06-03T19:34:41Z

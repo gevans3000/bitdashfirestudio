@@ -31,6 +31,21 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ## Pending Tasks
 
+### Persistent Memory
+
+- [x] Task 72: mem-001 create context snapshot
+- [x] Task 73: mem-002 document memory scripts
+- [x] Task 74: mem-003 backfill logs
+- [x] Task 75: mem-004 update DocAgent protocol
+- [x] Task 76: mem-005 document mem-ID counter
+- [x] Task 77: mem-006 clarify DocAgent role
+- [x] Task 78: mem-007 add CODEX_START instructions
+- [x] Task 79: mem-008 remove outdated memory guide
+- [x] Task 80: mem-009 backfill snapshot
+- [x] Task 81: mem-010 record log entry
+
+### Bitcoin Dashboard
+
 ### Scalper Add-ons
 
 - [x] Task 17: highlight large resting orders on depth heat map
@@ -61,6 +76,15 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 39: fetch SPY volume using Yahoo Finance
 - [ ] Task 40: correlate SPY volume with BTC moves
 
+### Data Management
+
+- [ ] Task 49: Binance order-book WebSocket
+- [ ] Task 50: stream Binance OHLCV candles
+- [ ] Task 51: CoinGecko historical BTC fetcher
+- [ ] Task 52: Yahoo Finance fetcher for SPX/SPY/VIX/DXY
+- [ ] Task 53: FRED macro series fetcher
+- [ ] Task 54: caching layer with 15 s TTL and rate limits
+
 ### Sentiment & Correlation
 
 - [ ] Task 41: collect Crypto-Twitter sentiment data
@@ -75,21 +99,23 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 47: pull Fed funds rate schedule
 - [ ] Task 48: integrate economic-event calendar feed
 
-### Data Management
-
-- [ ] Task 49: Binance order-book WebSocket
-- [ ] Task 50: stream Binance OHLCV candles
-- [ ] Task 51: CoinGecko historical BTC fetcher
-- [ ] Task 52: Yahoo Finance fetcher for SPX/SPY/VIX/DXY
-- [ ] Task 53: FRED macro series fetcher
-- [ ] Task 54: caching layer with 15 s TTL and rate limits
-
 ### Alerts & Notifications
 
 - [ ] Task 55: show toast alerts on key events
 - [ ] Task 56: configurable alert panel
 - [ ] Task 57: quick-entry trade journal
 - [ ] Task 58: annotate historical events on the chart
+
+### UI Enhancements
+
+- [ ] Task 67: key-level proximity indicators
+- [ ] Task 68: customizable TradingView widget
+- [ ] Task 69: one-click indicator toggles
+
+### Performance & Monitoring
+
+- [ ] Task 70: real-time strategy-performance tracker
+- [ ] Task 71: monitor data latency and system load
 
 ### Testing & Validation
 
@@ -104,17 +130,6 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 64: write developer setup guide
 - [ ] Task 65: document configuration thresholds
 - [ ] Task 66: describe each configuration parameter
-
-### UI Enhancements
-
-- [ ] Task 67: key-level proximity indicators
-- [ ] Task 68: customizable TradingView widget
-- [ ] Task 69: one-click indicator toggles
-
-### Performance & Monitoring
-
-- [ ] Task 70: real-time strategy-performance tracker
-- [ ] Task 71: monitor data latency and system load
 
 ---
 

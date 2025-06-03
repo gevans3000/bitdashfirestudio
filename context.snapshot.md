@@ -38,3 +38,7 @@
 - Commit SHA: 334e253
 - Summary: Recorded mem-009 entry for commit e6aa08f and refreshed commit log
 - Next Goal: Next step: implement EMA trend comparison
+### 2025-06-03 19:34 UTC | mem-011
+- Commit SHA: b0aa95e
+- Summary: Reorganized TASKS.md with a new Persistent Memory section listing completed mem tasks 72-81 and placed Bitcoin Dashboard categories afterward in priority order. Updated task_queue.json accordingly.
+- Next Goal: resume development with Task 31 comparing EMA trends.
