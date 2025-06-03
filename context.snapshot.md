@@ -26,3 +26,15 @@
 - Commit SHA: 9a1c1ad
 - Summary: Updated AGENTS references to CODEX_START and recorded prior commit in memory log and snapshot to maintain persistent memory.
 - Next Goal: Proceed with Task 31 in TASKS.md.
+### 2025-06-03 17:51 UTC | mem-008
+- Commit SHA: 3ef091d
+- Summary: Backfilled memory snapshot with entries mem-006 and mem-007; synced memory.log and commit log
+- Next Goal: Start work on Task 31
+### 2025-06-03 17:51 UTC | mem-009
+- Commit SHA: e6aa08f
+- Summary: Logged mem-008 entry for commit 3ef091d and updated logs
+- Next Goal: Continue with Task 31 implementation
+### 2025-06-03 17:52 UTC | mem-010
+- Commit SHA: 334e253
+- Summary: Recorded mem-009 entry for commit e6aa08f and refreshed commit log
+- Next Goal: Next step: implement EMA trend comparison
