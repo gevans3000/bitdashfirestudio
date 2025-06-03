@@ -273,5 +273,55 @@
     "id": 71,
     "description": "monitor data latency and system load",
     "status": "pending"
+  },
+  {
+    "id": 72,
+    "description": "mem-001 create context snapshot",
+    "status": "done"
+  },
+  {
+    "id": 73,
+    "description": "mem-002 document memory scripts",
+    "status": "done"
+  },
+  {
+    "id": 74,
+    "description": "mem-003 backfill logs",
+    "status": "done"
+  },
+  {
+    "id": 75,
+    "description": "mem-004 update DocAgent protocol",
+    "status": "done"
+  },
+  {
+    "id": 76,
+    "description": "mem-005 document mem-ID counter",
+    "status": "done"
+  },
+  {
+    "id": 77,
+    "description": "mem-006 clarify DocAgent role",
+    "status": "done"
+  },
+  {
+    "id": 78,
+    "description": "mem-007 add CODEX_START instructions",
+    "status": "done"
+  },
+  {
+    "id": 79,
+    "description": "mem-008 remove outdated memory guide",
+    "status": "done"
+  },
+  {
+    "id": 80,
+    "description": "mem-009 backfill snapshot",
+    "status": "done"
+  },
+  {
+    "id": 81,
+    "description": "mem-010 record log entry",
+    "status": "done"
   }
 ]
