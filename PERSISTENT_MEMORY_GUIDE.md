@@ -37,6 +37,10 @@
   even when snapshots are archived.
 * Never alter prior blocks; use append‑only semantics.
 
+Scripts such as `scripts/append-memory.sh` read the last block and automatically
+increment the `mem-ID` counter when appending new entries. Use these helpers to
+keep the numbering consistent.
+
 ---
 
 ## 3 · Commit Policy
