@@ -13,7 +13,7 @@ on_error() {
 }
 trap on_error ERR
 
-last_id=$(grep -o 'mem-[0-9]\+' "$MEM_FILE" | tail -n 1 | grep -o '[0-9]\+' || echo '0')
+last_id=$(tail -n 20 "$MEM_FILE" | grep -o 'mem-[0-9]\+' | tail -n 1 | grep -o '[0-9]\+' || echo '0')
 next_id=$(printf "%03d" $((10#$last_id + 1)))
 
 timestamp=$(date -u '+%Y-%m-%d %H:%M UTC')
@@ -30,5 +30,11 @@ cat "$MEM_FILE" > "$TMP"
   echo "- Summary: $summary"
   echo "- Next Goal: $next_goal"
 } >> "$TMP"
+python3 - <<'EOF'
+import os, sys
+fd = os.open(sys.argv[1], os.O_RDWR)
+os.fsync(fd)
+os.close(fd)
+EOF "$TMP"
 mv "$TMP" "$MEM_FILE"
 
