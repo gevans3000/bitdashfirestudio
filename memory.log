@@ -39,3 +39,5 @@ ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candl
 d022778 | mem-004 refine DocAgent protocol | AGENTS.md, PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md | 2025-06-03T16:09:21Z
 66b6689 | mem-007 add CODEX_START instructions | CODEX_START.md | 2025-06-03T17:09:43Z
 53a7019 | mem-008 remove outdated memory guide | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T17:10:43Z
+e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:16:24Z
+9a1c1ad | docs(memory) align with CODEX_START | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:35:02Z

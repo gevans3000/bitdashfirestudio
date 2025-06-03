@@ -18,3 +18,11 @@
 - Commit SHA: 53a7019
 - Summary: Introduced CODEX_START.md to outline kickoff and memory workflow and removed the outdated PERSISTENT_MEMORY_GUIDE. Updated AGENTS.md so each task commit also appends a memory block to context.snapshot.md.
 - Next Goal: Ensure scripts and docs consistently reference CODEX_START for future automation.
+### 2025-06-03 17:16 UTC | mem-006
+- Commit SHA: e2f193e
+- Summary: Updated AGENTS.md to require context snapshot entries after every commit and added missing memory logs. This enforces the persistence workflow from CODEX_START.
+- Next Goal: Align scripts with CODEX_START to automate memory updates.
+### 2025-06-03 17:35 UTC | mem-007
+- Commit SHA: 9a1c1ad
+- Summary: Updated AGENTS references to CODEX_START and recorded prior commit in memory log and snapshot to maintain persistent memory.
+- Next Goal: Proceed with Task 31 in TASKS.md.
