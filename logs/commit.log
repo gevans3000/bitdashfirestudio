@@ -1,7 +1,3 @@
-08da8e8 | chore log update | memory.log | 2025-06-03T16:01:12Z
-d022778 | mem-004 refine DocAgent protocol | AGENTS.md, PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md | 2025-06-03T16:09:21Z
-66b6689 | mem-007 add CODEX_START instructions | CODEX_START.md | 2025-06-03T17:09:43Z
-53a7019 | mem-008 remove outdated memory guide | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T17:10:43Z
 e2f193e | docs(memory) enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:16:24Z
 9a1c1ad | docs(memory) align with CODEX_START | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:35:02Z
 3ef091d | docs(memory) backfill snapshot | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T17:47:45Z
@@ -18,3 +14,7 @@ c5f74b9 | chore(memory) enhance npm codex alias | package.json,TASKS.md,task_que
 fea2e33 | chore(memory) expand workflow notes in AGENTS.md | AGENTS.md,TASKS.md,task_queue.json | 2025-06-03T21:15:04Z
 f753b32 | chore(memory) clarify TASKS guidance | TASKS.md,task_queue.json | 2025-06-03T21:15:36Z
 f5e545e | chore(memory) extend README memory section | README.md,TASKS.md,task_queue.json | 2025-06-03T21:16:15Z
+38b4d2b | mem-021 restore CODEX_START instructions | CODEX_START.md | 2025-06-03T23:05:26Z
+9723f8e | docs(memory) remove redundant memory docs | README.md,docs/CODEX_WORKFLOW.md,memorymaker.md | 2025-06-03T23:10:57Z
+ded31d1 | chore(memory) log removal of redundant docs | context.snapshot.md,logs/commit.log,memory.log | 2025-06-03T23:11:20Z
+5e789e3 | chore(memory) record ded31d1 entry | context.snapshot.md,logs/commit.log,memory.log | 2025-06-03T23:12:09Z
