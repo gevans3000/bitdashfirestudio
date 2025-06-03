@@ -1,6 +1,6 @@
 [
   {"id": 17, "description": "highlight large resting orders on depth heat map", "status": "done"},
-  {"id": 18, "description": "connect to Bybit liquidation WebSocket", "status": "pending"},
+  {"id": 18, "description": "connect to Bybit liquidation WebSocket", "status": "done"},
   {"id": 19, "description": "aggregate liquidations into clusters", "status": "pending"},
   {"id": 20, "description": "overlay liquidation clusters on chart", "status": "pending"},
   {"id": 21, "description": "fetch open-interest data from Bybit", "status": "pending"},

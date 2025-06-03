@@ -31,7 +31,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ### Scalper Add-ons
 - [x] Task 17: highlight large resting orders on depth heat map
- - [ ] Task 18: connect to Bybit liquidation WebSocket
+ - [x] Task 18: connect to Bybit liquidation WebSocket
  - [ ] Task 19: aggregate liquidations into clusters
  - [ ] Task 20: overlay liquidation clusters on chart
  - [ ] Task 21: fetch open-interest data from Bybit
