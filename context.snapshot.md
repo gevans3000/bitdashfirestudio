@@ -78,3 +78,7 @@
 - Commit SHA: f5e545e
 - Summary: Extended README instructions to log hashes in memory files. Marked Task 91 done.
 - Next Goal: none
+### 2025-06-03 23:05 UTC | mem-021
+- Commit SHA: 38b4d2b
+- Summary: Restored CODEX_START instructions for manual kickoff and memory workflow
+- Next Goal: Implement Task 31 comparing EMA trends
