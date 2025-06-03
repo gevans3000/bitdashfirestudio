@@ -23,3 +23,19 @@ Keep each summary under 333 tokens so it fits within Codex prompts. Append one l
 b645986 | Task 19 | Added liquidation cluster aggregator and integrated into DataCollector | src/lib/liquidationClusters.ts, src/lib/agents/DataCollector.ts, task_queue.json, TASKS.md | 2025-06-03T00:46:20Z
 6f32f4d | Task 20 | Added API and React overlay to display liquidation clusters | src/components/LiquidationClustersChart.tsx, src/app/api/liquidation-clusters/route.ts, src/app/page.tsx, task_queue.json, TASKS.md | 2025-06-03T00:47:44Z
 8490c24 | Tasks 21-27 | Added open interest fetch, delta chart, funding timer, and BB width alert | src/app/api/open-interest/route.ts etc. | 2025-06-03T00:49:46Z
+b25124e | Task 20 memory | Recorded completion for Task 20 | memory.md, context.snapshot.md, logs/commit.log, task_queue.json, TASKS.md | 2025-06-03T00:00:00Z
+ba0345d | Task 19 memory | Recorded completion for Task 19 | memory.md, context.snapshot.md, logs/commit.log, task_queue.json, TASKS.md | 2025-06-03T00:00:00Z
+be5ea2f | Task 18 memory | Recorded completion for Task 18 | memory.md, context.snapshot.md, logs/commit.log, task_queue.json, TASKS.md | 2025-06-03T00:00:00Z
+7e84b40 | Bootstrap | Enabled full automation loop with resilient scripts | logs/commit.log, package.json | 2025-06-03T00:31:41Z
+df3d2c4 | Sync tasks | Recorded task synchronization details | context.snapshot.md, logs/commit.log, memory.md, task_queue.json | 2025-06-02T23:57:11Z
+2e9e35e | Docs | Expanded task list granularity | TASKS.md | 2025-06-02T23:46:36Z
+5a61018 | Docs | Clarified persistent memory steps | AGENTS.md, TASKS.md, memory.md | 2025-06-02T23:32:18Z
+ab0b2fa | Docs | Refined memory and task sync instructions | AGENTS.md, TASKS.md, context.snapshot.md, logs/commit.log, memory.md | 2025-06-02T23:21:07Z
+ee5bc9e | Docs | Refined memory and task sync | AGENTS.md, TASKS.md, memory.md | 2025-06-02T23:10:57Z
+c409552 | Docs | Clarified commit-based memory workflow | AGENTS.md, TASKS.md, docs/CODEX_WORKFLOW.md | 2025-06-02T23:04:53Z
+796ed43 | Docs | Refined automation memory rules | AGENTS.md, TASKS.md, memory.md | 2025-06-02T22:49:58Z
+314de5c | Docs | Added task queue and memory guide | AGENTS.md, TASKS.md, docs/CODEX_WORKFLOW.md, memory.md, task_queue.json | 2025-06-02T22:37:12Z
+6b2492d | Upload | Added reference documentation | newcodex1.md | 2025-06-02T22:11:54Z
+008cd8e | Upload | Added automation instructions file | auto-instruct-codex.md | 2025-06-02T21:57:56Z
+98191e9 | Task 17 | Merged task 17 changes | AGENTS.md, TASKS.md, context.snapshot.md, package.json, scripts/dev-deps.sh, scripts/try-cmd.js, src/components/OrderBookHeatmap.tsx | 2025-06-02T21:47:20Z
+dd5af4c | Docs | Updated automation rules | AGENTS.md | 2025-06-02T19:52:32Z
