@@ -27,3 +27,8 @@ ffa63b7 | Task 30 | fetch 1h and 4h candles | TASKS.md, src/app/api/higher-candl
 2813caa | Task 31 | Removed obsolete migrate-memory script | scripts/migrate-memory.js | 2025-06-03T11:06:03Z
 668e0c0 | fix(signals) | update last task completion to 31 | signals.json | 2025-06-03T11:23:26Z
 574856c | add append-memory helper | scripts/append-memory.sh, PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T14:18:37Z
+229b8e4 | mem-001 context snapshot | AGENTS.md, context.snapshot.md | 2025-06-03T13:50:25Z
+994a3c9 | mem-002 script docs and guide note | AGENTS.md, PERSISTENT_MEMORY_GUIDE.md, README.md | 2025-06-03T14:09:45Z
+6e882f0 | chore log update | PERSISTENT_MEMORY_GUIDE.md, logs/commit.log, memory.log, scripts/append-memory.sh | 2025-06-03T14:19:26Z
+59778e6 | improve memory append durability | PERSISTENT_MEMORY_GUIDE.md, scripts/append-memory.sh | 2025-06-03T14:38:41Z
+949ea11 | mem-002 allow memory.log edits | PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md, scripts/append-memory.sh | 2025-06-03T14:47:56Z
