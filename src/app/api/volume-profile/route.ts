@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { fetchBackfill } from '@/lib/data/coingecko'
+import { fetchVolumeProfileData } from '@/lib/data/coingecko'
 import { calculateVolumeProfile } from '@/lib/indicators'
 
 interface VolumePoint {
@@ -13,14 +13,14 @@ interface CacheEntry {
 }
 
 let cache: CacheEntry | null = null
-const CACHE_DURATION = 15 * 1000
+const CACHE_DURATION = 60 * 1000
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < CACHE_DURATION) {
     return NextResponse.json({ profile: cache.data, status: 'cached' })
   }
   try {
-    const candles = await fetchBackfill()
+    const candles = await fetchVolumeProfileData()
     const prices = candles.map(c => c.c)
     const volumes = candles.map(c => c.v)
     const profile = calculateVolumeProfile(prices, volumes, 20)

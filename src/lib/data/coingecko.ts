@@ -26,3 +26,19 @@ export async function fetchBackfill(): Promise<Candle[]> {
   setCachedData(CACHE_KEY, candles);
   return candles;
 }
+
+export async function fetchVolumeProfileData(days = 30): Promise<Candle[]> {
+  const cacheKey = `cg_btc_vp_${days}`;
+  const cached = getCachedData<Candle[]>(cacheKey);
+  if (cached) return cached;
+  const url =
+    `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${days}&interval=hourly`;
+  const json = await cachedFetch<any>(url, 'reference');
+  const candles: Candle[] = json.prices.map((p: [number, number], idx: number) => {
+    const [t, price] = p;
+    const volume = json.total_volumes[idx][1];
+    return { t, o: price, h: price, l: price, c: price, v: volume };
+  });
+  setCachedData(cacheKey, candles);
+  return candles;
+}

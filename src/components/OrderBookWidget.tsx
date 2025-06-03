@@ -22,7 +22,7 @@ export default function OrderBookWidget() {
       }
     };
     fetchData();
-    const id = setInterval(fetchData, 15000);
+    const id = setInterval(fetchData, 30000); // reduce polling frequency
     return () => clearInterval(id);
   }, []);
 
