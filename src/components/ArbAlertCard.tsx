@@ -35,7 +35,7 @@ export default function ArbAlertCard() {
       }
     };
     fetchArb();
-    const interval = setInterval(fetchArb, 10000);
+    const interval = setInterval(fetchArb, 30000); // poll less often
     return () => clearInterval(interval);
   }, [enabled]);
 

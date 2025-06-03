@@ -20,7 +20,7 @@ export default function BbWidthAlert() {
       }
     }
     fetchData()
-    const id = setInterval(fetchData, 30 * 1000)
+    const id = setInterval(fetchData, 60 * 1000) // reduce polling frequency
     return () => clearInterval(id)
   }, [lastAlert])
 

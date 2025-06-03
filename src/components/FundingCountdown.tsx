@@ -27,7 +27,7 @@ export default function FundingCountdown() {
     if (!nextTime) return
     const update = () => setDiff(nextTime - Date.now())
     update()
-    const id = setInterval(update, 1000)
+    const id = setInterval(update, 2000) // update less frequently
     return () => clearInterval(id)
   }, [nextTime])
 

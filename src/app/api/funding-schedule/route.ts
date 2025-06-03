@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { fetchFundingSchedule } from '@/lib/data/fundingSchedule'
 
 let cache: { ts: number; data: any } | null = null
-const TTL = 15 * 1000
+const TTL = 60 * 1000
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {

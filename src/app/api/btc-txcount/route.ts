@@ -6,7 +6,7 @@ interface CacheEntry {
 }
 
 let cache: CacheEntry | null = null
-const CACHE_DURATION = 15 * 1000
+const CACHE_DURATION = 60 * 1000
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < CACHE_DURATION) {
