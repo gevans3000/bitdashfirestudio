@@ -155,8 +155,8 @@ Keep this workspace running until I say **“close workspace”**; do not start 
 
 Stay in one task card, batch multiple commits, and instruct Codex to keep the workspace alive. That avoids the dependency-install cost of spinning up a new environment for every single edit.
 
-### Context Snapshot & Self-Healing
+### Memory Log & Self-Healing
 
-* After each commit the agent writes `context.snapshot.md` containing a 333-token summary, task ID, timestamp, changed files and the next objective.
-* Codex reads this snapshot before starting a new task to retain memory.
-* If lint or tests fail the agent fixes the issue, updates the snapshot with a new summary and continues without human intervention.
+* After each commit the agent appends a 333-token summary, task ID, timestamp, changed files and the next objective to `memory.log`.
+* Codex reads `memory.log` before starting a new task to rebuild state.
+* If lint or tests fail the agent fixes the issue, updates the log with a new summary and continues without human intervention.

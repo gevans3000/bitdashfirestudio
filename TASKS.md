@@ -123,7 +123,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - Priority widgets and indicators are functional and visible.
 - Test, lint and backtest logs are saved under `/logs`.
 - Each completed task is auto-committed with a passing build.
-- `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
+- `task_queue.json`, `memory.log` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
 - `logs/commit.log` provides a concise memory dump via `npm run commitlog`.
 - Follow-up tasks mention the commit hash that introduced related changes.
