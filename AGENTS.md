@@ -73,6 +73,7 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 | File                  | Purpose                                               |
 | --------------------- | ----------------------------------------------------- |
+| `context.snapshot.md` | Live chronological memory log |
 | `memory.log`          | Append-only history of commit summaries and hashes |
 | Git history           | Primary record of changes, diffs and context |
 | `task_queue.json`     | Machine-readable list of tasks with status |
