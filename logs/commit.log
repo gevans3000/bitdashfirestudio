@@ -4,3 +4,19 @@ b645986 | Task 19 | Added liquidation cluster aggregator and integrated into Dat
 6f32f4d | Task 20 | Added API and React overlay to display liquidation clusters | src/components/LiquidationClustersChart.tsx, src/app/api/liquidation-clusters/route.ts, src/app/page.tsx, task_queue.json, TASKS.md | 2025-06-03T00:47:44Z
 8490c24 | Tasks 21-27 | Added open interest fetch, delta chart, funding timer, and BB width alert | src/app/api/open-interest/route.ts etc. | 2025-06-03T00:49:46Z
 8fa88db | docs(tasks) | Added persistent memory tasks to checklist and queue | TASKS.md, task_queue.json | 2025-06-03T02:02:55Z
+dd5af4c | Update AGENTS | Updated AGENTS.md | AGENTS.md | 2025-06-02T19:52:32Z
+98191e9 | Merge task 17 | Merge branch features | AGENTS.md, TASKS.md, context.snapshot.md, package.json, scripts/dev-deps.sh, scripts/try-cmd.js, src/components/OrderBookHeatmap.tsx | 2025-06-02T21:47:20Z
+008cd8e | Add guide | Add auto-instruct codex doc | auto-instruct-codex.md | 2025-06-02T21:57:56Z
+6b2492d | Add doc | Add newcodex1 markdown | newcodex1.md | 2025-06-02T22:11:54Z
+314de5c | Docs | Add task queue and memory guide | AGENTS.md, TASKS.md, docs/CODEX_WORKFLOW.md, memory.md, task_queue.json | 2025-06-02T22:37:12Z
+796ed43 | Docs | Refine automation memory rules | AGENTS.md, TASKS.md, memory.md | 2025-06-02T22:49:58Z
+c409552 | Docs | Clarify commit-based memory | AGENTS.md, TASKS.md, docs/CODEX_WORKFLOW.md | 2025-06-02T23:04:53Z
+ee5bc9e | Docs | Refine memory and task sync | AGENTS.md, TASKS.md, memory.md | 2025-06-02T23:10:57Z
+ab0b2fa | Docs | Refine memory and task sync | AGENTS.md, TASKS.md, context.snapshot.md, logs/commit.log, memory.md | 2025-06-02T23:21:07Z
+5a61018 | Docs | Clarify persistent memory steps | AGENTS.md, TASKS.md, memory.md | 2025-06-02T23:32:18Z
+2e9e35e | Docs tasks | Expand task list granularity | TASKS.md | 2025-06-02T23:46:36Z
+df3d2c4 | Memory sync | Record task sync | context.snapshot.md, logs/commit.log, memory.md, task_queue.json | 2025-06-02T23:57:11Z
+7e84b40 | Bootstrap | Enable full automation loop | logs/commit.log, package.json | 2025-06-03T00:31:41Z
+be5ea2f | Task 18 | Record task 18 completion | memory.log, context.snapshot.md | 2025-06-03T00:45:30Z
+ba0345d | Task 19 | Record task 19 completion | memory.log, context.snapshot.md | 2025-06-03T00:46:30Z
+b25124e | Task 20 | Record task 20 completion | memory.log, context.snapshot.md | 2025-06-03T00:48:30Z
