@@ -230,3 +230,33 @@ describe('path overrides', () => {
   });
 });
 
+describe('parseMemoryLines', () => {
+  it('parses lines with task prefix', () => {
+    const line =
+      'abc123 | Task 10 | add feature | a.ts, b.ts | 2025-01-01T00:00:00Z';
+    const out = utils.parseMemoryLines([line]);
+    expect(out).toEqual([
+      {
+        hash: 'abc123',
+        task: 'Task 10',
+        summary: 'add feature',
+        files: 'a.ts, b.ts',
+        timestamp: '2025-01-01T00:00:00Z',
+        raw: line,
+      },
+    ]);
+  });
+
+  it('parses simple lines', () => {
+    const line = 'def456 | fix bug | c.ts | 2025-01-02T00:00:00Z';
+    const out = utils.parseMemoryLines([line]);
+    expect(out[0]).toEqual({
+      hash: 'def456',
+      summary: 'fix bug',
+      files: 'c.ts',
+      timestamp: '2025-01-02T00:00:00Z',
+      raw: line,
+    });
+  });
+});
+

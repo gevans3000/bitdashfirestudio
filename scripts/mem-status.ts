@@ -1,11 +1,18 @@
 import fs from 'fs';
 import path from 'path';
-import { readMemoryLines, nextMemId, memPath, repoRoot } from './memory-utils';
+import {
+  readMemoryLines,
+  nextMemId,
+  memPath,
+  repoRoot,
+  parseMemoryLines,
+} from './memory-utils';
 
 const tasksPath = path.join(repoRoot, 'TASKS.md');
 
 const lines = readMemoryLines();
-const last = lines.length ? lines[lines.length - 1] : 'none';
+const entries = parseMemoryLines(lines);
+const last = entries.length ? entries[entries.length - 1].raw : 'none';
 
 let task = 'none';
 if (fs.existsSync(tasksPath)) {
