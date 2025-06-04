@@ -11,6 +11,7 @@ const errors: string[] = [];
 let lastTs = 0;
 const seenHashes = new Set<string>();
 const seenMemIds = new Set<string>();
+let prevMemNum = 0;
 
 for (const line of lines) {
   const parts = line.split('|').map((p) => p.trim());
@@ -48,6 +49,12 @@ for (const line of lines) {
       errors.push(`duplicate mem-id ${id}`);
     }
     seenMemIds.add(id);
+    const num = parseInt(id.replace('mem-', ''), 10);
+    if (prevMemNum && num !== prevMemNum + 1) {
+      const missing = String(prevMemNum + 1).padStart(3, '0');
+      errors.push(`missing mem-id mem-${missing}`);
+    }
+    prevMemNum = num;
   }
 }
 
