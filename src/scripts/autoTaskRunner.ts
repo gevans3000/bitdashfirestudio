@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { spawnSync, execSync } from 'child_process';
-import { repoRoot, memPath } from '../../scripts/memory-utils.js';
+import { repoRoot, memPath } from '../../scripts/memory-utils';
 
 function run(cmd: string): { output: string; code: number } {
   const res = spawnSync(cmd, { shell: true, encoding: 'utf8' });

@@ -24,8 +24,8 @@
     "backtest": "node scripts/try-cmd.js ts-node scripts/backtest.ts",
     "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
-    "commitlog": "node scripts/commit-log.js",
-    "memlog": "node scripts/update-memory-log.js && npm run commitlog",
+    "commitlog": "ts-node scripts/commit-log.ts",
+    "memlog": "ts-node scripts/update-memory-log.ts && npm run commitlog",
     "codex": "bash scripts/codex_context.sh",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest"
   },

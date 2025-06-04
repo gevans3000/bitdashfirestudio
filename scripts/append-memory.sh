@@ -2,5 +2,5 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-node "$DIR/append-memory.js" "$@"
+ts-node "$DIR/append-memory.ts" "$@"
 
