@@ -134,6 +134,7 @@ npm run commitlog
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory.log hashes exist and snapshot blocks are present |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
+| `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `npm run setup` | Install the post-commit hook for automatic memlog updates |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
