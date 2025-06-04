@@ -1,9 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { repoRoot, memPath, readMemoryLines, atomicWrite, withFileLock } from './memory-utils';
+import {
+  repoRoot,
+  memPath,
+  readMemoryLines,
+  atomicWrite,
+  withFileLock,
+} from './memory-utils';
 
-const limit = parseInt(process.argv[2] || process.env.MEM_ROTATE_LIMIT || '200', 10);
+const args = process.argv.slice(2);
+const dryRun = args.includes('--dry-run');
+const limitArg = args.find((a) => a !== '--dry-run');
+const limit = parseInt(limitArg || process.env.MEM_ROTATE_LIMIT || '200', 10);
 
 const lines = readMemoryLines();
 
@@ -13,13 +22,23 @@ if (lines.length > limit) {
   fs.mkdirSync(backupDir, { recursive: true });
   const ts = new Date().toISOString();
   const backupPath = path.join(backupDir, `memory.log.${ts}.bak`);
-  withFileLock(memPath, () => {
-    atomicWrite(backupPath, lines.join('\n') + '\n');
-    atomicWrite(memPath, trimmed.join('\n') + '\n');
-  });
-  console.log(`memory.log trimmed to last ${limit} entries`);
+  if (dryRun) {
+    console.log(
+      `[dry-run] Would backup to ${backupPath} and trim memory.log to last ${limit} entries`
+    );
+  } else {
+    withFileLock(memPath, () => {
+      atomicWrite(backupPath, lines.join('\n') + '\n');
+      atomicWrite(memPath, trimmed.join('\n') + '\n');
+    });
+    console.log(`memory.log trimmed to last ${limit} entries`);
+  }
 } else {
   console.log('memory.log already within limit');
 }
 
-execSync('ts-node scripts/commit-log.ts', { cwd: repoRoot, stdio: 'inherit' });
+if (dryRun) {
+  console.log('[dry-run] Skipping commit-log update');
+} else {
+  execSync('ts-node scripts/commit-log.ts', { cwd: repoRoot, stdio: 'inherit' });
+}

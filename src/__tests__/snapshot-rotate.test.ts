@@ -123,4 +123,40 @@ describe('snapshot-rotate', () => {
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it('does not modify files during dry run', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'snaprot-'));
+    const tmpSnap = path.join(tmpDir, 'context.snapshot.md');
+    const tmpBackup = path.join(tmpDir, `context.snapshot.${iso}.bak`);
+    const data =
+      '### 2024-12-31 | mem-001\n' +
+      'a\n' +
+      '### 2025-01-01 | mem-002\n' +
+      'b\n';
+    fs.writeFileSync(tmpSnap, data);
+
+    const map = {
+      [snapshotPath]: tmpSnap,
+      [path.join(repoRoot, 'logs', `context.snapshot.${iso}.bak`)]: tmpBackup,
+    };
+
+    withFsMocks(map, () => {
+      process.env.SNAP_ROTATE_LIMIT = '1';
+      jest.useFakeTimers().setSystemTime(new Date(iso));
+      jest.isolateModules(() => {
+        const orig = process.argv;
+        process.argv = ['node', 'script', '--dry-run'];
+        require('../../scripts/snapshot-rotate.ts');
+        process.argv = orig;
+      });
+      jest.useRealTimers();
+    });
+
+    const snapOut = fs.readFileSync(tmpSnap, 'utf8');
+    const backupExists = fs.existsSync(tmpBackup);
+    expect(snapOut).toBe(data);
+    expect(backupExists).toBe(false);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
 });
