@@ -21,3 +21,10 @@ export function nextMemId(): string {
   }
   return String(last + 1).padStart(3, '0');
 }
+
+export function atomicWrite(file: string, data: string): void {
+  const dir = path.dirname(file);
+  const tmp = path.join(dir, `.${path.basename(file)}.tmp`);
+  fs.writeFileSync(tmp, data);
+  fs.renameSync(tmp, file);
+}

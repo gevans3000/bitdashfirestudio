@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
-import { repoRoot, memPath, readMemoryLines } from './memory-utils';
+import { repoRoot, memPath, readMemoryLines, atomicWrite } from './memory-utils';
 
 let entries = readMemoryLines();
 let lastHash = '';
@@ -39,5 +39,5 @@ if (current) {
   entries.push(`${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`);
 }
 
-fs.writeFileSync(memPath, entries.join('\n') + '\n');
+atomicWrite(memPath, entries.join('\n') + '\n');
 console.log('memory.log updated');

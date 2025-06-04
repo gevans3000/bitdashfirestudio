@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { repoRoot, snapshotPath, nextMemId } from './memory-utils';
+import { repoRoot, snapshotPath, nextMemId, atomicWrite } from './memory-utils';
 
 function logError(ts: string) {
   const logDir = path.join(repoRoot, 'logs');
   fs.mkdirSync(logDir, { recursive: true });
-  fs.writeFileSync(path.join(logDir, `memory-error-${ts}.txt`), `Memory append failed at ${ts}`);
+  atomicWrite(path.join(logDir, `memory-error-${ts}.txt`), `Memory append failed at ${ts}`);
 }
 
 function formatTimestamp(): string {
@@ -36,7 +36,7 @@ try {
     content = fs.readFileSync(snapshotPath, 'utf8');
     if (content.length && !content.endsWith('\n')) content += '\n';
   }
-  fs.writeFileSync(snapshotPath, content + entry);
+  atomicWrite(snapshotPath, content + entry);
 } catch (err) {
   const ts = errorTimestamp();
   logError(ts);
