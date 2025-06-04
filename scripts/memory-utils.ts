@@ -79,39 +79,103 @@ export function withFileLock(
   }
 }
 
-export interface MemoryEntry {
+export type MemoryEntry =
+  | CommitEntry
+  | TaskEntry;
+
+export interface BaseEntry {
+  entryType: 'commit' | 'task';
   hash: string;
-  task?: string;
   summary: string;
   files: string;
   timestamp: string;
   raw: string;
 }
 
+export interface CommitEntry extends BaseEntry {
+  entryType: 'commit';
+}
+
+export interface TaskEntry extends BaseEntry {
+  entryType: 'task';
+  task: string;
+  description: string;
+}
+
 export function parseMemoryLines(lines: string[]): MemoryEntry[] {
-  return lines.filter(Boolean).map((raw) => {
-    const parts = raw.split("|").map((p) => p.trim());
-    const [hash, p2 = "", p3 = "", p4 = "", p5 = ""] = parts;
-    let task: string | undefined;
-    let summary = "";
-    let files = "";
-    let timestamp = "";
-    if (parts.length >= 5) {
-      task = p2;
-      summary = p3;
-      files = p4;
-      timestamp = p5;
-    } else if (parts.length === 4) {
-      summary = p2;
-      files = p3;
-      timestamp = p4;
-    } else if (parts.length === 3) {
-      summary = p2;
-      files = "";
-      timestamp = p3;
+  const entries: MemoryEntry[] = [];
+  for (const raw of lines.filter(Boolean)) {
+    const parts = raw.split('|').map((p) => p.trim());
+    const [hash = '', ...rest] = parts;
+    if (!hash) {
+      console.error(`Malformed memory line: ${raw}`);
+      continue;
     }
-    return { hash, task, summary, files, timestamp, raw };
-  });
+
+    let entry: MemoryEntry | undefined;
+
+    if (rest.length >= 4) {
+      // task entry with explicit task column
+      const [task, desc, files, timestamp] = rest;
+      entry = {
+        entryType: 'task',
+        hash,
+        task,
+        description: desc,
+        summary: `${task}: ${desc}`,
+        files,
+        timestamp,
+        raw,
+      };
+    } else if (rest.length === 3) {
+      const [part2, files, timestamp] = rest;
+      const match = part2.match(/^Task\s+([^:]+):\s*(.*)$/i);
+      if (match) {
+        entry = {
+          entryType: 'task',
+          hash,
+          task: `Task ${match[1].trim()}`,
+          description: match[2].trim(),
+          summary: part2,
+          files,
+          timestamp,
+          raw,
+        };
+      } else {
+        entry = {
+          entryType: 'commit',
+          hash,
+          summary: part2,
+          files,
+          timestamp,
+          raw,
+        };
+      }
+    } else if (rest.length === 2) {
+      const [part2, timestamp] = rest;
+      entry = {
+        entryType: 'commit',
+        hash,
+        summary: part2,
+        files: '',
+        timestamp,
+        raw,
+      };
+    } else {
+      console.error(`Malformed memory line: ${raw}`);
+      entry = {
+        entryType: 'commit',
+        hash,
+        summary: rest[0] || '',
+        files: rest[1] || '',
+        timestamp: rest[2] || '',
+        raw,
+      };
+    }
+
+    entries.push(entry);
+  }
+  return entries;
 }
 
 export function validateMemoryEntry(entry: MemoryEntry): string[] {
@@ -119,12 +183,31 @@ export function validateMemoryEntry(entry: MemoryEntry): string[] {
   if (!/^[0-9a-f]{7,40}$/i.test(entry.hash)) {
     errors.push(`invalid hash: ${entry.hash}`);
   }
-  if (!entry.summary) {
-    errors.push(`missing summary for ${entry.hash}`);
-  }
+
   if (!entry.timestamp || Number.isNaN(Date.parse(entry.timestamp))) {
     errors.push(`invalid timestamp for ${entry.hash}`);
   }
+
+  if (entry.entryType === 'task') {
+    if (!/^Task\s+\S+/.test(entry.task)) {
+      errors.push(`invalid task field for ${entry.hash}`);
+    }
+    if (!entry.description) {
+      errors.push(`missing task description for ${entry.hash}`);
+    }
+  } else {
+    if (!entry.summary) {
+      errors.push(`missing summary for ${entry.hash}`);
+    }
+  }
+
+  if (
+    entry.files &&
+    !entry.files.split(',').every((f) => f.trim().length && !/\|/.test(f))
+  ) {
+    errors.push(`invalid file list for ${entry.hash}`);
+  }
+
   return errors;
 }
 
