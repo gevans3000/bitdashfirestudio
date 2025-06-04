@@ -70,18 +70,14 @@ while (true) {
 
   execSync('git add TASKS.md logs signals.json');
 
-  const nextIdx = lines.findIndex(l => l.startsWith('- [ ]'));
-  const nextTask = nextIdx === -1 ? 'none' : lines[nextIdx].replace('- [ ]', '').trim();
-
   function generateBody(desc) {
     const part1 = `What I did: ${desc}`;
-    const part2 = `What's next: continue with the remaining tasks.`;
-    let words = (part1 + ' ' + part2).trim().split(/\s+/);
-    const fillerCount = 333 - words.length;
-    if (fillerCount > 0) {
-      words = words.concat(new Array(fillerCount).fill('context'));
-    }
-    return `${part1}\n\n${part2}\n\n${words.slice((part1 + ' ' + part2).trim().split(/\s+/).length).join(' ')}`;
+    const part2 = "What's next: continue with the remaining tasks.";
+    const baseWords = `${part1} ${part2}`.trim().split(/\s+/);
+    const filler = new Array(Math.max(0, 333 - baseWords.length))
+      .fill('context')
+      .join(' ');
+    return `${part1}\n\n${part2}\n\n${filler}`;
   }
 
   const body = generateBody(taskDesc).replace(/"/g, '\"');
