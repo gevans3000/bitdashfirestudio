@@ -135,7 +135,7 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
-| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, diff, json, clean-locks, check, locate |
+| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, diff, json, clean-locks, check, locate, rebuild, snapshot-update |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |

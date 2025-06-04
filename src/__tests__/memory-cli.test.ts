@@ -59,4 +59,22 @@ describe('memory-cli', () => {
       { stdio: 'inherit', cwd: repoRoot }
     );
   });
+
+  it('runs rebuild-memory for rebuild command', () => {
+    run(['rebuild']);
+    expect(spy).toHaveBeenCalledWith(
+      'ts-node',
+      [path.join(scriptDir, 'rebuild-memory.ts')],
+      { stdio: 'inherit', cwd: repoRoot }
+    );
+  });
+
+  it('runs update-snapshot for snapshot-update command', () => {
+    run(['snapshot-update']);
+    expect(spy).toHaveBeenCalledWith(
+      'ts-node',
+      [path.join(scriptDir, 'update-snapshot.ts')],
+      { stdio: 'inherit', cwd: repoRoot }
+    );
+  });
 });
