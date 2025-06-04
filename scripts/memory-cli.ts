@@ -24,6 +24,10 @@ Commands:
   status                           Print last entry and next task
   grep <pattern>                   Search memory files
   update-log [--verify]            Refresh memory.log from git history
+  diff                             List commits missing from memory.log
+  json                             Export memory.log to memory.json
+  clean-locks                      Delete stale .lock files
+  check                            Verify memory files
 `);
 }
 
@@ -47,6 +51,18 @@ switch (cmd) {
     break;
   case 'update-log':
     run('update-memory-log.ts', rest);
+    break;
+  case 'diff':
+    run('mem-diff.ts', rest);
+    break;
+  case 'json':
+    run('memory-json.ts', rest);
+    break;
+  case 'clean-locks':
+    run('clean-locks.ts', rest);
+    break;
+  case 'check':
+    run('memory-check.ts', rest);
     break;
   default:
     console.error(`Unknown command: ${cmd}`);
