@@ -29,7 +29,11 @@ export function atomicWrite(file: string, data: string): void {
   fs.renameSync(tmp, file);
 }
 
-export function withFileLock(target: string, fn: () => void): void {
+export function withFileLock(
+  target: string,
+  fn: () => void,
+  staleMs = 60_000
+): void {
   const lock = `${target}.lock`;
   let fd: number | undefined;
   while (fd === undefined) {
@@ -37,6 +41,19 @@ export function withFileLock(target: string, fn: () => void): void {
       fd = fs.openSync(lock, 'wx');
     } catch (err: any) {
       if (err.code === 'EEXIST') {
+        let stale = false;
+        try {
+          const stat = fs.statSync(lock);
+          if (Date.now() - stat.mtimeMs > staleMs) stale = true;
+        } catch {
+          stale = true;
+        }
+        if (stale) {
+          try {
+            fs.unlinkSync(lock);
+          } catch {}
+          continue;
+        }
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
       } else {
         throw err;
