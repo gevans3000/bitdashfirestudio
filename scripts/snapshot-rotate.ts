@@ -1,8 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import { repoRoot, snapshotPath, atomicWrite, withFileLock } from './memory-utils';
+import {
+  repoRoot,
+  snapshotPath,
+  atomicWrite,
+  withFileLock,
+} from './memory-utils';
 
-const limit = parseInt(process.argv[2] || process.env.SNAP_ROTATE_LIMIT || '100', 10);
+const args = process.argv.slice(2);
+const dryRun = args.includes('--dry-run');
+const limitArg = args.find((a) => a !== '--dry-run');
+const limit = parseInt(limitArg || process.env.SNAP_ROTATE_LIMIT || '100', 10);
 
 if (!fs.existsSync(snapshotPath)) {
   console.log('context.snapshot.md not found');
@@ -23,11 +31,17 @@ if (headers.length > limit) {
   fs.mkdirSync(backupDir, { recursive: true });
   const ts = new Date().toISOString();
   const backupPath = path.join(backupDir, `context.snapshot.${ts}.bak`);
-  withFileLock(snapshotPath, () => {
-    atomicWrite(backupPath, raw);
-    atomicWrite(snapshotPath, trimmed.join('\n') + '\n');
-  });
-  console.log(`context.snapshot.md trimmed to last ${limit} entries`);
+  if (dryRun) {
+    console.log(
+      `[dry-run] Would backup to ${backupPath} and trim context.snapshot.md to last ${limit} entries`
+    );
+  } else {
+    withFileLock(snapshotPath, () => {
+      atomicWrite(backupPath, raw);
+      atomicWrite(snapshotPath, trimmed.join('\n') + '\n');
+    });
+    console.log(`context.snapshot.md trimmed to last ${limit} entries`);
+  }
 } else {
   console.log('context.snapshot.md already within limit');
 }
