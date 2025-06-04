@@ -127,5 +127,38 @@ describe('update-memory-log', () => {
     ]);
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it('runs memory-check when --verify flag passed', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'memlog-'));
+    const tmpMem = path.join(tmpDir, 'memory.log');
+    fs.writeFileSync(tmpMem, '');
+
+    const execMock = jest
+      .spyOn(cp, 'execSync')
+      .mockImplementation((cmd: string) => {
+        if (cmd.startsWith('git cat-file -e')) return Buffer.from('');
+        if (cmd.startsWith('git log')) {
+          return Buffer.from('abc123|a commit|2025-06-02T00:00:00Z\n');
+        }
+        return Buffer.from('');
+      });
+
+    withFsMocks({ [memPath]: tmpMem }, () => {
+      jest.isolateModules(() => {
+        const orig = process.argv;
+        process.argv = ['node', 'update-memory-log.ts', '--verify'];
+        require('../../scripts/update-memory-log.ts');
+        process.argv = orig;
+      });
+    });
+
+    expect(execMock).toHaveBeenCalledWith(
+      'ts-node scripts/memory-check.ts',
+      expect.objectContaining({ cwd: repoRoot, stdio: 'inherit' })
+    );
+
+    execMock.mockRestore();
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
 });
 

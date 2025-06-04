@@ -43,3 +43,14 @@ withFileLock(memPath, () => {
   atomicWrite(memPath, entries.join('\n') + '\n');
 });
 console.log('memory.log updated');
+
+if (process.argv.includes('--verify')) {
+  try {
+    execSync('ts-node scripts/memory-check.ts', {
+      cwd: repoRoot,
+      stdio: 'inherit',
+    });
+  } catch (err: any) {
+    process.exit(err.status || 1);
+  }
+}
