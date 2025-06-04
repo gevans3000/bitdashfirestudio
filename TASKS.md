@@ -56,6 +56,17 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 91: extend README with persistent memory section
 - [x] Task 92: add file locking for memory writes
 
+### Upcoming Enhancements
+
+- [ ] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
+- [ ] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
+- [ ] Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-log
+- [ ] Task 96: add jest tests verifying codex-context output with mocked git log
+- [ ] Task 97: export memory.log lines to memory.json using readMemoryLines helper
+- [ ] Task 98: add weekly workflow running mem-rotate and commitlog to push updates
+- [ ] Task 99: extend memgrep to filter by --since and --until timestamps
+- [ ] Task 100: update README rotation section showing mem-rotate and snapshot-rotate usage
+
 
 ### Bitcoin Dashboard
 

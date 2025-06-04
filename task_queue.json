@@ -378,5 +378,45 @@
     "id": 92,
     "description": "add file locking for memory writes",
     "status": "done"
+  },
+  {
+    "id": 93,
+    "description": "fix codex helper command by running ts-node scripts/codex-context.ts",
+    "status": "pending"
+  },
+  {
+    "id": 94,
+    "description": "document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars",
+    "status": "pending"
+  },
+  {
+    "id": 95,
+    "description": "create memory CLI with rotate, snapshot-rotate, status, grep, update-log",
+    "status": "pending"
+  },
+  {
+    "id": 96,
+    "description": "add jest tests verifying codex-context output with mocked git log",
+    "status": "pending"
+  },
+  {
+    "id": 97,
+    "description": "export memory.log lines to memory.json using readMemoryLines helper",
+    "status": "pending"
+  },
+  {
+    "id": 98,
+    "description": "add weekly workflow running mem-rotate and commitlog to push updates",
+    "status": "pending"
+  },
+  {
+    "id": 99,
+    "description": "extend memgrep to filter by --since and --until timestamps",
+    "status": "pending"
+  },
+  {
+    "id": 100,
+    "description": "update README rotation section showing mem-rotate and snapshot-rotate usage",
+    "status": "pending"
   }
 ]
