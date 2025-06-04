@@ -28,7 +28,7 @@
     "memlog": "ts-node scripts/update-memory-log.ts && npm run commitlog",
     "mem-rotate": "ts-node scripts/mem-rotate.ts",
     "mem-check": "ts-node scripts/memory-check.ts",
-    "codex": "bash scripts/codex_context.sh",
+    "codex": "ts-node scripts/codex-context.ts",
     "setup": "bash scripts/setup-hooks.sh",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest",
     "postinstall": "npm run setup"
