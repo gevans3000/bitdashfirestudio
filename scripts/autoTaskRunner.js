@@ -74,9 +74,7 @@ while (true) {
     const part1 = `What I did: ${desc}`;
     const part2 = "What's next: continue with the remaining tasks.";
     const baseWords = `${part1} ${part2}`.trim().split(/\s+/);
-    const filler = new Array(Math.max(0, 333 - baseWords.length))
-      .fill('context')
-      .join(' ');
+    const filler = 'context '.repeat(Math.max(0, 333 - baseWords.length)).trim();
     return `${part1}\n\n${part2}\n\n${filler}`;
   }
 
