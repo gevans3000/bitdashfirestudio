@@ -6,14 +6,27 @@ import {
 } from '../../../../scripts/memory-utils'
 
 let cache: { ts: number; data: MemoryEntry[] } | null = null
-const TTL = 15 * 1000
+const TTL = parseInt(process.env.MEMORY_API_TTL || '15', 10) * 1000
 
-export async function GET() {
-  if (cache && Date.now() - cache.ts < TTL) {
-    return NextResponse.json(cache.data)
+export async function GET(req: Request) {
+  if (!cache || Date.now() - cache.ts >= TTL) {
+    const lines = readMemoryLines()
+    const entries = parseMemoryLines(lines)
+    cache = { ts: Date.now(), data: entries }
   }
-  const lines = readMemoryLines()
-  const entries = parseMemoryLines(lines)
-  cache = { ts: Date.now(), data: entries }
-  return NextResponse.json(entries)
+  const url = new URL(req.url)
+  const sinceArg = url.searchParams.get('since')
+  const untilArg = url.searchParams.get('until')
+  const since = sinceArg ? Date.parse(sinceArg) : NaN
+  const until = untilArg ? Date.parse(untilArg) : NaN
+  let data = cache!.data
+  if (!Number.isNaN(since) || !Number.isNaN(until)) {
+    data = data.filter((e) => {
+      const ts = Date.parse(e.timestamp)
+      if (!Number.isNaN(since) && ts < since) return false
+      if (!Number.isNaN(until) && ts > until) return false
+      return true
+    })
+  }
+  return NextResponse.json(data)
 }

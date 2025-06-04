@@ -77,4 +77,13 @@ describe('memory-cli', () => {
       { stdio: 'inherit', cwd: repoRoot }
     );
   });
+
+  it('runs mem-list for list command', () => {
+    run(['list']);
+    expect(spy).toHaveBeenCalledWith(
+      'ts-node',
+      [path.join(scriptDir, 'mem-list.ts')],
+      { stdio: 'inherit', cwd: repoRoot }
+    );
+  });
 });
