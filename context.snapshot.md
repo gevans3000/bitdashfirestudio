@@ -86,3 +86,7 @@
 - Commit SHA: c4c4e8b
 - Summary: Switched BTC chart icon from BarChart3 to BarChart2 to resolve runtime error.
 - Next Goal: Implement Task 31 comparing EMA trends
+### 2025-06-04 00:27 UTC | mem-023
+- Commit SHA: b2a16c3
+- Summary: Added snapshotPath constant and nextMemId helper. Introduced append-memory.js and simplified shell wrapper.
+- Next Goal: Implement Task 31 comparing 5m EMA trend with higher timeframes
