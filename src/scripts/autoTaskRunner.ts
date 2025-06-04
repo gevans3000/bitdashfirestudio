@@ -46,9 +46,13 @@ export function runTasks() {
     if (explicit) taskDesc = taskDesc.replace(explicit[0], '').trim();
 
     lines[idx] = taskLine.replace('- [ ]', '- [x]');
-    fs.writeFileSync(tasksPath, lines.join('\n'));
+    withFileLock(tasksPath, () => {
+      atomicWrite(tasksPath, lines.join('\n'));
+    });
     signals.last_task_completed = taskNum;
-    fs.writeFileSync(signalsPath, JSON.stringify(signals, null, 2) + '\n');
+    withFileLock(signalsPath, () => {
+      atomicWrite(signalsPath, JSON.stringify(signals, null, 2) + '\n');
+    });
 
     let success = true;
     function logRun(name: string, cmd: string) {
@@ -63,7 +67,9 @@ export function runTasks() {
 
     if (!success) {
       signals.error_flag = true;
-      fs.writeFileSync(signalsPath, JSON.stringify(signals, null, 2) + '\n');
+      withFileLock(signalsPath, () => {
+        atomicWrite(signalsPath, JSON.stringify(signals, null, 2) + '\n');
+      });
       fs.writeFileSync(path.join(logDir, `block-${taskNum}.txt`), 'Task failed.');
       console.error('Task failed. See logs for details.');
       process.exit(1);
