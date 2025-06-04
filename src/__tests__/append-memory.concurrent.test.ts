@@ -33,6 +33,8 @@ describe('append-memory concurrency', () => {
     const out = fs.readFileSync(snap, 'utf8');
     const sections = out.match(/mem-\d+/g) || [];
     expect(sections.length).toBe(2);
+    const sorted = [...new Set(sections)].sort();
+    expect(sorted).toEqual(['mem-001', 'mem-002']);
     fs.rmSync(dir, { recursive: true, force: true });
   });
 });
