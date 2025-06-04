@@ -31,6 +31,7 @@ Commands:
   restore <backup> <memory|snapshot>  Restore memory or snapshot file
   check                            Verify memory files
   rebuild [path]                   Rebuild memory files from git history
+  sync <branch>                    Merge memory.log from another branch
   snapshot-update                  Append last commit summary to snapshot
 `);
 }
@@ -76,6 +77,9 @@ switch (cmd) {
     break;
   case 'rebuild':
     run('rebuild-memory.ts', rest);
+    break;
+  case 'sync':
+    run('mem-sync.ts', rest);
     break;
   case 'snapshot-update':
     run('update-snapshot.ts', rest);
