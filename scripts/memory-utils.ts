@@ -113,66 +113,6 @@ export function parseMemoryLines(lines: string[]): MemoryEntry[] {
   });
 }
 
-export interface SnapshotEntry {
-  id: string;
-  hash: string;
-  summary: string;
-  nextGoal: string;
-  timestamp: string;
-}
-
-export function parseSnapshotEntries(content: string): SnapshotEntry[] {
-  const lines = content.split("\n");
-  const entries: SnapshotEntry[] = [];
-  let cur: Partial<SnapshotEntry> | null = null;
-  for (const raw of lines) {
-    const header = raw.match(/^###\s+([^|]+)\s*\|\s*(mem-\d+)/);
-    if (header) {
-      if (cur)
-        entries.push({
-          id: cur.id || "",
-          hash: cur.hash || "",
-          summary: cur.summary || "",
-          nextGoal: cur.nextGoal || "",
-          timestamp: cur.timestamp || "",
-        });
-      cur = {
-        timestamp: header[1].trim(),
-        id: header[2],
-        hash: "",
-        summary: "",
-        nextGoal: "",
-      };
-      continue;
-    }
-    if (!cur) continue;
-    const commit = raw.match(/^-\s*Commit SHA:\s*(\S+)/);
-    if (commit) {
-      cur.hash = commit[1];
-      continue;
-    }
-    const summary = raw.match(/^-\s*Summary:\s*(.*)/);
-    if (summary) {
-      cur.summary = summary[1].trim();
-      continue;
-    }
-    const next = raw.match(/^-\s*Next Goal:\s*(.*)/);
-    if (next) {
-      cur.nextGoal = next[1].trim();
-      continue;
-    }
-  }
-  if (cur) {
-    entries.push({
-      id: cur.id || "",
-      hash: cur.hash || "",
-      summary: cur.summary || "",
-      nextGoal: cur.nextGoal || "",
-      timestamp: cur.timestamp || "",
-    });
-  }
-  return entries;
-}
 
 export interface SnapshotEntry {
   id: string;
