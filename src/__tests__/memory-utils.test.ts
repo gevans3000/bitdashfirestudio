@@ -7,26 +7,40 @@ import * as utils from '../../scripts/memory-utils';
 const { snapshotPath, memPath } = utils;
 
 function withFsMocks(paths: Record<string, string>, fn: () => void) {
+  const expanded: Record<string, string> = {};
+  for (const [k, v] of Object.entries(paths)) {
+    expanded[k] = v;
+    const tmpK = path.join(path.dirname(k), `.${path.basename(k)}.tmp`);
+    const tmpV = path.join(path.dirname(v), `.${path.basename(v)}.tmp`);
+    expanded[tmpK] = tmpV;
+  }
+
   const origExists = fs.existsSync;
   const origRead = fs.readFileSync;
   const origWrite = fs.writeFileSync;
+  const origRename = fs.renameSync;
   const existsMock = jest.spyOn(fs, 'existsSync').mockImplementation((p: any) => {
-    if (paths[p as string]) {
-      return origExists.call(fs, paths[p as string]);
+    if (expanded[p as string]) {
+      return origExists.call(fs, expanded[p as string]);
     }
     return origExists.call(fs, p);
   });
   const readMock = jest.spyOn(fs, 'readFileSync').mockImplementation((p: any, opt?: any) => {
-    if (paths[p as string]) {
-      p = paths[p as string];
+    if (expanded[p as string]) {
+      p = expanded[p as string];
     }
     return origRead.call(fs, p, opt);
   });
   const writeMock = jest.spyOn(fs, 'writeFileSync').mockImplementation((p: any, data: any, opt?: any) => {
-    if (paths[p as string]) {
-      p = paths[p as string];
+    if (expanded[p as string]) {
+      p = expanded[p as string];
     }
     return origWrite.call(fs, p, data, opt as any);
+  });
+  const renameMock = jest.spyOn(fs, 'renameSync').mockImplementation((a: any, b: any) => {
+    if (expanded[a as string]) a = expanded[a as string];
+    if (expanded[b as string]) b = expanded[b as string];
+    return origRename.call(fs, a, b);
   });
   try {
     fn();
@@ -34,6 +48,7 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
     existsMock.mockRestore();
     readMock.mockRestore();
     writeMock.mockRestore();
+    renameMock.mockRestore();
   }
 }
 
