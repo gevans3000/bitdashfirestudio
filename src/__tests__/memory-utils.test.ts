@@ -177,5 +177,28 @@ describe('atomicWrite', () => {
     expect(out).toBe('data');
     fs.rmSync(dir, { recursive: true, force: true });
   });
+
+  it('fsyncs file and directory', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atomic-'));
+    const file = path.join(dir, 'out.txt');
+    const origOpen = fs.openSync;
+    const openSpy = jest
+      .spyOn(fs, 'openSync')
+      .mockImplementation((p: any, f: any) => origOpen.call(fs, p, f));
+    const fsync = jest.spyOn(fs, 'fsyncSync').mockImplementation(() => {});
+
+    utils.atomicWrite(file, 'data');
+
+    expect(openSpy).toHaveBeenCalledTimes(2);
+    expect(openSpy.mock.calls[1][0]).toBe(dir);
+    expect(openSpy.mock.calls[1][1]).toBe('r');
+    expect(fsync).toHaveBeenCalledTimes(2);
+
+    openSpy.mockRestore();
+    fsync.mockRestore();
+    const out = fs.readFileSync(file, 'utf8');
+    expect(out).toBe('data');
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
 });
 
