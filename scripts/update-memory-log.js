@@ -1,6 +1,11 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { repoRoot, memPath, readMemoryLines } = require('./memory-utils');
+const {
+  repoRoot,
+  memPath,
+  readMemoryLines,
+  formatMemoryEntry,
+} = require('./memory-utils');
 
 let entries = readMemoryLines();
 let lastHash = '';
@@ -15,30 +20,25 @@ if (entries.length) {
 }
 
 const logCmd = lastHash
-  ? `git log ${lastHash}..HEAD --reverse --pretty=format:%h\\|%s\\|%cI --name-only`
-  : 'git log --reverse --pretty=format:%h\\|%s\\|%cI --name-only';
+  ? `git log ${lastHash}..HEAD --reverse --name-only --pretty=format:%h\\|%s\\|%cI`
+  : 'git log --reverse --name-only --pretty=format:%h\\|%s\\|%cI';
 
-const lines = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' })
-  .trim()
-  .split('\n');
-
-let current;
-for (const line of lines) {
-  if (!line) continue;
-  if (line.includes('|')) {
-    if (current) {
-      entries.push(
-        `${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`
-      );
-    }
-    const [h, s, d] = line.split('|');
-    current = { h, s: s.trim(), d: d.trim(), f: [] };
-  } else if (current) {
-    current.f.push(line.trim());
+const raw = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' }).trim();
+if (raw) {
+  for (const block of raw.split('\n\n')) {
+    const lines = block.split('\n').filter(Boolean);
+    if (!lines.length) continue;
+    const [h, s, d] = lines[0].split('|');
+    const files = lines.slice(1).map((f) => f.trim());
+    entries.push(
+      formatMemoryEntry({
+        hash: h,
+        subject: s.trim(),
+        files,
+        date: d.trim(),
+      })
+    );
   }
-}
-if (current) {
-  entries.push(`${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`);
 }
 
 fs.writeFileSync(memPath, entries.join('\n') + '\n');

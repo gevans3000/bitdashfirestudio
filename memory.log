@@ -394,3 +394,4 @@ d2623d5 | chore(memory): update logs after docs cleanup | logs/commit.log, memor
 76da9a2 | refactor(memory): centralize log helpers | scripts/autoTaskRunner.js, scripts/commit-log.js, scripts/memory-utils.js, scripts/update-memory-log.js | 2025-06-03T19:41:40-04:00
 5e61721 | chore(memory): record mem-022 | context.snapshot.md, logs/commit.log, memory.log, src/app/page.tsx | 2025-06-03T19:49:37-04:00
 99c276d | Task 92: streamline memory scripts | scripts/append-memory.sh, scripts/autoTaskRunner.js, scripts/update-memory-log.js | 2025-06-04T00:12:33+00:00
+808d208 | refactor(memory): simplify log parsing | scripts/memory-utils.js, scripts/update-memory-log.js | 2025-06-04T00:26:51+00:00

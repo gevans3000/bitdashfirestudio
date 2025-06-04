@@ -9,4 +9,7 @@ function readMemoryLines() {
   return fs.readFileSync(memPath, 'utf8').trim().split('\n').filter(Boolean);
 }
 
-module.exports = { repoRoot, memPath, readMemoryLines };
+function formatMemoryEntry({ hash, subject, files, date }) {
+  return `${hash} | ${subject} | ${files.join(', ')} | ${date}`;
+}
+module.exports = { repoRoot, memPath, readMemoryLines, formatMemoryEntry };

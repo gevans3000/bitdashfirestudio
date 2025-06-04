@@ -1,4 +1,3 @@
-7d30dae | chore(memory): update commit history | AGENTS.md, PERSISTENT_MEMORY_GUIDE.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T12:10:30-04:00
 66b6689 | Add files via upload | CODEX_START.md | 2025-06-03T13:09:43-04:00
 53a7019 | Delete PERSISTENT_MEMORY_GUIDE.md | PERSISTENT_MEMORY_GUIDE.md | 2025-06-03T13:10:43-04:00
 e2f193e | docs(memory): enforce context snapshot updates | AGENTS.md, context.snapshot.md, logs/commit.log, memory.log | 2025-06-03T13:16:24-04:00
@@ -18,3 +17,4 @@ d2623d5 | chore(memory): update logs after docs cleanup | logs/commit.log, memor
 76da9a2 | refactor(memory): centralize log helpers | scripts/autoTaskRunner.js, scripts/commit-log.js, scripts/memory-utils.js, scripts/update-memory-log.js | 2025-06-03T19:41:40-04:00
 5e61721 | chore(memory): record mem-022 | context.snapshot.md, logs/commit.log, memory.log, src/app/page.tsx | 2025-06-03T19:49:37-04:00
 99c276d | Task 92: streamline memory scripts | scripts/append-memory.sh, scripts/autoTaskRunner.js, scripts/update-memory-log.js | 2025-06-04T00:12:33+00:00
+808d208 | refactor(memory): simplify log parsing | scripts/memory-utils.js, scripts/update-memory-log.js | 2025-06-04T00:26:51+00:00
