@@ -118,6 +118,10 @@ describe("mem-rotate", () => {
       });
       jest.useRealTimers();
     });
+    expect(execMock).toHaveBeenCalledWith(
+      "ts-node scripts/memory-check.ts",
+      expect.objectContaining({ cwd: repoRoot, stdio: "inherit" })
+    );
 
     execMock.mockRestore();
     const memOut = fs.readFileSync(tmpMem, "utf8");
