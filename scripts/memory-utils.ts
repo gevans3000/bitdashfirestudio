@@ -40,18 +40,67 @@ export function atomicWrite(file: string, data: string): void {
   fs.closeSync(dirFd);
 }
 
+export interface FileLockOptions {
+  staleMs?: number;
+  acquireTimeoutMs?: number;
+  maxRetries?: number;
+}
+
+export class LockAcquisitionTimeoutError extends Error {
+  constructor(target: string) {
+    super(`Timed out acquiring lock for ${target}`);
+    this.name = 'LockAcquisitionTimeoutError';
+  }
+}
+
 export function withFileLock(
   target: string,
   fn: () => void,
-  staleMs = 60_000,
+  opts: number | FileLockOptions = 60_000,
 ): void {
+  const defaults = {
+    staleMs: 60_000,
+    acquireTimeoutMs: 120_000,
+    maxRetries: Infinity,
+  };
+  let staleMs = defaults.staleMs;
+  let acquireTimeoutMs = defaults.acquireTimeoutMs;
+  let maxRetries = defaults.maxRetries;
+  if (typeof opts === 'number') {
+    staleMs = opts;
+  } else {
+    staleMs = opts.staleMs ?? staleMs;
+    acquireTimeoutMs = opts.acquireTimeoutMs ?? acquireTimeoutMs;
+    maxRetries = opts.maxRetries ?? maxRetries;
+  }
+
+  const verbose = process.env.DEBUG_FILE_LOCK === 'true';
+  const callerInfo = verbose
+    ? new Error().stack?.split('\n')[2]?.trim() ?? 'unknown'
+    : '';
   const lock = `${target}.lock`;
   let fd: number | undefined;
+  const start = Date.now();
+  let tries = 0;
+  if (verbose) {
+    console.log(`[filelock] ${callerInfo} attempting to lock ${target}`);
+  }
   while (fd === undefined) {
+    if (
+      (Date.now() - start > acquireTimeoutMs) ||
+      (tries >= maxRetries && maxRetries !== Infinity)
+    ) {
+      if (verbose) {
+        console.log(
+          `[filelock] ${callerInfo} timed out after ${Date.now() - start}ms (${tries} tries)`,
+        );
+      }
+      throw new LockAcquisitionTimeoutError(target);
+    }
     try {
-      fd = fs.openSync(lock, "wx");
+      fd = fs.openSync(lock, 'wx');
     } catch (err: any) {
-      if (err.code === "EEXIST") {
+      if (err.code === 'EEXIST') {
         let stale = false;
         try {
           const stat = fs.statSync(lock);
@@ -65,11 +114,22 @@ export function withFileLock(
           } catch {}
           continue;
         }
+        tries += 1;
+        if (verbose) {
+          console.log(
+            `[filelock] ${callerInfo} waiting on ${target}; try ${tries}; elapsed ${Date.now() - start}ms`,
+          );
+        }
         Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
       } else {
         throw err;
       }
     }
+  }
+  if (verbose) {
+    console.log(
+      `[filelock] ${callerInfo} acquired ${target} after ${Date.now() - start}ms (${tries} tries)`,
+    );
   }
   fs.closeSync(fd);
   try {

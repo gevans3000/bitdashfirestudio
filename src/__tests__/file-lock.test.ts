@@ -74,6 +74,18 @@ describe('withFileLock', () => {
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
+  it('throws after timeout', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locktest-'));
+    const file = path.join(dir, 'mem.txt');
+    const lock = `${file}.lock`;
+    fs.writeFileSync(lock, '');
+    const { withFileLock, LockAcquisitionTimeoutError } = require('../../scripts/memory-utils');
+    expect(() => {
+      withFileLock(file, () => {}, { acquireTimeoutMs: 50, maxRetries: 1 });
+    }).toThrow(LockAcquisitionTimeoutError);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
   it('handles many concurrent writers', async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locktest-'));
     const file = path.join(dir, 'mem.txt');
