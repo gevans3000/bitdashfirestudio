@@ -2,8 +2,12 @@ import fs from 'fs';
 import path from 'path';
 
 export const repoRoot = path.resolve(__dirname, '..');
-export const memPath = path.join(repoRoot, 'memory.log');
-export const snapshotPath = path.join(repoRoot, 'context.snapshot.md');
+export const memPath = process.env.MEM_PATH
+  ? path.resolve(process.env.MEM_PATH)
+  : path.join(repoRoot, 'memory.log');
+export const snapshotPath = process.env.SNAPSHOT_PATH
+  ? path.resolve(process.env.SNAPSHOT_PATH)
+  : path.join(repoRoot, 'context.snapshot.md');
 
 export function readMemoryLines(): string[] {
   if (!fs.existsSync(memPath)) return [];
