@@ -38,6 +38,7 @@ import TxnCountWidget from "@/components/TxnCountWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
 import EmaTrendWidget from "@/components/EmaTrendWidget";
+import MemoryTimeline from "@/components/MemoryTimeline";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -763,6 +764,9 @@ const CryptoDashboardPage: FC = () => {
           <AtrWidget />
           <SessionTimerWidget />
           <BbWidthAlert />
+          {process.env.NEXT_PUBLIC_MEMORY_TIMELINE === 'true' && (
+            <MemoryTimeline />
+          )}
 
 
         </div>

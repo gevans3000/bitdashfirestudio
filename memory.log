@@ -574,3 +574,4 @@ c1e5a28 | Task bootstrap | validate automation rules and ran lint, test, backtes
 b5bf1eb | test(memory): concurrent append-memory writes | src/__tests__/append-memory.concurrent.test.ts | 2025-06-04T16:47:52Z
 6bfddd4 | Task bootstrap | clarified memory.log field requirements | AGENTS.md | 2025-06-04T16:52:12Z
 3469d34 | Task <unknown> | add tests for memory parsing edge cases and validation | scripts/memory-check.ts, scripts/memory-utils.ts, src/__tests__/memory-utils.test.ts, src/__tests__/memory-check.test.ts | 2025-06-04T16:53:32Z
+2c55b05 | Task <unknown> | add memory timeline component and API | src/app/api/memory/route.ts, src/components/MemoryTimeline.tsx, src/app/page.tsx | 2025-06-04T17:42:14Z
