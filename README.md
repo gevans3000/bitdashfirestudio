@@ -131,6 +131,7 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
+| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
@@ -141,7 +142,7 @@ npm run commitlog
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
 | `npm run backtest` | Launch the backtest defined in `scripts/backtest.ts` |
 
-Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run mem-rotate` to change the number of retained lines.
+Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run memory rotate` to change the number of retained lines.
 
 ## Using Codex with Persistent Memory
 
