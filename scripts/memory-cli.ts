@@ -29,6 +29,8 @@ Commands:
   json                             Export memory.log to memory.json
   clean-locks                      Delete stale .lock files
   check                            Verify memory files
+  rebuild [path]                   Rebuild memory files from git history
+  snapshot-update                  Append last commit summary to snapshot
 `);
 }
 
@@ -67,6 +69,12 @@ switch (cmd) {
     break;
   case 'check':
     run('memory-check.ts', rest);
+    break;
+  case 'rebuild':
+    run('rebuild-memory.ts', rest);
+    break;
+  case 'snapshot-update':
+    run('update-snapshot.ts', rest);
     break;
   default:
     console.error(`Unknown command: ${cmd}`);
