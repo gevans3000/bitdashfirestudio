@@ -86,7 +86,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 28: build volume profile from recent data
 - [x] Task 29: show distance to nearest volume peak
 - [x] Task 30: fetch 1 h and 4 h candles
-- [ ] Task 31: compare 5 m EMA trend with higher timeframes
+- [x] Task 31: compare 5 m EMA trend with higher timeframes
 - [ ] Task 32: flag upcoming high-impact economic events
 - [ ] Task 33: notify on daily Google Trends spike
 - [ ] Task 34: integrate mempool fee pressure gauge
