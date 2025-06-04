@@ -14,14 +14,18 @@ export function readMemoryLines(): string[] {
   return fs.readFileSync(memPath, "utf8").trim().split("\n").filter(Boolean);
 }
 
-export function nextMemId(): string {
+export function nextMemId(content?: string): string {
+  let data = content;
+  if (data === undefined) {
+    if (!fs.existsSync(snapshotPath)) return "001";
+    data = fs.readFileSync(snapshotPath, "utf8");
+  }
+  const lines = data.split("\n");
+  const entries = parseSnapshotEntries(lines);
   let last = 0;
-  if (fs.existsSync(snapshotPath)) {
-    const matches = fs.readFileSync(snapshotPath, "utf8").match(/mem-(\d+)/g);
-    if (matches && matches.length) {
-      const lastMatch = matches[matches.length - 1];
-      last = parseInt(lastMatch.replace("mem-", ""), 10);
-    }
+  for (const e of entries) {
+    const num = parseInt(e.id.replace("mem-", ""), 10);
+    if (num > last) last = num;
   }
   return String(last + 1).padStart(3, "0");
 }

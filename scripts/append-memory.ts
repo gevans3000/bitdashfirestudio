@@ -26,20 +26,22 @@ try {
   const summary = process.argv[2] || 'No summary provided.';
   const nextGoal = process.argv[3] || 'TBD.';
   const ts = formatTimestamp();
-  const sha = execSync('git rev-parse --short HEAD', { cwd: repoRoot, encoding: 'utf8' }).trim();
-  const id = nextMemId();
-  const entry =
-    `### ${ts} | mem-${id}\n` +
-    `- Commit SHA: ${sha}\n` +
-    `- Summary: ${summary}\n` +
-    `- Next Goal: ${nextGoal}\n`;
-
-  let content = '';
-  if (fs.existsSync(snapshotPath)) {
-    content = fs.readFileSync(snapshotPath, 'utf8');
-    if (content.length && !content.endsWith('\n')) content += '\n';
-  }
+  const sha = execSync('git rev-parse --short HEAD', {
+    cwd: repoRoot,
+    encoding: 'utf8',
+  }).trim();
   withFileLock(snapshotPath, () => {
+    let content = '';
+    if (fs.existsSync(snapshotPath)) {
+      content = fs.readFileSync(snapshotPath, 'utf8');
+      if (content.length && !content.endsWith('\n')) content += '\n';
+    }
+    const id = nextMemId(content);
+    const entry =
+      `### ${ts} | mem-${id}\n` +
+      `- Commit SHA: ${sha}\n` +
+      `- Summary: ${summary}\n` +
+      `- Next Goal: ${nextGoal}\n`;
     atomicWrite(snapshotPath, content + entry);
   });
 } catch (err) {

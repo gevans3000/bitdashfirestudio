@@ -105,6 +105,19 @@ describe("nextMemId", () => {
     });
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it("computes id from provided content", () => {
+    const content = "### 2020-01-01 | mem-002\n";
+    expect(utils.nextMemId(content)).toBe("003");
+  });
+
+  it("ignores numbers that are not mem ids", () => {
+    const content =
+      "### 2020-01-01 | mem-005\n" +
+      "Summary with 999 number\n" +
+      "### 2020-01-02 | mem-006\n";
+    expect(utils.nextMemId(content)).toBe("007");
+  });
 });
 
 describe("update-memory-log", () => {

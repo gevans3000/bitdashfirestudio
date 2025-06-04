@@ -33,6 +33,26 @@ describe('append-memory concurrency', () => {
     const out = fs.readFileSync(snap, 'utf8');
     const sections = out.match(/mem-\d+/g) || [];
     expect(sections.length).toBe(2);
+    const sorted = [...new Set(sections)].sort();
+    expect(sorted).toEqual(['mem-001', 'mem-002']);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('handles three concurrent writers', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'append-3-'));
+    const snap = path.join(dir, 'context.snapshot.md');
+    const procs = [
+      run(snap, 'A', '100'),
+      run(snap, 'B', '50'),
+      run(snap, 'C', '0'),
+    ];
+
+    await Promise.all(procs.map((p) => new Promise((r) => p.on('exit', r))));
+
+    const out = fs.readFileSync(snap, 'utf8');
+    const ids = out.match(/mem-\d+/g) || [];
+    const unique = [...new Set(ids)].sort();
+    expect(unique).toEqual(['mem-001', 'mem-002', 'mem-003']);
     fs.rmSync(dir, { recursive: true, force: true });
   });
 });
