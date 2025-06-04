@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { spawnSync, execSync } from 'child_process';
-import { repoRoot, memPath } from '../../scripts/memory-utils';
+import { repoRoot, memPath, withFileLock, atomicWrite } from '../../scripts/memory-utils';
 
 function run(cmd: string): { output: string; code: number } {
   const res = spawnSync(cmd, { shell: true, encoding: 'utf8' });
@@ -92,7 +92,10 @@ export function runTasks() {
 
     const hash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
     const entry = `${hash} | Task ${taskNum} | ${taskDesc} | ${diffFiles} | ${new Date().toISOString()}\n`;
-    fs.appendFileSync(memoryPath, entry);
+    withFileLock(memoryPath, () => {
+      const cur = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
+      atomicWrite(memoryPath, cur + entry);
+    });
     execSync(`git add ${memoryPath}`);
     execSync(`git commit -m "chore(memory): record task ${taskNum}"`);
 
