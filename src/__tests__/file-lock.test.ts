@@ -43,4 +43,22 @@ describe('withFileLock', () => {
     expect(sorted).toBe('AB');
     fs.rmSync(dir, { recursive: true, force: true });
   });
+
+  it('removes stale lock files', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locktest-'));
+    const file = path.join(dir, 'mem.txt');
+    const lock = `${file}.lock`;
+    fs.writeFileSync(lock, '');
+    const past = new Date(Date.now() - 61_000);
+    fs.utimesSync(lock, past, past);
+
+    const { withFileLock, atomicWrite } = require('../../scripts/memory-utils');
+    withFileLock(file, () => {
+      atomicWrite(file, 'X');
+    });
+
+    expect(fs.readFileSync(file, 'utf8')).toBe('X');
+    expect(fs.existsSync(lock)).toBe(false);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
 });
