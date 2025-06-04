@@ -30,11 +30,5 @@ cat "$MEM_FILE" > "$TMP"
   echo "- Summary: $summary"
   echo "- Next Goal: $next_goal"
 } >> "$TMP"
-python3 - "$TMP" <<'EOF'
-import os, sys
-fd = os.open(sys.argv[1], os.O_RDWR)
-os.fsync(fd)
-os.close(fd)
-EOF
 mv "$TMP" "$MEM_FILE"
 

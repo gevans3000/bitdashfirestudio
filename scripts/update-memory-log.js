@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const { execSync } = require('child_process');
 const { repoRoot, memPath, readMemoryLines } = require('./memory-utils');
 
@@ -16,25 +15,30 @@ if (entries.length) {
 }
 
 const logCmd = lastHash
-  ? `git log ${lastHash}..HEAD --reverse --pretty=format:%h\\|%s\\|%cI`
-  : "git log --reverse --pretty=format:%h\\|%s\\|%cI";
-const commitLines = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' })
-  .trim()
-  .split('\n')
-  .filter(Boolean);
+  ? `git log ${lastHash}..HEAD --reverse --pretty=format:%h\\|%s\\|%cI --name-only`
+  : 'git log --reverse --pretty=format:%h\\|%s\\|%cI --name-only';
 
-for (const line of commitLines) {
-  const [hash, subject, date] = line.split('|');
-  const files = execSync(`git show --pretty=format:'' --name-only ${hash}`, {
-    cwd: repoRoot,
-    encoding: 'utf8',
-  })
-    .trim()
-    .split('\n')
-    .filter(Boolean)
-    .join(', ');
-  const entry = `${hash} | ${subject.trim()} | ${files} | ${date.trim()}`;
-  entries.push(entry);
+const lines = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' })
+  .trim()
+  .split('\n');
+
+let current;
+for (const line of lines) {
+  if (!line) continue;
+  if (line.includes('|')) {
+    if (current) {
+      entries.push(
+        `${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`
+      );
+    }
+    const [h, s, d] = line.split('|');
+    current = { h, s: s.trim(), d: d.trim(), f: [] };
+  } else if (current) {
+    current.f.push(line.trim());
+  }
+}
+if (current) {
+  entries.push(`${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`);
 }
 
 fs.writeFileSync(memPath, entries.join('\n') + '\n');
