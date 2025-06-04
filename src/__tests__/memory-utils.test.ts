@@ -105,6 +105,11 @@ describe("nextMemId", () => {
     });
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it("computes id from provided content", () => {
+    const content = "### 2020-01-01 | mem-002\n";
+    expect(utils.nextMemId(content)).toBe("003");
+  });
 });
 
 describe("update-memory-log", () => {
