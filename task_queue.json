@@ -397,7 +397,7 @@
   {
     "id": 96,
     "description": "add jest tests verifying codex-context output with mocked git log",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 97,
