@@ -77,4 +77,13 @@ describe('memory-cli', () => {
       { stdio: 'inherit', cwd: repoRoot }
     );
   });
+
+  it('runs compress-memory-logs for archive command', () => {
+    run(['archive']);
+    expect(spy).toHaveBeenCalledWith(
+      'ts-node',
+      [path.join(scriptDir, 'compress-memory-logs.ts')],
+      { stdio: 'inherit', cwd: repoRoot }
+    );
+  });
 });

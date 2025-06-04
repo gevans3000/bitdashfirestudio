@@ -28,6 +28,7 @@ Commands:
   diff                             List commits missing from memory.log
   json                             Export memory.log to memory.json
   clean-locks                      Delete stale .lock files
+  archive [--remove]               Gzip old memory backups
   check                            Verify memory files
   rebuild [path]                   Rebuild memory files from git history
   snapshot-update                  Append last commit summary to snapshot
@@ -66,6 +67,9 @@ switch (cmd) {
     break;
   case 'clean-locks':
     run('clean-locks.ts', rest);
+    break;
+  case 'archive':
+    run('compress-memory-logs.ts', rest);
     break;
   case 'check':
     run('memory-check.ts', rest);
