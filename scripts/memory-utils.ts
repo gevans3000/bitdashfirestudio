@@ -113,6 +113,20 @@ export function parseMemoryLines(lines: string[]): MemoryEntry[] {
   });
 }
 
+export function validateMemoryEntry(entry: MemoryEntry): string[] {
+  const errors: string[] = [];
+  if (!/^[0-9a-f]{7,40}$/i.test(entry.hash)) {
+    errors.push(`invalid hash: ${entry.hash}`);
+  }
+  if (!entry.summary) {
+    errors.push(`missing summary for ${entry.hash}`);
+  }
+  if (!entry.timestamp || Number.isNaN(Date.parse(entry.timestamp))) {
+    errors.push(`invalid timestamp for ${entry.hash}`);
+  }
+  return errors;
+}
+
 
 export interface SnapshotEntry {
   id: string;

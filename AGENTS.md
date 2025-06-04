@@ -99,6 +99,8 @@ Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
 ```
 
 Use this single-line format inside `memory.log` so the history remains easy to parse.
+Each field must be present except the optional `Task <id>`; values are pipe-separated with
+an ISO-8601 timestamp at the end.
 
 ---
 
