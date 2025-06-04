@@ -34,9 +34,9 @@ describe('memgrep', () => {
     );
     fs.writeFileSync(
       tmpSnap,
-      '### 2025-01-01 | mem-001\n' +
+      '### 2025-01-01 00:00 UTC | mem-001\n' +
         'minor fix details\n' +
-        '### 2025-01-02 | mem-002\n' +
+        '### 2025-01-02 00:00 UTC | mem-002\n' +
         'other info\n'
     );
 
@@ -76,6 +76,50 @@ describe('memgrep', () => {
     });
 
     expect(logMock).not.toHaveBeenCalled();
+
+    logMock.mockRestore();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('respects --since and --until range', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'grep-'));
+    const tmpMem = path.join(dir, 'memory.log');
+    const tmpSnap = path.join(dir, 'context.snapshot.md');
+    fs.writeFileSync(
+      tmpMem,
+      'aaa111 | fix early | file | 2025-01-01T00:00:00Z\n' +
+        'bbb222 | fix late | file | 2025-01-03T00:00:00Z\n'
+    );
+    fs.writeFileSync(
+      tmpSnap,
+      '### 2025-01-01 00:00 UTC | mem-010\n' +
+        'early note\n' +
+        '### 2025-01-03 00:00 UTC | mem-011\n' +
+        'late note\n'
+    );
+
+    const logMock = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    withFsMocks({ [memPath]: tmpMem, [snapshotPath]: tmpSnap }, () => {
+      jest.isolateModules(() => {
+        process.argv = [
+          'node',
+          'memgrep.ts',
+          'fix',
+          '--since',
+          '2025-01-02T00:00:00Z',
+          '--until',
+          '2025-01-04T00:00:00Z',
+        ];
+        require('../../scripts/memgrep.ts');
+      });
+    });
+
+    const outputs = logMock.mock.calls.map((c) => c[0]);
+    expect(outputs).toContain(expect.stringContaining('bbb222:'));
+    expect(outputs).toContain('mem-011: late note');
+    expect(outputs.some((o) => /aaa111/.test(o))).toBe(false);
+    expect(outputs.some((o) => /mem-010/.test(o))).toBe(false);
 
     logMock.mockRestore();
     fs.rmSync(dir, { recursive: true, force: true });
