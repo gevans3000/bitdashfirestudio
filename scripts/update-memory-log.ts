@@ -1,6 +1,6 @@
-const fs = require('fs');
-const { execSync } = require('child_process');
-const { repoRoot, memPath, readMemoryLines } = require('./memory-utils');
+import fs from 'fs';
+import { execSync } from 'child_process';
+import { repoRoot, memPath, readMemoryLines } from './memory-utils';
 
 let entries = readMemoryLines();
 let lastHash = '';
@@ -22,14 +22,12 @@ const lines = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' })
   .trim()
   .split('\n');
 
-let current;
+let current: { h: string; s: string; d: string; f: string[] } | undefined;
 for (const line of lines) {
   if (!line) continue;
   if (line.includes('|')) {
     if (current) {
-      entries.push(
-        `${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`
-      );
+      entries.push(`${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`);
     }
     const [h, s, d] = line.split('|');
     current = { h, s: s.trim(), d: d.trim(), f: [] };

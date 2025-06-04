@@ -1,23 +1,20 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const { repoRoot, snapshotPath, nextMemId } = require('./memory-utils');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { repoRoot, snapshotPath, nextMemId } from './memory-utils';
 
-function logError(ts) {
+function logError(ts: string) {
   const logDir = path.join(repoRoot, 'logs');
   fs.mkdirSync(logDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(logDir, `memory-error-${ts}.txt`),
-    `Memory append failed at ${ts}`
-  );
+  fs.writeFileSync(path.join(logDir, `memory-error-${ts}.txt`), `Memory append failed at ${ts}`);
 }
 
-function formatTimestamp() {
+function formatTimestamp(): string {
   const iso = new Date().toISOString();
   return iso.slice(0, 16).replace('T', ' ') + ' UTC';
 }
 
-function errorTimestamp() {
+function errorTimestamp(): string {
   const iso = new Date().toISOString();
   return iso.slice(0, 19).replace(/[-:]/g, '') + 'Z';
 }
@@ -26,10 +23,7 @@ try {
   const summary = process.argv[2] || 'No summary provided.';
   const nextGoal = process.argv[3] || 'TBD.';
   const ts = formatTimestamp();
-  const sha = execSync('git rev-parse --short HEAD', {
-    cwd: repoRoot,
-    encoding: 'utf8',
-  }).trim();
+  const sha = execSync('git rev-parse --short HEAD', { cwd: repoRoot, encoding: 'utf8' }).trim();
   const id = nextMemId();
   const entry =
     `### ${ts} | mem-${id}\n` +
