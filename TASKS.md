@@ -67,6 +67,17 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 99: extend memgrep to filter by --since and --until timestamps
 - [ ] Task 100: update README rotation section showing mem-rotate and snapshot-rotate usage
 
+- [ ] Task 101: make memory API TTL configurable via MEMORY_API_TTL env variable
+- [ ] Task 102: support since/until query params to filter memory API results by timestamp
+- [ ] Task 103: add snapshot-json script exporting context.snapshot.md to snapshot.json
+- [ ] Task 104: extend memory CLI with list command showing the last N entries
+- [ ] Task 105: build /memory Next.js page fetching /api/memory and rendering a table
+- [ ] Task 106: enforce max 300 lines for memory.log in pre-commit hook
+- [ ] Task 107: document memory CLI commands in README with examples
+- [ ] Task 108: update GitHub Pages workflow to publish snapshot.json
+- [ ] Task 109: create Jest test validating memory list -n 2 output
+- [ ] Task 110: implement /api/snapshot endpoint exposing snapshot data
+
 
 ### Bitcoin Dashboard
 
