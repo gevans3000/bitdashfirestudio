@@ -129,4 +129,43 @@ describe("mem-rotate", () => {
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it("does not modify files during dry run", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "memrot-"));
+    const tmpMem = path.join(tmpDir, "memory.log");
+    const tmpCommit = path.join(tmpDir, "commit.log");
+    const tmpBackup = path.join(tmpDir, `memory.log.${iso}.bak`);
+    fs.writeFileSync(tmpMem, "1\n2\n3\n");
+    fs.writeFileSync(tmpCommit, "old log");
+
+    const execMock = jest.spyOn(cp, "execSync");
+
+    const map = {
+      [memPath]: tmpMem,
+      [commitLogPath]: tmpCommit,
+      [path.join(repoRoot, "logs", `memory.log.${iso}.bak`)]: tmpBackup,
+    };
+    withFsMocks(map, () => {
+      process.env.MEM_ROTATE_LIMIT = "2";
+      jest.useFakeTimers().setSystemTime(new Date(iso));
+      jest.isolateModules(() => {
+        const orig = process.argv;
+        process.argv = ["node", "script", "--dry-run"];
+        require("../../scripts/mem-rotate.ts");
+        process.argv = orig;
+      });
+      jest.useRealTimers();
+    });
+
+    expect(execMock).not.toHaveBeenCalled();
+    const memOut = fs.readFileSync(tmpMem, "utf8");
+    const commitOut = fs.readFileSync(tmpCommit, "utf8");
+    const backupExists = fs.existsSync(tmpBackup);
+    expect(memOut).toBe("1\n2\n3\n");
+    expect(commitOut).toBe("old log");
+    expect(backupExists).toBe(false);
+
+    execMock.mockRestore();
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
 });

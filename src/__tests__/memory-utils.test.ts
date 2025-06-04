@@ -179,3 +179,31 @@ describe('atomicWrite', () => {
   });
 });
 
+describe('path overrides', () => {
+  it('uses MEM_PATH and SNAPSHOT_PATH when set', () => {
+    const mem = path.join(os.tmpdir(), 'custom-mem.log');
+    const snap = path.join(os.tmpdir(), 'custom-snap.md');
+    jest.isolateModules(() => {
+      process.env.MEM_PATH = mem;
+      process.env.SNAPSHOT_PATH = snap;
+      const mod = require('../../scripts/memory-utils');
+      expect(mod.memPath).toBe(path.resolve(mem));
+      expect(mod.snapshotPath).toBe(path.resolve(snap));
+      delete process.env.MEM_PATH;
+      delete process.env.SNAPSHOT_PATH;
+    });
+  });
+
+  it('defaults to repo root when env vars absent', () => {
+    jest.isolateModules(() => {
+      delete process.env.MEM_PATH;
+      delete process.env.SNAPSHOT_PATH;
+      const mod = require('../../scripts/memory-utils');
+      expect(mod.memPath).toBe(path.join(mod.repoRoot, 'memory.log'));
+      expect(mod.snapshotPath).toBe(
+        path.join(mod.repoRoot, 'context.snapshot.md')
+      );
+    });
+  });
+});
+
