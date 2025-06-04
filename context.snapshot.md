@@ -116,3 +116,13 @@
 - Commit SHA: b5bf1eb
 - Summary: Implemented new Jest test verifying concurrent append-memory writes
 - Next Goal: flag upcoming high-impact economic events
+
+### 2025-06-04 16:52 UTC | mem-030
+- Commit SHA: 6bfddd4
+- Summary: clarified memory.log field requirements in AGENTS.md to aid automation rules
+- Next Goal: flag upcoming high-impact economic events
+
+### 2025-06-04 16:53 UTC | mem-031
+- Commit SHA: 3469d34
+- Summary: added validation function and tests covering malformed memory entries
+- Next Goal: flag upcoming high-impact economic events

@@ -1,8 +1,15 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
-import { repoRoot, readMemoryLines, snapshotPath } from './memory-utils';
+import {
+  repoRoot,
+  readMemoryLines,
+  snapshotPath,
+  parseMemoryLines,
+  validateMemoryEntry,
+} from './memory-utils';
 
 const lines = readMemoryLines();
+const entries = parseMemoryLines(lines);
 const snapshot = fs.existsSync(snapshotPath)
   ? fs.readFileSync(snapshotPath, 'utf8')
   : '';
@@ -13,21 +20,23 @@ const seenHashes = new Set<string>();
 const seenMemIds = new Set<string>();
 let prevMemNum = 0;
 
-for (const line of lines) {
-  const parts = line.split('|').map((p) => p.trim());
-  const hash = parts[0];
-  const tsStr = parts[parts.length - 1];
+for (const entry of entries) {
+  const { hash, timestamp } = entry;
+
+  for (const err of validateMemoryEntry(entry)) {
+    errors.push(err);
+  }
 
   if (seenHashes.has(hash)) {
     errors.push(`duplicate commit ${hash}`);
   }
   seenHashes.add(hash);
 
-  const ts = Date.parse(tsStr);
+  const ts = Date.parse(timestamp);
   if (!Number.isNaN(ts)) {
     if (ts <= lastTs) {
       const prev = new Date(lastTs).toISOString();
-      errors.push(`timestamp out of order for ${hash}: ${tsStr} <= ${prev}`);
+      errors.push(`timestamp out of order for ${hash}: ${timestamp} <= ${prev}`);
     }
     lastTs = ts;
   }
@@ -50,7 +59,7 @@ for (const line of lines) {
     errors.push(`unable to read summary for ${hash}`);
   }
 
-  const memSummary = parts.length === 5 ? parts[2] : parts[1];
+  const memSummary = entry.summary;
   if (commitSummary && memSummary && memSummary !== commitSummary) {
     errors.push(`summary mismatch for ${hash}`);
   }

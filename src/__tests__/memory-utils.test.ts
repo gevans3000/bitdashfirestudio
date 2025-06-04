@@ -303,6 +303,36 @@ describe("parseMemoryLines", () => {
       raw: line,
     });
   });
+
+  it("ignores empty lines", () => {
+    const out = utils.parseMemoryLines(["", "abc123 | a | b | 2025-01-01T00:00:00Z"]);
+    expect(out.length).toBe(1);
+    expect(out[0].hash).toBe("abc123");
+  });
+
+  it("handles malformed entries", () => {
+    const line = "abc123 just text";
+    const [entry] = utils.parseMemoryLines([line]);
+    expect(entry.hash).toBe("abc123 just text");
+    expect(entry.summary).toBe("");
+    expect(entry.timestamp).toBe("");
+  });
+
+  it("handles extremely long lines", () => {
+    const long = "a".repeat(10000);
+    const line = `abcd123 | ${long} | file.ts | 2025-01-01T00:00:00Z`;
+    const [entry] = utils.parseMemoryLines([line]);
+    expect(entry.summary.length).toBe(10000);
+  });
+});
+
+describe("validateMemoryEntry", () => {
+  it("detects missing fields", () => {
+    const [entry] = utils.parseMemoryLines(["abcd123 | test"]);
+    const errs = utils.validateMemoryEntry(entry);
+    expect(errs).toContain("invalid timestamp for abcd123");
+    expect(errs).toContain("missing summary for abcd123");
+  });
 });
 
 describe('parseSnapshotEntries', () => {
