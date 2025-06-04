@@ -28,6 +28,7 @@ Commands:
   diff                             List commits missing from memory.log
   json                             Export memory.log to memory.json
   clean-locks                      Delete stale .lock files
+  summary <from> <to>              Summaries between mem-ids
   check                            Verify memory files
   rebuild [path]                   Rebuild memory files from git history
   snapshot-update                  Append last commit summary to snapshot
@@ -69,6 +70,9 @@ switch (cmd) {
     break;
   case 'check':
     run('memory-check.ts', rest);
+    break;
+  case 'summary':
+    run('mem-summary.ts', rest);
     break;
   case 'rebuild':
     run('rebuild-memory.ts', rest);
