@@ -34,6 +34,9 @@ export function atomicWrite(file: string, data: string): void {
   fs.fsyncSync(fd);
   fs.closeSync(fd);
   fs.renameSync(tmp, file);
+  const dirFd = fs.openSync(dir, 'r');
+  fs.fsyncSync(dirFd);
+  fs.closeSync(dirFd);
 }
 
 export function withFileLock(
