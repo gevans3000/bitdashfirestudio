@@ -143,6 +143,24 @@ npm run commitlog
 
 Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run mem-rotate` to change the number of retained lines.
 
+The memory scripts honor several environment variables:
+
+- `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
+- `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
+- `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
+- `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
+
+Example:
+
+```bash
+# Rotate custom logs and limits
+MEM_PATH=/tmp/mem.log \
+SNAPSHOT_PATH=/tmp/snapshot.md \
+MEM_ROTATE_LIMIT=300 \
+SNAP_ROTATE_LIMIT=150 \
+npm run mem-rotate && ts-node scripts/snapshot-rotate.ts
+```
+
 ## Using Codex with Persistent Memory
 
 See [CODEX_START.md](CODEX_START.md) for full instructions on launching Codex with persistent memory.
