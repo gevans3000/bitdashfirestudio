@@ -61,4 +61,36 @@ describe('withFileLock', () => {
     expect(fs.existsSync(lock)).toBe(false);
     fs.rmSync(dir, { recursive: true, force: true });
   });
+
+  it('cleans lock after successful write', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locktest-'));
+    const file = path.join(dir, 'mem.txt');
+    const { withFileLock, atomicWrite } = require('../../scripts/memory-utils');
+    withFileLock(file, () => {
+      atomicWrite(file, 'Y');
+    });
+    expect(fs.readFileSync(file, 'utf8')).toBe('Y');
+    expect(fs.existsSync(`${file}.lock`)).toBe(false);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  it('handles many concurrent writers', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'locktest-'));
+    const file = path.join(dir, 'mem.txt');
+    const p1 = run(file, 'A', '200');
+    const p2 = run(file, 'B', '100');
+    const p3 = run(file, 'C', '0');
+
+    await Promise.all([
+      new Promise((res) => p1.on('exit', res)),
+      new Promise((res) => p2.on('exit', res)),
+      new Promise((res) => p3.on('exit', res)),
+    ]);
+
+    const out = fs.readFileSync(file, 'utf8');
+    const sorted = out.split('').sort().join('');
+    expect(sorted).toBe('ABC');
+    expect(fs.existsSync(`${file}.lock`)).toBe(false);
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
 });
