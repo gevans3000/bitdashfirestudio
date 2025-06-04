@@ -6,6 +6,7 @@ HOOK_PATH="$REPO_ROOT/.git/hooks/post-commit"
 cat > "$HOOK_PATH" <<'HOOK'
 #!/usr/bin/env bash
 npm run memlog >/dev/null 2>&1
+npm run mem-rotate >/dev/null 2>&1
 HOOK
 
 chmod +x "$HOOK_PATH"

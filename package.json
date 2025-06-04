@@ -26,6 +26,7 @@
     "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
     "commitlog": "ts-node scripts/commit-log.ts",
     "memlog": "ts-node scripts/update-memory-log.ts && npm run commitlog",
+    "mem-rotate": "ts-node scripts/mem-rotate.ts",
     "codex": "bash scripts/codex_context.sh",
     "setup": "bash scripts/setup-hooks.sh",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest",
