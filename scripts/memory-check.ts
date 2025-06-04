@@ -39,6 +39,22 @@ for (const line of lines) {
     continue;
   }
 
+  let commitSummary = '';
+  try {
+    commitSummary = execSync(`git log -1 --pretty=%s ${hash}`, {
+      cwd: repoRoot,
+    })
+      .toString()
+      .trim();
+  } catch {
+    errors.push(`unable to read summary for ${hash}`);
+  }
+
+  const memSummary = parts.length === 5 ? parts[2] : parts[1];
+  if (commitSummary && memSummary && memSummary !== commitSummary) {
+    errors.push(`summary mismatch for ${hash}`);
+  }
+
   const pattern = new RegExp(`(mem-\\d+)[\\s\\S]*?Commit SHA: ${hash}\\b`);
   const match = snapshot.match(pattern);
   if (!match) {
