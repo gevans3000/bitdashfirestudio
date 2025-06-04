@@ -177,6 +177,34 @@ describe("update-memory-log", () => {
     execMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
+
+  it("deduplicates existing entries", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "memlog-"));
+    const tmpMem = path.join(tmpDir, "memory.log");
+    fs.writeFileSync(
+      tmpMem,
+      "abc123 | a commit | file1 | 2025-06-01T00:00:00Z\n" +
+        "abc123 | a commit | file1 | 2025-06-01T00:00:00Z\n"
+    );
+
+    const execMock = jest
+      .spyOn(cp, "execSync")
+      .mockReturnValue(Buffer.from(""));
+
+    withFsMocks({ [memPath]: tmpMem }, () => {
+      jest.isolateModules(() => {
+        require("../../scripts/update-memory-log.ts");
+      });
+    });
+
+    execMock.mockRestore();
+    const out = fs.readFileSync(tmpMem, "utf8").trim().split("\n");
+    expect(out).toEqual([
+      "abc123 | a commit | file1 | 2025-06-01T00:00:00Z",
+    ]);
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
 });
 
 describe("atomicWrite", () => {
