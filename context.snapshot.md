@@ -107,3 +107,8 @@
 - Commit SHA: c1e5a28
 - Summary: Validated automation rules by reviewing AGENTS.md and running lint, test and backtest scripts. Fixed minor grammar in the charter. Environment lacks node modules so commands were skipped via try-cmd. This bootstrap confirms the harness works offline.
 - Next Goal: Implement Task 31 comparing 5m EMA trend with higher timeframes
+
+### 2025-06-04 15:08 UTC | mem-028
+- Commit SHA: 2d8d715
+- Summary: Replaced bash codex script with ts-node version and marked Task 93 done.
+- Next Goal: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars

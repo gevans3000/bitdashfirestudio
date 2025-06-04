@@ -382,7 +382,7 @@
   {
     "id": 93,
     "description": "fix codex helper command by running ts-node scripts/codex-context.ts",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 94,
