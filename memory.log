@@ -566,3 +566,4 @@ d2623d5 | chore(memory): update logs after docs cleanup | logs/commit.log, memor
 b2a16c3 | feat(memory): add helpers and node append script | scripts/append-memory.js, scripts/append-memory.sh, scripts/memory-utils.js | 2025-06-04T00:27:47+00:00
 2939801 | test(memory): add memory utils tests | src/__tests__/memory-utils.test.ts | 2025-06-04T01:19:44+00:00
 bd46999 | feat(memory): add file locking | TASKS.md, scripts/append-memory.ts, scripts/mem-rotate.ts, scripts/memory-utils.ts, scripts/update-memory-log.ts, src/__tests__/file-lock.test.ts, src/__tests__/mem-rotate.test.ts, src/__tests__/memory-utils.test.ts, task_queue.json | 2025-06-04T11:29:47+00:00
+0d51487 | fix(memory): fsync temp file before rename | scripts/memory-utils.ts, src/__tests__/memory-utils.test.ts | 2025-06-04T12:34:42Z

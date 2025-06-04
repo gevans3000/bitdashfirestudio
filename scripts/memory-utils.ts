@@ -25,7 +25,10 @@ export function nextMemId(): string {
 export function atomicWrite(file: string, data: string): void {
   const dir = path.dirname(file);
   const tmp = path.join(dir, `.${path.basename(file)}.tmp`);
-  fs.writeFileSync(tmp, data);
+  const fd = fs.openSync(tmp, 'w');
+  fs.writeFileSync(fd, data);
+  fs.fsyncSync(fd);
+  fs.closeSync(fd);
   fs.renameSync(tmp, file);
 }
 
