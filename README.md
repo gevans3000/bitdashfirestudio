@@ -36,7 +36,12 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
    npm install
    ```
 
-3. Start the development server:
+3. Set up git hooks:
+   ```bash
+   npm run setup
+   ```
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
@@ -116,7 +121,7 @@ npm run commitlog
 1. Run `npm ci` once when you start a session.
 2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
-4. After each commit `memory.log` is updated automatically with metadata.
+4. After each commit `memory.log` and `logs/commit.log` are refreshed automatically by the `post-commit` hook.
 5. When resuming after a break, run `npm run commitlog` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
@@ -126,6 +131,7 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
+| `npm run setup` | Install the post-commit hook for automatic memlog updates |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
