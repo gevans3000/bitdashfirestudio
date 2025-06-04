@@ -163,7 +163,8 @@ npm run snap-rotate  # prune context.snapshot.md
 
 A weekly GitHub workflow automatically runs `mem-rotate`, `clean-locks` and `commitlog` to push the
 latest trimmed logs. Adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the
-number of retained entries and purge stale lock files.
+number of retained entries. `LOCK_TTL` defines how old `.lock` files must be before
+`clean-locks` deletes them.
 
 The memory scripts honor several environment variables:
 
@@ -171,6 +172,7 @@ The memory scripts honor several environment variables:
 - `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
 - `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
 - `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
+- `LOCK_TTL` – milliseconds before `clean-locks` removes `.lock` files (default: `300000`)
 
 Example:
 
