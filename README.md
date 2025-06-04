@@ -133,6 +133,7 @@ npm run commitlog
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
+| `npm run mem-diff` | List commit hashes missing from `memory.log` |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `npm run setup` | Install the post-commit hook for automatic memlog updates |
