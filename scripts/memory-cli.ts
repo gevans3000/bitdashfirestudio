@@ -25,6 +25,7 @@ Commands:
   grep <pattern>                   Search memory files
   locate <hash|mem-id>             Show snapshot entry for a commit
   update-log [--verify]            Refresh memory.log from git history
+  list [-n <count>]                Show the last N entries
   diff                             List commits missing from memory.log
   json                             Export memory.log to memory.json
   clean-locks                      Delete stale .lock files
@@ -65,6 +66,9 @@ switch (cmd) {
     break;
   case 'json':
     run('memory-json.ts', rest);
+    break;
+  case 'list':
+    run('mem-list.ts', rest);
     break;
   case 'clean-locks':
     run('clean-locks.ts', rest);

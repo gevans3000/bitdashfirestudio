@@ -1,2 +1,7 @@
 #!/bin/sh
+LINES=$(wc -l < memory.log 2>/dev/null || echo 0)
+if [ "$LINES" -gt 300 ]; then
+  echo "memory.log has $LINES lines, exceeds 300" >&2
+  exit 1
+fi
 npm run lint && npm run test && npm run mem-check

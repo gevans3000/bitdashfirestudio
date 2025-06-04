@@ -135,7 +135,7 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
-| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, diff, json, clean-locks, check, locate, rebuild, snapshot-update |
+| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, list, diff, json, clean-locks, check, locate, rebuild, sync, snapshot-update |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |
@@ -144,6 +144,7 @@ npm run commitlog
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
+| `ts-node scripts/snapshot-json.ts` | Export `context.snapshot.md` to `snapshot.json` |
 | `npm run setup` | Install pre-commit and post-commit hooks for automatic memlog checks |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
@@ -173,6 +174,7 @@ The memory scripts honor several environment variables:
 - `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
 - `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
 - `LOCK_TTL` – milliseconds before `clean-locks` removes `.lock` files (default: `300000`)
+- `MEMORY_API_TTL` – seconds API responses are cached (default: `15`)
 
 Example:
 
