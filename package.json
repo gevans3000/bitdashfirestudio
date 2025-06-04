@@ -29,10 +29,10 @@
     "mem-rotate": "ts-node scripts/mem-rotate.ts",
     "snap-rotate": "ts-node scripts/snapshot-rotate.ts",
     "mem-check": "ts-node scripts/memory-check.ts",
-    "mem-diff": "ts-node scripts/mem-diff.ts",
     "memgrep": "ts-node scripts/memgrep.ts",
+    "memory": "ts-node scripts/memory-cli.ts",
     "clean-locks": "ts-node scripts/clean-locks.ts",
-    "codex": "bash scripts/codex_context.sh",
+  "codex": "bash scripts/codex_context.sh",
     "setup": "bash scripts/setup-hooks.sh",
     "bootstrap": "npm ci && npm run lint && npm run test && npm run backtest",
     "postinstall": "npm run setup"
