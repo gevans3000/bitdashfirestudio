@@ -114,3 +114,58 @@ export function parseMemoryLines(lines: string[]): MemoryEntry[] {
       return { hash, task, summary, files, timestamp, raw };
     });
 }
+
+export interface SnapshotEntry {
+  id: string;
+  timestamp: string;
+  commit: string;
+  summary: string;
+  next: string;
+  raw: string;
+}
+
+export function parseSnapshotEntries(lines: string[]): SnapshotEntry[] {
+  const entries: SnapshotEntry[] = [];
+  let buffer: string[] = [];
+
+  function pushBuffer() {
+    if (!buffer.length) return;
+    const raw = buffer.join('\n');
+    const header = buffer[0].match(/^###\s+([^|]+)\s*\|\s*(mem-\d+)/);
+    const timestamp = header ? header[1].trim() : '';
+    const id = header ? header[2] : '';
+    let commit = '';
+    let summary = '';
+    let next = '';
+    for (const line of buffer.slice(1)) {
+      const c = line.match(/^-\s*Commit SHA:\s*(\S+)/i);
+      if (c) {
+        commit = c[1];
+        continue;
+      }
+      const s = line.match(/^-\s*Summary:\s*(.*)/i);
+      if (s) {
+        summary = s[1];
+        continue;
+      }
+      const n = line.match(/^-\s*Next Goal:\s*(.*)/i);
+      if (n) {
+        next = n[1];
+        continue;
+      }
+    }
+    entries.push({ id, timestamp, commit, summary, next, raw });
+    buffer = [];
+  }
+
+  for (const line of lines) {
+    if (line.startsWith('### ')) {
+      pushBuffer();
+      buffer.push(line.trimEnd());
+    } else if (buffer.length) {
+      buffer.push(line.trimEnd());
+    }
+  }
+  pushBuffer();
+  return entries;
+}
