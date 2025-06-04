@@ -77,3 +77,40 @@ export function withFileLock(
     fs.unlinkSync(lock);
   }
 }
+
+export interface MemoryEntry {
+  hash: string;
+  task?: string;
+  summary: string;
+  files: string;
+  timestamp: string;
+  raw: string;
+}
+
+export function parseMemoryLines(lines: string[]): MemoryEntry[] {
+  return lines
+    .filter(Boolean)
+    .map((raw) => {
+      const parts = raw.split('|').map((p) => p.trim());
+      const [hash, p2 = '', p3 = '', p4 = '', p5 = ''] = parts;
+      let task: string | undefined;
+      let summary = '';
+      let files = '';
+      let timestamp = '';
+      if (parts.length >= 5) {
+        task = p2;
+        summary = p3;
+        files = p4;
+        timestamp = p5;
+      } else if (parts.length === 4) {
+        summary = p2;
+        files = p3;
+        timestamp = p4;
+      } else if (parts.length === 3) {
+        summary = p2;
+        files = '';
+        timestamp = p3;
+      }
+      return { hash, task, summary, files, timestamp, raw };
+    });
+}
