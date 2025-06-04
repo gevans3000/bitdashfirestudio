@@ -159,6 +159,24 @@ A weekly GitHub workflow automatically runs `mem-rotate` and `commitlog` to push
 latest trimmed logs. Adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the
 number of retained entries.
 
+The memory scripts honor several environment variables:
+
+- `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
+- `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
+- `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
+- `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
+
+Example:
+
+```bash
+# Rotate custom logs and limits
+MEM_PATH=/tmp/mem.log \
+SNAPSHOT_PATH=/tmp/snapshot.md \
+MEM_ROTATE_LIMIT=300 \
+SNAP_ROTATE_LIMIT=150 \
+npm run mem-rotate && ts-node scripts/snapshot-rotate.ts
+```
+
 ## Using Codex with Persistent Memory
 
 See [CODEX_START.md](CODEX_START.md) for full instructions on launching Codex with persistent memory.
