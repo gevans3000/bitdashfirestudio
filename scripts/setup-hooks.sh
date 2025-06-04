@@ -7,6 +7,7 @@ cat > "$HOOK_PATH" <<'HOOK'
 #!/usr/bin/env bash
 npm run memlog >/dev/null 2>&1
 npm run mem-rotate >/dev/null 2>&1
+npm run mem-check >/dev/null 2>&1
 ts-node scripts/update-snapshot.ts >/dev/null 2>&1
 HOOK
 

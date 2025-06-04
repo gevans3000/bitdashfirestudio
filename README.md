@@ -121,7 +121,7 @@ npm run commitlog
 1. Run `npm ci` once when you start a session.
 2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
-4. After each commit `memory.log`, `logs/commit.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook also trims `memory.log` to the last 200 entries.
+4. After each commit `memory.log`, `logs/commit.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
 5. When resuming after a break, run `npm run commitlog` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
@@ -132,7 +132,7 @@ npm run commitlog
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
-| `npm run mem-check` | Verify memory.log hashes exist and snapshot blocks are present |
+| `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `npm run setup` | Install the post-commit hook for automatic memlog updates |
