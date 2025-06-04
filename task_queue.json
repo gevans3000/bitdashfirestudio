@@ -387,7 +387,7 @@
   {
     "id": 94,
     "description": "document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 95,
