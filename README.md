@@ -131,17 +131,51 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
+| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
+| `npm run mem-diff` | List commit hashes missing from `memory.log` |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
+| `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
 | `npm run setup` | Install the post-commit hook for automatic memlog updates |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
 | `npm run backtest` | Launch the backtest defined in `scripts/backtest.ts` |
 
-Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run mem-rotate` to change the number of retained lines.
+Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run memory rotate` to change the number of retained lines.
+
+## Rotating Memory Files
+
+Keep `memory.log` and `context.snapshot.md` trimmed so the agent loads quickly:
+
+```bash
+npm run mem-rotate   # prune memory.log
+npm run snap-rotate  # prune context.snapshot.md
+```
+
+A weekly GitHub workflow automatically runs `mem-rotate` and `commitlog` to push the
+latest trimmed logs. Adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the
+number of retained entries.
+
+The memory scripts honor several environment variables:
+
+- `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
+- `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
+- `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
+- `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
+
+Example:
+
+```bash
+# Rotate custom logs and limits
+MEM_PATH=/tmp/mem.log \
+SNAPSHOT_PATH=/tmp/snapshot.md \
+MEM_ROTATE_LIMIT=300 \
+SNAP_ROTATE_LIMIT=150 \
+npm run mem-rotate && ts-node scripts/snapshot-rotate.ts
+```
 
 ## Using Codex with Persistent Memory
 
