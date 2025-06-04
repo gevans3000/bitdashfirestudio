@@ -107,6 +107,10 @@ MIT
 
 Using 5-minute BTC data from CoinGecko (90 days) the strategy achieved roughly a 55% win rate on historical candles. Run `npm run backtest` to reproduce.
 
+## Continuous Integration
+
+GitHub Actions run lint, tests, the backtest and `npm run mem-check` on every pull request to ensure memory files stay in sync with Git history.
+
 ## Codex Workflow
 
 See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
@@ -131,10 +135,12 @@ npm run commitlog
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
-| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log |
+| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, diff, json, clean-locks, check, locate |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |
+| `npm run memgrep` | Search `memory.log` and `context.snapshot.md` for a pattern |
+| `npm run clean-locks` | Remove stale `.lock` files across the repository |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
@@ -155,9 +161,9 @@ npm run mem-rotate   # prune memory.log
 npm run snap-rotate  # prune context.snapshot.md
 ```
 
-A weekly GitHub workflow automatically runs `mem-rotate` and `commitlog` to push the
+A weekly GitHub workflow automatically runs `mem-rotate`, `clean-locks` and `commitlog` to push the
 latest trimmed logs. Adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the
-number of retained entries.
+number of retained entries and purge stale lock files.
 
 The memory scripts honor several environment variables:
 
