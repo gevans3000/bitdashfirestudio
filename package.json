@@ -23,7 +23,7 @@
     "test": "node scripts/try-cmd.js jest",
     "backtest": "node scripts/try-cmd.js ts-node scripts/backtest.ts",
     "dev-deps": "bash scripts/dev-deps.sh",
-    "auto": "node scripts/autoTaskRunner.js",
+    "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
     "commitlog": "node scripts/commit-log.js",
     "memlog": "node scripts/update-memory-log.js && npm run commitlog",
     "codex": "bash scripts/codex_context.sh",
