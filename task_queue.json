@@ -418,5 +418,55 @@
     "id": 100,
     "description": "update README rotation section showing mem-rotate and snapshot-rotate usage",
     "status": "pending"
+  },
+  {
+    "id": 101,
+    "description": "make memory API TTL configurable via MEMORY_API_TTL env variable",
+    "status": "pending"
+  },
+  {
+    "id": 102,
+    "description": "support since/until query params to filter memory API results by timestamp",
+    "status": "pending"
+  },
+  {
+    "id": 103,
+    "description": "add snapshot-json script exporting context.snapshot.md to snapshot.json",
+    "status": "pending"
+  },
+  {
+    "id": 104,
+    "description": "extend memory CLI with list command showing the last N entries",
+    "status": "pending"
+  },
+  {
+    "id": 105,
+    "description": "build /memory Next.js page fetching /api/memory and rendering a table",
+    "status": "pending"
+  },
+  {
+    "id": 106,
+    "description": "enforce max 300 lines for memory.log in pre-commit hook",
+    "status": "pending"
+  },
+  {
+    "id": 107,
+    "description": "document memory CLI commands in README with examples",
+    "status": "pending"
+  },
+  {
+    "id": 108,
+    "description": "update GitHub Pages workflow to publish snapshot.json",
+    "status": "pending"
+  },
+  {
+    "id": 109,
+    "description": "create Jest test validating memory list -n 2 output",
+    "status": "pending"
+  },
+  {
+    "id": 110,
+    "description": "implement /api/snapshot endpoint exposing snapshot data",
+    "status": "pending"
   }
 ]
