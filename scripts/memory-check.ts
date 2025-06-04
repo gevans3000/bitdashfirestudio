@@ -15,30 +15,51 @@ const snapshot = fs.existsSync(snapshotPath)
   : '';
 
 const errors: string[] = [];
-let lastTs = 0;
-const seenHashes = new Set<string>();
+let lastCommitTs = 0;
+let lastTaskTs = 0;
+const seenCommits = new Set<string>();
+const seenTasks = new Set<string>();
 const seenMemIds = new Set<string>();
 let prevMemNum = 0;
 
 for (const entry of entries) {
-  const { hash, timestamp } = entry;
+  const { hash, timestamp, entryType } = entry;
 
   for (const err of validateMemoryEntry(entry)) {
     errors.push(err);
   }
 
-  if (seenHashes.has(hash)) {
-    errors.push(`duplicate commit ${hash}`);
+  if (entryType === 'commit') {
+    if (seenCommits.has(hash)) {
+      errors.push(`duplicate commit ${hash}`);
+    }
+    seenCommits.add(hash);
+  } else {
+    if (seenTasks.has(hash)) {
+      errors.push(`duplicate task ${hash}`);
+    }
+    seenTasks.add(hash);
   }
-  seenHashes.add(hash);
 
   const ts = Date.parse(timestamp);
   if (!Number.isNaN(ts)) {
-    if (ts <= lastTs) {
-      const prev = new Date(lastTs).toISOString();
-      errors.push(`timestamp out of order for ${hash}: ${timestamp} <= ${prev}`);
+    if (entryType === 'commit') {
+      if (ts < lastCommitTs) {
+        const prev = new Date(lastCommitTs).toISOString();
+        errors.push(
+          `commit timestamp out of order for ${hash}: ${timestamp} < ${prev}`,
+        );
+      }
+      lastCommitTs = Math.max(lastCommitTs, ts);
+    } else {
+      if (ts < lastTaskTs) {
+        const prev = new Date(lastTaskTs).toISOString();
+        errors.push(
+          `task timestamp out of order for ${hash}: ${timestamp} < ${prev}`,
+        );
+      }
+      lastTaskTs = Math.max(lastTaskTs, ts);
     }
-    lastTs = ts;
   }
 
   try {
