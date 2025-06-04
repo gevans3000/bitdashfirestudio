@@ -58,7 +58,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ### Upcoming Enhancements
 
-- [ ] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
+ - [x] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
 - [ ] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
 - [ ] Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-log
 - [x] Task 96: add jest tests verifying codex-context output with mocked git log
