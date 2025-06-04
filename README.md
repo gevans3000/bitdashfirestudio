@@ -132,6 +132,7 @@ npm run commitlog
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
 | `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
+| `npm run mem-check` | Verify memory.log hashes exist and snapshot blocks are present |
 | `npm run setup` | Install the post-commit hook for automatic memlog updates |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
