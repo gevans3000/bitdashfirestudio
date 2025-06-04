@@ -13,12 +13,16 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
     const tmpK = path.join(path.dirname(k), `.${path.basename(k)}.tmp`);
     const tmpV = path.join(path.dirname(v), `.${path.basename(v)}.tmp`);
     expanded[tmpK] = tmpV;
+    expanded[`${k}.lock`] = `${v}.lock`;
   }
 
   const origExists = fs.existsSync;
   const origRead = fs.readFileSync;
   const origWrite = fs.writeFileSync;
   const origRename = fs.renameSync;
+  const origOpen = fs.openSync;
+  const origClose = fs.closeSync;
+  const origUnlink = fs.unlinkSync;
   const existsMock = jest.spyOn(fs, 'existsSync').mockImplementation((p: any) => {
     if (expanded[p as string]) {
       return origExists.call(fs, expanded[p as string]);
@@ -42,6 +46,17 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
     if (expanded[b as string]) b = expanded[b as string];
     return origRename.call(fs, a, b);
   });
+  const openMock = jest.spyOn(fs, 'openSync').mockImplementation((p: any, flag: any) => {
+    if (expanded[p as string]) p = expanded[p as string];
+    return origOpen.call(fs, p, flag);
+  });
+  const closeMock = jest.spyOn(fs, 'closeSync').mockImplementation((fd: any) => {
+    return origClose.call(fs, fd);
+  });
+  const unlinkMock = jest.spyOn(fs, 'unlinkSync').mockImplementation((p: any) => {
+    if (expanded[p as string]) p = expanded[p as string];
+    return origUnlink.call(fs, p);
+  });
   try {
     fn();
   } finally {
@@ -49,6 +64,9 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
     readMock.mockRestore();
     writeMock.mockRestore();
     renameMock.mockRestore();
+    openMock.mockRestore();
+    closeMock.mockRestore();
+    unlinkMock.mockRestore();
   }
 }
 

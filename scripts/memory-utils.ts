@@ -28,3 +28,25 @@ export function atomicWrite(file: string, data: string): void {
   fs.writeFileSync(tmp, data);
   fs.renameSync(tmp, file);
 }
+
+export function withFileLock(target: string, fn: () => void): void {
+  const lock = `${target}.lock`;
+  let fd: number | undefined;
+  while (fd === undefined) {
+    try {
+      fd = fs.openSync(lock, 'wx');
+    } catch (err: any) {
+      if (err.code === 'EEXIST') {
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
+      } else {
+        throw err;
+      }
+    }
+  }
+  fs.closeSync(fd);
+  try {
+    fn();
+  } finally {
+    fs.unlinkSync(lock);
+  }
+}
