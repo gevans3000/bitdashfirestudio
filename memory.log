@@ -198,3 +198,4 @@ b5bf1eb | test(memory): concurrent append-memory writes | src/__tests__/append-m
 6bfddd4 | Task bootstrap | clarified memory.log field requirements | AGENTS.md | 2025-06-04T16:52:12Z
 3469d34 | Task <unknown> | add tests for memory parsing edge cases and validation | scripts/memory-check.ts, scripts/memory-utils.ts, src/__tests__/memory-utils.test.ts, src/__tests__/memory-check.test.ts | 2025-06-04T16:53:32Z
 9a2853d | Task 32 | add economic events api with caching and tests | src/lib/data/economicEvents.ts,src/app/api/economic-events/route.ts,src/__tests__/economic-events-api.test.ts,TASKS.md,task_queue.json | 2025-06-04T19:57:23Z
+92c3269 | Task 94 | clarify memory rotation env vars in README | README.md,TASKS.md,task_queue.json | 2025-06-04T22:07:27Z

@@ -130,3 +130,7 @@
 - Commit SHA: 9a2853d
 - Summary: implemented economic events fetcher and API route with caching and test; updated tasks to mark Task 32 done.
 - Next Goal: notify on daily Google Trends spike
+### 2025-06-04 22:07 UTC | mem-033
+- Commit SHA: 92c3269
+- Summary: Updated README rotation docs to mention MEM_PATH and SNAPSHOT_PATH and marked Task 94 done in TASKS.md and task_queue.json. Lint, test and backtest skipped due to missing modules.
+- Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
