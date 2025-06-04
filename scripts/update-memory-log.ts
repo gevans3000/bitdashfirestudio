@@ -39,6 +39,17 @@ if (current) {
   entries.push(`${current.h} | ${current.s} | ${current.f.join(', ')} | ${current.d}`);
 }
 
+// remove duplicate hashes while preserving order
+const uniq: string[] = [];
+const seen = new Set<string>();
+for (const line of entries) {
+  const hash = line.split('|')[0].trim();
+  if (seen.has(hash)) continue;
+  seen.add(hash);
+  uniq.push(line);
+}
+entries = uniq;
+
 withFileLock(memPath, () => {
   atomicWrite(memPath, entries.join('\n') + '\n');
 });
