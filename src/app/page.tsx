@@ -37,6 +37,7 @@ import FundingRateWidget from "@/components/FundingRateWidget";
 import TxnCountWidget from "@/components/TxnCountWidget";
 import SessionTimerWidget from "@/components/SessionTimerWidget";
 import EmaCrossoverWidget from "@/components/EmaCrossoverWidget";
+import EmaTrendWidget from "@/components/EmaTrendWidget";
 import { Orchestrator } from "@/lib/agents/Orchestrator";
 import { DataCollector } from "@/lib/agents/DataCollector";
 import { IndicatorEngine } from "@/lib/agents/IndicatorEngine";
@@ -756,6 +757,7 @@ const CryptoDashboardPage: FC = () => {
           <PrevDayBands />
           <BollingerWidget />
           <EmaCrossoverWidget />
+          <EmaTrendWidget />
           <RsiWidget />
           <StochRsiWidget />
           <AtrWidget />
