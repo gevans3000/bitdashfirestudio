@@ -1,0 +1,98 @@
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import * as cp from 'child_process';
+import * as utils from '../../scripts/memory-utils';
+
+const { snapshotPath, memPath } = utils;
+
+function withFsMocks(paths: Record<string, string>, fn: () => void) {
+  const origExists = fs.existsSync;
+  const origRead = fs.readFileSync;
+  const origWrite = fs.writeFileSync;
+  const existsMock = jest.spyOn(fs, 'existsSync').mockImplementation((p: any) => {
+    if (paths[p as string]) {
+      return origExists.call(fs, paths[p as string]);
+    }
+    return origExists.call(fs, p);
+  });
+  const readMock = jest.spyOn(fs, 'readFileSync').mockImplementation((p: any, opt?: any) => {
+    if (paths[p as string]) {
+      p = paths[p as string];
+    }
+    return origRead.call(fs, p, opt);
+  });
+  const writeMock = jest.spyOn(fs, 'writeFileSync').mockImplementation((p: any, data: any, opt?: any) => {
+    if (paths[p as string]) {
+      p = paths[p as string];
+    }
+    return origWrite.call(fs, p, data, opt as any);
+  });
+  try {
+    fn();
+  } finally {
+    existsMock.mockRestore();
+    readMock.mockRestore();
+    writeMock.mockRestore();
+  }
+}
+
+describe('nextMemId', () => {
+  it('returns 001 when snapshot missing', () => {
+    withFsMocks({ [snapshotPath]: path.join(os.tmpdir(), 'no-file') }, () => {
+      expect(utils.nextMemId()).toBe('001');
+    });
+  });
+
+  it('increments based on last mem entry', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'memtest-'));
+    const tmpSnap = path.join(tmpDir, 'context.snapshot.md');
+    fs.writeFileSync(
+      tmpSnap,
+      '### 2020-01-01 | mem-001\n' +
+        'some text\n' +
+        '### 2020-01-02 | mem-009\n'
+    );
+    withFsMocks({ [snapshotPath]: tmpSnap }, () => {
+      expect(utils.nextMemId()).toBe('010');
+    });
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+});
+
+describe('update-memory-log', () => {
+  it('appends new commit entries from git log', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'memlog-'));
+    const tmpMem = path.join(tmpDir, 'memory.log');
+    fs.writeFileSync(tmpMem, 'abc123 | old commit | file1 | 2025-06-01T00:00:00Z\n');
+
+    const execMock = jest
+      .spyOn(cp, 'execSync')
+      .mockImplementation((cmd: string) => {
+        if (cmd.startsWith('git cat-file -e')) return Buffer.from('');
+        if (cmd.startsWith('git log')) {
+          return Buffer.from(
+            'def456|new commit|2025-06-02T00:00:00Z\n' +
+              'src/a.ts\n' +
+              'src/b.ts\n'
+          );
+        }
+        return Buffer.from('');
+      });
+
+    withFsMocks({ [memPath]: tmpMem }, () => {
+      jest.isolateModules(() => {
+        require('../../scripts/update-memory-log.ts');
+      });
+    });
+
+    execMock.mockRestore();
+    const out = fs.readFileSync(tmpMem, 'utf8').trim().split('\n');
+    expect(out).toEqual([
+      'abc123 | old commit | file1 | 2025-06-01T00:00:00Z',
+      'def456 | new commit | src/a.ts, src/b.ts | 2025-06-02T00:00:00Z',
+    ]);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+});
+
