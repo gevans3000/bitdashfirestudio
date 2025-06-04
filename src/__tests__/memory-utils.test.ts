@@ -162,3 +162,20 @@ describe('update-memory-log', () => {
   });
 });
 
+describe('atomicWrite', () => {
+  it('calls fsync before rename', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'atomic-'));
+    const file = path.join(dir, 'out.txt');
+    const fsync = jest.spyOn(fs, 'fsyncSync').mockImplementation(() => {});
+
+    utils.atomicWrite(file, 'data');
+
+    expect(fsync).toHaveBeenCalled();
+
+    fsync.mockRestore();
+    const out = fs.readFileSync(file, 'utf8');
+    expect(out).toBe('data');
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+});
+
