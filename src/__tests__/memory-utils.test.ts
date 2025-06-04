@@ -287,9 +287,11 @@ describe("parseMemoryLines", () => {
     const out = utils.parseMemoryLines([line]);
     expect(out).toEqual([
       {
+        entryType: "task",
         hash: "abc123",
         task: "Task 10",
-        summary: "add feature",
+        description: "add feature",
+        summary: "Task 10: add feature",
         files: "a.ts, b.ts",
         timestamp: "2025-01-01T00:00:00Z",
         raw: line,
@@ -301,10 +303,27 @@ describe("parseMemoryLines", () => {
     const line = "def456 | fix bug | c.ts | 2025-01-02T00:00:00Z";
     const out = utils.parseMemoryLines([line]);
     expect(out[0]).toEqual({
+      entryType: "commit",
       hash: "def456",
       summary: "fix bug",
       files: "c.ts",
       timestamp: "2025-01-02T00:00:00Z",
+      raw: line,
+    });
+  });
+
+  it("parses colon task format", () => {
+    const line =
+      "beef12 | Task 5: implement feature | d.ts | 2025-01-03T00:00:00Z";
+    const [entry] = utils.parseMemoryLines([line]);
+    expect(entry).toEqual({
+      entryType: "task",
+      hash: "beef12",
+      task: "Task 5",
+      description: "implement feature",
+      summary: "Task 5: implement feature",
+      files: "d.ts",
+      timestamp: "2025-01-03T00:00:00Z",
       raw: line,
     });
   });
@@ -328,7 +347,7 @@ describe("parseMemoryLines", () => {
     const line = `abcd123 | ${long} | file.ts | 2025-01-01T00:00:00Z`;
     const [entry] = utils.parseMemoryLines([line]);
     expect(entry.summary.length).toBe(10000);
-  });
+    });
 });
 
 describe("validateMemoryEntry", () => {
@@ -336,7 +355,15 @@ describe("validateMemoryEntry", () => {
     const [entry] = utils.parseMemoryLines(["abcd123 | test"]);
     const errs = utils.validateMemoryEntry(entry);
     expect(errs).toContain("invalid timestamp for abcd123");
-    expect(errs).toContain("missing summary for abcd123");
+    expect(errs).not.toContain("missing summary for abcd123");
+  });
+
+  it("passes for valid task entry", () => {
+    const [entry] = utils.parseMemoryLines([
+      "abcd123 | Task 2 | desc | f.ts | 2025-01-01T00:00:00Z",
+    ]);
+    const errs = utils.validateMemoryEntry(entry);
+    expect(errs).toEqual([]);
   });
 });
 
