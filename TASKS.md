@@ -54,6 +54,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 89: expand workflow notes in AGENTS.md
 - [x] Task 90: clarify TASKS.md guidance wording
 - [x] Task 91: extend README with persistent memory section
+- [x] Task 92: add file locking for memory writes
 
 
 ### Bitcoin Dashboard

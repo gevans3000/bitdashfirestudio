@@ -373,5 +373,10 @@
     "id": 91,
     "description": "extend README with persistent memory section",
     "status": "done"
+  },
+  {
+    "id": 92,
+    "description": "add file locking for memory writes",
+    "status": "done"
   }
 ]
