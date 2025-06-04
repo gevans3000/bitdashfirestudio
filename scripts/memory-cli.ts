@@ -23,6 +23,7 @@ Commands:
   snapshot-rotate [limit] [--dry-run]  Trim context.snapshot.md
   status                           Print last entry and next task
   grep <pattern>                   Search memory files
+  locate <hash|mem-id>             Show snapshot entry for a commit
   update-log [--verify]            Refresh memory.log from git history
 `);
 }
@@ -44,6 +45,9 @@ switch (cmd) {
     break;
   case 'grep':
     run('memgrep.ts', rest);
+    break;
+  case 'locate':
+    run('mem-locate.ts', rest);
     break;
   case 'update-log':
     run('update-memory-log.ts', rest);

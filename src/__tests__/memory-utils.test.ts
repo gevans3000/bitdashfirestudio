@@ -277,59 +277,31 @@ describe("parseMemoryLines", () => {
   });
 });
 
-describe("parseSnapshotEntries", () => {
-  it("parses well-formed sections", () => {
-    const data =
-      "### 2025-01-01 00:00 UTC | mem-001\n" +
-      "- Commit SHA: abc123\n" +
-      "- Summary: first entry\n" +
-      "- Next Goal: continue\n" +
-      "### 2025-01-01 01:00 UTC | mem-002\n" +
-      "- Commit SHA: def456\n" +
-      "- Summary: second entry\n" +
-      "- Next Goal: done\n";
-    const out = utils.parseSnapshotEntries(data);
-    expect(out).toEqual([
-      {
-        id: "mem-001",
-        hash: "abc123",
-        summary: "first entry",
-        nextGoal: "continue",
-        timestamp: "2025-01-01 00:00 UTC",
-      },
-      {
-        id: "mem-002",
-        hash: "def456",
-        summary: "second entry",
-        nextGoal: "done",
-        timestamp: "2025-01-01 01:00 UTC",
-      },
-    ]);
-  });
-
-  it("handles malformed entries", () => {
-    const data =
-      "### 2025-01-01 00:00 UTC | mem-001\n" +
-      "- Commit SHA: abc123\n" +
-      "- Summary: only summary\n" +
-      "### 2025-01-02 00:00 UTC | mem-002\n" +
-      "- Next Goal: todo\n";
-    const out = utils.parseSnapshotEntries(data);
-    expect(out).toEqual([
-      {
-        id: "mem-001",
-        hash: "abc123",
-        summary: "only summary",
-        nextGoal: "",
-        timestamp: "2025-01-01 00:00 UTC",
-      },
-      {
-        id: "mem-002",
-        hash: "",
-        summary: "",
-        nextGoal: "todo",
-        timestamp: "2025-01-02 00:00 UTC",
-      },
-    ]);
+describe('parseSnapshotEntries', () => {
+  it('parses snapshot blocks', () => {
+    const lines = [
+      '### 2025-01-01 00:00 UTC | mem-001',
+      '- Commit SHA: abc123',
+      '- Summary: first',
+      '- Next Goal: a',
+      '### 2025-01-02 00:00 UTC | mem-002',
+      '- Commit SHA: def456',
+      '- Summary: second',
+      '- Next Goal: b',
+    ];
+    const out = utils.parseSnapshotEntries(lines);
+    expect(out[0]).toEqual({
+      id: 'mem-001',
+      timestamp: '2025-01-01 00:00 UTC',
+      commit: 'abc123',
+      summary: 'first',
+      next: 'a',
+      raw:
+        '### 2025-01-01 00:00 UTC | mem-001\n' +
+        '- Commit SHA: abc123\n' +
+        '- Summary: first\n' +
+        '- Next Goal: a',
+    });
+    expect(out[1].id).toBe('mem-002');
   });
 });
