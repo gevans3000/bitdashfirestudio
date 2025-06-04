@@ -144,6 +144,19 @@ npm run commitlog
 
 Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run mem-rotate` to change the number of retained lines.
 
+## Rotating Memory Files
+
+Keep `memory.log` and `context.snapshot.md` trimmed so the agent loads quickly:
+
+```bash
+npm run mem-rotate   # prune memory.log
+npm run snap-rotate  # prune context.snapshot.md
+```
+
+A weekly GitHub workflow automatically runs `mem-rotate` and `commitlog` to push the
+latest trimmed logs. Adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the
+number of retained entries.
+
 ## Using Codex with Persistent Memory
 
 See [CODEX_START.md](CODEX_START.md) for full instructions on launching Codex with persistent memory.
