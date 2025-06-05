@@ -26,6 +26,7 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
 }
 
 describe('memory-check', () => {
+  afterEach(() => jest.restoreAllMocks());
   it('passes for ordered log', () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'memchk-'));
     const tmpMem = path.join(tmpDir, 'memory.log');
@@ -57,8 +58,6 @@ describe('memory-check', () => {
     });
 
     expect(logMock).toHaveBeenCalledWith('Memory check passed');
-    execMock.mockRestore();
-    logMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -94,8 +93,6 @@ describe('memory-check', () => {
     });
 
     expect(logMock).toHaveBeenCalledWith('Memory check passed');
-    execMock.mockRestore();
-    logMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -136,9 +133,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -179,9 +173,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -215,9 +206,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -251,9 +239,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
@@ -291,9 +276,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -332,9 +314,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
@@ -373,9 +352,6 @@ describe('memory-check', () => {
       });
     }).toThrow('1');
 
-    execMock.mockRestore();
-    errMock.mockRestore();
-    exitMock.mockRestore();
     fs.rmSync(dir, { recursive: true, force: true });
   });
 });

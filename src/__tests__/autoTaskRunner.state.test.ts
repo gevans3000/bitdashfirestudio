@@ -62,6 +62,7 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
 }
 
 describe('autoTaskRunner writes', () => {
+  afterEach(() => jest.restoreAllMocks());
   it('uses locks and atomic writes for tasks and signals', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autorun-'));
     const tasks = path.join(dir, 'TASKS.md');
@@ -89,10 +90,6 @@ describe('autoTaskRunner writes', () => {
     expect(lockMock.mock.calls.map(c => c[0])).toEqual(expect.arrayContaining([tasks, signals]));
     expect(atomicMock.mock.calls.map(c => c[0])).toEqual(expect.arrayContaining([tasks, signals]));
 
-    spawnMock.mockRestore();
-    execMock.mockRestore();
-    atomicMock.mockRestore();
-    lockMock.mockRestore();
     fs.rmSync(dir, { recursive: true, force: true });
   });
 });
