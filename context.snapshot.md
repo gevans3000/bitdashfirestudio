@@ -143,3 +143,7 @@
 - Commit SHA: e8934ed
 - Summary: added .eslintrc.json from setup snippet and updated lint script to load it; documented interplay with eslint.config.js in README.
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
+### $(date -u '+%Y-%m-%d %H:%M UTC') | mem-036
+- Commit SHA: b29338f
+- Summary: clarified Node 18 nvm usage in README, updated env check error and setup script to use npm ci, added Task 115 entry
+- Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log

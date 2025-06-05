@@ -488,5 +488,10 @@
     "id": 114,
     "description": "refactor backtest.ts to use dynamic import with ts-node to break require cycle",
     "status": "pending"
+  },
+  {
+    "id": 115,
+    "description": "clarify Node 18 nvm usage in README Getting Started",
+    "status": "pending"
   }
 ]
