@@ -17,7 +17,7 @@ describe('memory api route', () => {
     jest.isolateModules(() => {
       mod = require('../app/api/memory/route')
     })
-    const res = await mod.GET()
+    const res = await mod.GET(new Request('http://x'))
     const json = await res.json()
     expect(json).toEqual(parseMemoryLines(lines))
     delete process.env.MEM_PATH
@@ -32,7 +32,7 @@ describe('memory api route', () => {
     jest.isolateModules(() => {
       mod = require('../app/api/memory/route')
     })
-    const res = await mod.GET()
+    const res = await mod.GET(new Request('http://x'))
     const json = await res.json()
     expect(json).toEqual([])
     delete process.env.MEM_PATH
