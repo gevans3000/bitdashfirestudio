@@ -468,5 +468,25 @@
     "id": 110,
     "description": "implement /api/snapshot endpoint exposing snapshot data",
     "status": "pending"
+  },
+  {
+    "id": 111,
+    "description": "fix lint errors flagged under Node 18 by removing unused vars and typing any usage",
+    "status": "pending"
+  },
+  {
+    "id": 112,
+    "description": "update jest tests to restore cp mocks after each run preventing execSync redefinition",
+    "status": "pending"
+  },
+  {
+    "id": 113,
+    "description": "handle unequal array lengths in correlation test to avoid NaN values",
+    "status": "pending"
+  },
+  {
+    "id": 114,
+    "description": "refactor backtest.ts to use dynamic import with ts-node to break require cycle",
+    "status": "pending"
   }
 ]

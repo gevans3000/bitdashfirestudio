@@ -77,6 +77,10 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 108: update GitHub Pages workflow to publish snapshot.json
 - [ ] Task 109: create Jest test validating memory list -n 2 output
 - [ ] Task 110: implement /api/snapshot endpoint exposing snapshot data
+- [ ] Task 111: fix lint errors flagged under Node 18 by removing unused vars and typing any usage
+- [ ] Task 112: update jest tests to restore cp mocks after each run preventing execSync redefinition
+- [ ] Task 113: handle unequal array lengths in correlation test to avoid NaN values
+- [ ] Task 114: refactor backtest.ts to use dynamic import with ts-node to break require cycle
 
 
 ### Bitcoin Dashboard
