@@ -102,7 +102,7 @@ describe('commit-log', () => {
 
     withFsMocks(map, openCalls, unlinkCalls, () => {
       jest.isolateModules(() => {
-        require('../../scripts/commit-log.ts');
+        require('../../scripts/commitlog.ts');
       });
     });
 

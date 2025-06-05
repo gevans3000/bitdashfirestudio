@@ -24,7 +24,7 @@
     "backtest": "ts-node scripts/backtest.ts",
     "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
-    "commitlog": "ts-node scripts/commit-log.ts",
+    "commitlog": "ts-node scripts/commitlog.ts",
     "memlog": "ts-node scripts/update-memory-log.ts && npm run commitlog",
     "mem-rotate": "ts-node scripts/mem-rotate.ts",
     "snap-rotate": "ts-node scripts/snapshot-rotate.ts",

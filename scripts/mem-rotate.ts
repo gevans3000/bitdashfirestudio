@@ -40,7 +40,7 @@ if (lines.length > limit) {
 if (dryRun) {
   console.log('[dry-run] Skipping commit-log update');
 } else {
-  execSync('ts-node scripts/commit-log.ts', { cwd: repoRoot, stdio: 'inherit' });
+  execSync('ts-node scripts/commitlog.ts', { cwd: repoRoot, stdio: 'inherit' });
   try {
     execSync('ts-node scripts/memory-check.ts', {
       cwd: repoRoot,

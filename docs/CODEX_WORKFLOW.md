@@ -33,7 +33,7 @@ Keep this workspace running until I say "close workspace".
 
 ## Commit Log Utility
 
-A helper script `scripts/commit-log.ts` is provided to generate `logs/commit.log` with the latest commit messages:
+A helper script `scripts/commitlog.ts` is provided to generate `logs/commit.log` with the latest commit messages:
 
 ```bash
 npm run commitlog
