@@ -36,12 +36,17 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
    npm install
    ```
 
-3. Set up git hooks (pre-commit and post-commit):
+3. Install dev tools:
    ```bash
    npm run setup
    ```
 
-4. Start the development server:
+4. Set up git hooks (pre-commit and post-commit):
+   ```bash
+   npm run setup-hooks
+   ```
+
+5. Start the development server:
    ```bash
    npm run dev
    ```
@@ -145,7 +150,7 @@ npm run commitlog
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
 | `ts-node scripts/snapshot-json.ts` | Export `context.snapshot.md` to `snapshot.json` |
-| `npm run setup` | Install pre-commit and post-commit hooks for automatic memlog checks |
+| `npm run setup-hooks` | Install pre-commit and post-commit hooks for automatic memlog checks |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
 | `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
