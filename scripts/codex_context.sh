@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Prints 333-token commit memory + 333-token task block.
 
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
+COMMITS=$(git log -n5 --pretty=format:'• %s – %b' | head -c 2000)     # ≈333 tokens
+TASKS=$(grep '^- \[ \]' TASKS.md | head -n15 | sed 's/^- \[ \] //' | head -c 2000)  # ≈333
 
-commits=$(git log -n 5 --pretty=format:'- %h %s')
+cat <<EOF
+[MEMORY PREAMBLE—DO NOT EDIT BELOW]
+Recent commits (333 tokens):
+$COMMITS
 
-next_task=$(grep -m 1 '^\- \[ \]' TASKS.md | sed -E 's/^\- \[ \] //')
+Pending tasks (333 tokens):
+$TASKS
+[END MEMORY PREAMBLE]
+EOF
 
-printf "Recent work:\n%s\nNext task: %s\n" "$commits" "$next_task"

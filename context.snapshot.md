@@ -134,3 +134,8 @@
 - Commit SHA: 92c3269
 - Summary: Updated README rotation docs to mention MEM_PATH and SNAPSHOT_PATH and marked Task 94 done in TASKS.md and task_queue.json. Lint, test and backtest skipped due to missing modules.
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
+
+### 2025-06-05 15:58 UTC | mem-034
+- Commit SHA: 4c3d3df
+- Summary: revamped codex_context.sh to mirror setup snippet and patched eslint.config.js for ESM compatibility. Lint succeeded but tests and backtest failed.
+- Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
