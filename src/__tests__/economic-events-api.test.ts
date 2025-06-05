@@ -12,7 +12,7 @@ describe('economic events api', () => {
     jest.isolateModules(() => {
       mod = require('../app/api/economic-events/route')
     })
-    const res = await mod.GET()
+    const res = await mod.GET(new Request('http://x'))
     const json = await res.json()
     expect(json.events).toEqual([mock[0]])
     fetchSpy.mockRestore()
