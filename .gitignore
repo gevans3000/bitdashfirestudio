@@ -3,7 +3,7 @@
 # dependencies
 bitdashfirestudio-dev
 scope-template
-/node_modules
+node_modules
 /.pnp
 .pnp.*
 .yarn/*
