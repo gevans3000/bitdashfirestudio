@@ -7,13 +7,15 @@ import * as utils from '../../scripts/memory-utils';
 const { memPath, snapshotPath } = utils;
 
 function withFsMocks(paths: Record<string, string>, fn: () => void) {
+  const origExists = fs.existsSync;
+  const origRead = fs.readFileSync;
   const existsMock = jest.spyOn(fs, 'existsSync').mockImplementation((p: any) => {
-    if (paths[p as string]) return fs.existsSync(paths[p as string]);
-    return fs.existsSync(p);
+    if (paths[p as string]) return origExists.call(fs, paths[p as string]);
+    return origExists.call(fs, p);
   });
   const readMock = jest.spyOn(fs, 'readFileSync').mockImplementation((p: any, o?: any) => {
     if (paths[p as string]) p = paths[p as string];
-    return fs.readFileSync(p, o);
+    return origRead.call(fs, p, o);
   });
   try {
     fn();
