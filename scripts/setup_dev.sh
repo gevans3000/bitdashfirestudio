@@ -2,8 +2,26 @@
 # Run once: installs all dev-tools locally so Codex finds them.
 
 set -e
-echo "▶ Installing dev-dependencies via npm ci…"
-npm ci
+echo "▶ Checking npm environment..."
+
+# Check if package-lock.json exists and matches package.json
+if [ -f package-lock.json ]; then
+  echo "▶ Found package-lock.json, trying npm ci first..."
+  npm ci || {
+    echo "▶ npm ci failed, falling back to npm install..."
+    npm install
+  }
+else
+  echo "▶ No package-lock.json found, using npm install..."
+  npm install
+fi
+
+# Ensure specific dev dependencies are installed
+echo "▶ Installing specific dev dependencies..."
+npm install --save-dev \
+  eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin \
+  jest ts-jest @types/jest \
+  ts-node typescript @types/node
 
 echo "▶ Done.  You can now run:"
 echo "   npm run lint   # ESLint"
