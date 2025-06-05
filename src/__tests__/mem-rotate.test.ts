@@ -97,9 +97,9 @@ describe("mem-rotate", () => {
     const execMock = jest
       .spyOn(cp, "execSync")
       .mockImplementation((cmd: string) => {
-        if (cmd.includes("commit-log.ts")) {
+        if (cmd.includes("commitlog.ts")) {
           jest.isolateModules(() => {
-            require("../../scripts/commit-log.ts");
+            require("../../scripts/commitlog.ts");
           });
         }
         return Buffer.from("");
