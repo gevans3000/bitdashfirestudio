@@ -2,7 +2,7 @@ import { fetchBackfill } from '@/lib/data/coingecko';
 import { computeIndicators, evaluateSignal, type ComputedIndicators } from '@/lib/signals';
 import type { TradeSignal } from '@/types';
 
-async function run() {
+export async function runBacktest() {
   const candles = await fetchBackfill();
   const closes: number[] = [];
   const volumes: number[] = [];
@@ -23,4 +23,10 @@ async function run() {
   console.log('Signals generated', signals.length);
 }
 
-run().catch(e => console.error(e));
+export default async function cli() {
+  try {
+    await runBacktest();
+  } catch (e) {
+    console.error(e);
+  }
+}
