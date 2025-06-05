@@ -20,9 +20,7 @@ describe('memory-cli', () => {
     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
   });
 
-  afterEach(() => {
-    spy.mockRestore();
-  });
+  afterEach(() => jest.restoreAllMocks());
 
   it('runs mem-diff for diff command', () => {
     run(['diff']);
