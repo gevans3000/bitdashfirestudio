@@ -139,3 +139,7 @@
 - Commit SHA: 4c3d3df
 - Summary: revamped codex_context.sh to mirror setup snippet and patched eslint.config.js for ESM compatibility. Lint succeeded but tests and backtest failed.
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
+### 2025-06-05 16:09 UTC | mem-035
+- Commit SHA: e8934ed
+- Summary: added .eslintrc.json from setup snippet and updated lint script to load it; documented interplay with eslint.config.js in README.
+- Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log

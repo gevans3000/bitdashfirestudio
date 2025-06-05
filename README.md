@@ -90,6 +90,12 @@ services.
 
 ## Configuration
 
+### ESLint
+
+This repo uses both a classic `.eslintrc.json` and a flat `eslint.config.js`.
+The `npm run lint` script sets `ESLINT_USE_FLAT_CONFIG=false` and loads `.eslintrc.json`. Tools that understand the flat config may import `eslint.config.js` directly. Keep custom rules in sync across both files.
+
+
 
 ## Development
 
