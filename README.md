@@ -32,10 +32,12 @@ Ensure **Node.js 18** is installed before continuing.
    cd bitdash-firestudio
    ```
 
-2. Install dependencies:
+2. Install Node 18 and dependencies:
 
    ```bash
-   npm install
+   nvm install 18
+   nvm use 18
+   npm ci
    ```
 
 3. Install dev tools:

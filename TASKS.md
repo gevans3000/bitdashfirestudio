@@ -81,6 +81,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 112: update jest tests to restore cp mocks after each run preventing execSync redefinition
 - [ ] Task 113: handle unequal array lengths in correlation test to avoid NaN values
 - [ ] Task 114: refactor backtest.ts to use dynamic import with ts-node to break require cycle
+- [ ] Task 115: clarify Node 18 nvm usage in README Getting Started
 
 
 ### Bitcoin Dashboard
