@@ -19,4 +19,5 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run backtest
+      - run: npm run commitlog
       - run: npm run mem-check
