@@ -23,6 +23,8 @@ Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical i
 
 ## Getting Started
 
+Ensure **Node.js 18** is installed before continuing.
+
 1. Clone the repository:
 
    ```bash
