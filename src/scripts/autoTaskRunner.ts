@@ -34,7 +34,7 @@ export function runTasks() {
       break;
     }
 
-    let taskLine = lines[idx];
+    const taskLine = lines[idx];
     let taskDesc = taskLine.replace('- [ ]', '').trim();
     const signals = JSON.parse(fs.readFileSync(signalsPath, 'utf8')) as Record<string, any>;
     const explicit = taskDesc.match(/Task\s*(\d+)\s*:/i);
@@ -108,7 +108,6 @@ export function runTasks() {
     tryExec('git pull --rebase origin main');
     tryExec('git push origin HEAD:main');
 
-    tryExec('npm run commitlog');
   }
 }
 

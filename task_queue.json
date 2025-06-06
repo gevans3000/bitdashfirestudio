@@ -397,7 +397,7 @@
   {
     "id": 96,
     "description": "delete commit.log and update docs, tests, workflows",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 97,

@@ -13,9 +13,8 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      - run: npm ci
+      - run: npm run dev-deps
       - run: npm run mem-rotate
-      - run: npm run commitlog
       - run: ts-node scripts/memory-check.ts
       # clean up old lock files before committing
       - run: ts-node scripts/clean-locks.ts

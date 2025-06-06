@@ -82,32 +82,19 @@ function withFsMocks(paths: Record<string, string>, fn: () => void) {
   }
 }
 
-const commitLogPath = path.join(repoRoot, "logs/commit.log");
 const iso = "2025-01-01T00:00:00.000Z";
 
 describe("mem-rotate", () => {
-  it("truncates memory.log and rewrites commit.log", () => {
+  it("truncates memory.log and backs up previous log", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "memrot-"));
     const tmpMem = path.join(tmpDir, "memory.log");
-    const tmpCommit = path.join(tmpDir, "commit.log");
     const tmpBackup = path.join(tmpDir, `memory.log.${iso}.bak`);
     fs.writeFileSync(tmpMem, "1\n2\n3\n4\n5\n6\n");
-    fs.writeFileSync(tmpCommit, "old log");
 
-    const execMock = jest
-      .spyOn(cp, "execSync")
-      .mockImplementation((cmd: string) => {
-        if (cmd.includes("commitlog.ts")) {
-          jest.isolateModules(() => {
-            require("../../scripts/commitlog.ts");
-          });
-        }
-        return Buffer.from("");
-      });
+    const execMock = jest.spyOn(cp, "execSync").mockReturnValue(Buffer.from(""));
 
     const map = {
       [memPath]: tmpMem,
-      [commitLogPath]: tmpCommit,
       [path.join(repoRoot, "logs", `memory.log.${iso}.bak`)]: tmpBackup,
     };
     withFsMocks(map, () => {
@@ -125,10 +112,8 @@ describe("mem-rotate", () => {
 
     execMock.mockRestore();
     const memOut = fs.readFileSync(tmpMem, "utf8");
-    const commitOut = fs.readFileSync(tmpCommit, "utf8");
     const backupOut = fs.readFileSync(tmpBackup, "utf8");
     expect(memOut).toBe("4\n5\n6\n");
-    expect(commitOut).toBe("4\n5\n6\n");
     expect(backupOut).toBe("1\n2\n3\n4\n5\n6\n");
 
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -137,16 +122,13 @@ describe("mem-rotate", () => {
   it("does not modify files during dry run", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "memrot-"));
     const tmpMem = path.join(tmpDir, "memory.log");
-    const tmpCommit = path.join(tmpDir, "commit.log");
     const tmpBackup = path.join(tmpDir, `memory.log.${iso}.bak`);
     fs.writeFileSync(tmpMem, "1\n2\n3\n");
-    fs.writeFileSync(tmpCommit, "old log");
 
     const execMock = jest.spyOn(cp, "execSync");
 
     const map = {
       [memPath]: tmpMem,
-      [commitLogPath]: tmpCommit,
       [path.join(repoRoot, "logs", `memory.log.${iso}.bak`)]: tmpBackup,
     };
     withFsMocks(map, () => {
@@ -163,10 +145,8 @@ describe("mem-rotate", () => {
 
     expect(execMock).not.toHaveBeenCalled();
     const memOut = fs.readFileSync(tmpMem, "utf8");
-    const commitOut = fs.readFileSync(tmpCommit, "utf8");
     const backupExists = fs.existsSync(tmpBackup);
     expect(memOut).toBe("1\n2\n3\n");
-    expect(commitOut).toBe("old log");
     expect(backupExists).toBe(false);
 
     execMock.mockRestore();

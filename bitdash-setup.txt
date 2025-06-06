@@ -4,7 +4,7 @@ It gives Codex everything it needs to:
 
 * install all dev-deps in its sandbox (no “jest not found / ts-node missing”);
 * print a 333 + 333-token context block (`codex_context.sh`);
-* run **lint → test → backtest → commitlog** in CI and in Codex’s terminal.
+* run **lint → test → backtest** in CI and in Codex’s terminal.
 
 > **File tree**
 
@@ -13,7 +13,6 @@ scripts/
 ├─ setup_dev.sh        # one-shot installer Codex can call
 ├─ codex_context.sh    # prints memory-preamble for the chat prompt
 └─ backtest.ts         # placeholder (ts-node)
-└─ commitlog.ts        # git log printer (ts-node)
 .github/
 └─ workflows/
    └─ ci.yml           # runs in Actions *and* proves the scripts work
@@ -41,7 +40,6 @@ echo "▶ Done.  You can now run:"
 echo "   npm run lint   # ESLint"
 echo "   npm run test   # Jest"
 echo "   npm run backtest"
-echo "   npm run commitlog"
 ```
 
 ---
@@ -83,12 +81,6 @@ EOF
 console.log('Backtest script placeholder ✅');
 ```
 
-`scripts/commitlog.ts`
-
-```ts
-import { execSync } from 'child_process';
-console.log(execSync('git log -n10 --pretty=format:"%h %s"', { encoding: 'utf-8' }));
-```
 
 ---
 
@@ -147,7 +139,6 @@ Add (or merge) the following:
     "lint":      "eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "test":      "jest",
     "backtest":  "ts-node scripts/backtest.ts",
-    "commitlog": "ts-node scripts/commitlog.ts",
     "codex":     "bash ./scripts/codex_context.sh"
   }
 }
@@ -183,7 +174,6 @@ jobs:
       - run: npm run lint
       - run: npm run test
       - run: npm run backtest
-      - run: npm run commitlog
 ```
 
 ---

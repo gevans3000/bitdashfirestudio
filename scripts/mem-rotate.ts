@@ -37,10 +37,7 @@ if (lines.length > limit) {
   console.log('memory.log already within limit');
 }
 
-if (dryRun) {
-  console.log('[dry-run] Skipping commit-log update');
-} else {
-  execSync('ts-node scripts/commitlog.ts', { cwd: repoRoot, stdio: 'inherit' });
+if (!dryRun) {
   try {
     execSync('ts-node scripts/memory-check.ts', {
       cwd: repoRoot,
@@ -49,4 +46,6 @@ if (dryRun) {
   } catch (err: any) {
     process.exit(err.status || 1);
   }
+} else {
+  console.log('[dry-run] Skipping memory-check');
 }

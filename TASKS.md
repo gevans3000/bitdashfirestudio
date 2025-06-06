@@ -9,15 +9,14 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
 ## Workflow
 
-1. Review `memory.log` and `logs/commit.log` for context.
+1. Review `memory.log` for context.
 2. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
 3. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
 4. Each task runs lint, test and backtest.
 5. After success the task is marked `[x]` and `task_queue.json` is updated.
 6. Append the 333‑token commit summary with hash and files to `memory.log` using the one-line format described in `AGENTS.md`.
 7. The commit message begins with `Task <number>:` so the git log stays in sync with the memory files.
-8. Run `npm run commitlog` after committing to capture the latest history.
-9. Review `logs/commit.log` before starting a new session and reload recent summaries from `memory.log`.
+8. Review recent summaries from `memory.log` before starting a new session.
 10. The runner rebases on `main` and pushes after each commit.
 11. Reference commit hashes from `memory.log` when creating follow-up tasks.
 
@@ -61,7 +60,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
  - [x] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
  - [x] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
 - [ ] Task 95: consolidate memory scripts into memory-cli with yargs
-- [ ] Task 96: delete commit.log and update docs, tests, workflows
+- [x] Task 96: delete commit.log and update docs, tests, workflows
 - [ ] Task 97: run npm ci only once in autoTaskRunner loop
 - [ ] Task 98: rotate memory.log to 300 lines via pre-commit
 - [ ] Task 99: cache dev dependencies with dev-deps script and CI caching
@@ -164,5 +163,4 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - Each completed task is auto-committed with a passing build.
 - `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
-- `logs/commit.log` provides a concise memory dump via `npm run commitlog`.
 - Follow-up tasks mention the commit hash that introduced related changes.

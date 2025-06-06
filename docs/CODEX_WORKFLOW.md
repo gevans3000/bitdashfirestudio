@@ -9,7 +9,6 @@ This document distills the key points from `CODEX-INSTRUCTIONS.txt` for working 
 - Include a 333-token body that is appended to `memory.log`.
 - Keep the subject line around 50 characters; wrap body lines near 72 characters.
 - Commit history and `memory.log` act as long-term memory. Review them before starting a new session.
-- Generate `logs/commit.log` via `npm run commitlog` to quickly recall recent commits.
 - Keep `task_queue.json` synchronized with `TASKS.md` so automation can resume accurately.
 - Run `npm ci` once at the start of a session. Subsequent commits can reuse the installed `node_modules`.
 
@@ -31,15 +30,6 @@ We will complete Tasks X–Y in one session.
 Keep this workspace running until I say "close workspace".
 ```
 
-## Commit Log Utility
-
-A helper script `scripts/commitlog.ts` is provided to generate `logs/commit.log` with the latest commit messages:
-
-```bash
-npm run commitlog
-```
-
-Use this log to quickly review recent work when resuming the project.
 
 ## Quick Workflow Summary
 
@@ -47,6 +37,6 @@ Use this log to quickly review recent work when resuming the project.
 - Review `memory.log` for the latest summary and next objective.
 - Execute the next pending item from `task_queue.json` and update `TASKS.md`.
 - After each commit `memory.log` is updated with metadata.
-- When resuming later, run `npm run commitlog` to review recent commits.
+- When resuming later, view the tail of `memory.log` to review recent commits.
 - Test and backtest outputs are saved to `logs/` for reference. If they fail, fix and recommit.
 
