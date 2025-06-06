@@ -1,67 +1,50 @@
+```bash
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------
-# Bootstraps a local + Codex/CI dev environment for gevans3000/bitdashfirestudio
+# Fast, idempotent bootstrap for Codex / CI / local dev
 # ---------------------------------------------------------------------------
-# • Syncs package-lock, installs Node via nvm (or NodeSource fallback).
-# • Installs npm deps (ci-first), dev-tooling, and optional Python deps.
-# • Rebuilds native bindings for current arch.
-# • Idempotent: safe to run multiple times; exits non-zero on failure.
-# ---------------------------------------------------------------------------
-
-# ── Self-healing exec permission ──────────────────────────────────────────
-if [[ ! -x "$0" && -f "$0" ]]; then
-  echo "▶ Fixing script permissions…"
-  chmod +x "$0"
-  echo "▶ Permissions fixed."
-fi
-
 set -euo pipefail
-echo "▶ Bootstrapping dev environment…"
 
-# ── Node setup ───────────────────────────────────────────────────────────
-NODE_VERSION="${NODE_VERSION:-$(cat .nvmrc 2>/dev/null || echo 18)}"
+# -- Self-healing exec bit (kept)
+[[ -x "$0" ]] || { chmod +x "$0"; }
 
-if command -v nvm >/dev/null 2>&1; then
-  echo "▶ Using nvm to install/use Node ${NODE_VERSION}"
-  nvm install "$NODE_VERSION"
-  nvm use     "$NODE_VERSION"
+echo "▶ Bootstrapping dev environment..."
+
+# -- Node (skip if already OK) -------------------------------------------
+NEEDED_NODE_VERSION="${NODE_VERSION:-$(cat .nvmrc 2>/dev/null || echo 18)}"
+
+have_node() {
+  command -v node >/dev/null &&
+  [[ "$(node -v)" == v${NEEDED_NODE_VERSION%%.*}* ]]
+}
+
+if have_node; then
+  echo "▶ Detected Node $(node -v) – reuse"
 else
-  echo "▶ nvm not found → installing Node via NodeSource (${NODE_VERSION})"
-  curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION%%.*}.x" | sudo -E bash -
-  sudo apt-get install -y nodejs
+  echo "▶ Installing Node $NEEDED_NODE_VERSION via Volta (fast binary)"
+  curl -sSf https://get.volta.sh | bash -s -- --skip-setup
+  export VOLTA_HOME="$HOME/.volta" PATH="$VOLTA_HOME/bin:$PATH"
+  volta install "node@$NEEDED_NODE_VERSION"
 fi
 
-node -v
-npm -v
+node -v ; npm -v
 
-# ── Sync lockfile & install deps ─────────────────────────────────────────
-echo "▶ Ensuring package-lock.json matches package.json…"
-npm install --package-lock-only
-
-echo "▶ Installing npm dependencies (ci preferred)…"
-if ! npm ci; then
-  echo "▶ npm ci failed → falling back to npm install"
-  npm install
+# -- npm deps (skip when already up-to-date) ------------------------------
+if [[ -d node_modules ]] && \
+   [[ $(stat -c %Y node_modules) -ge $(stat -c %Y package-lock.json) ]]; then
+  echo "▶ node_modules is current – skipping npm ci"
+else
+  echo "▶ Installing dependencies via npm ci (quiet mode)…"
+  npm ci --silent --no-audit --fund=false --progress=false --omit=optional
 fi
 
-echo "▶ Rebuilding native modules for this architecture…"
-npm rebuild
-
-# ── Dev-tooling (ESLint, Jest, TS) ───────────────────────────────────────
-echo "▶ Installing/ensuring dev dependencies…"
-npm install --save-dev \
-  eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin \
-  jest ts-jest @types/jest \
-  ts-node typescript @types/node
-
-# ── Optional Python deps ─────────────────────────────────────────────────
-if [[ -f requirements.txt ]]; then
-  echo "▶ Installing Python requirements…"
+# -- Optional Python deps -------------------------------------------------
+if [[ -f requirements.txt && "${SKIP_PYTHON:-0}" != 1 ]]; then
+  echo "▶ Installing Python deps…"
   python -m pip install --quiet -r requirements.txt
 fi
 
-echo "🟢 setup_dev.sh complete. Available commands:"
+echo "🟢 setup_dev.sh done – env ready."
 echo "   npm run lint   # ESLint"
 echo "   npm run test   # Jest"
-echo "   npm run backtest"
-echo "   npm run commitlog"
+```
