@@ -493,5 +493,30 @@
     "id": 115,
     "description": "clarify Node 18 nvm usage in README Getting Started",
     "status": "pending"
+  },
+  {
+    "id": 116,
+    "description": "compile memory CLI into single executable using tsc",
+    "status": "pending"
+  },
+  {
+    "id": 117,
+    "description": "remove logs/commit.log and update README references",
+    "status": "pending"
+  },
+  {
+    "id": 118,
+    "description": "run npm ci once before loops in autoTaskRunner",
+    "status": "pending"
+  },
+  {
+    "id": 119,
+    "description": "simplify withFileLock and related logic",
+    "status": "pending"
+  },
+  {
+    "id": 120,
+    "description": "unify parseMemoryLines with MemoryEntry union type",
+    "status": "pending"
   }
 ]

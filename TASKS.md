@@ -82,6 +82,11 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 113: handle unequal array lengths in correlation test to avoid NaN values
 - [ ] Task 114: refactor backtest.ts to use dynamic import with ts-node to break require cycle
 - [ ] Task 115: clarify Node 18 nvm usage in README Getting Started
+- [ ] Task 116: compile memory CLI into single executable using tsc
+- [ ] Task 117: remove logs/commit.log and update README references
+- [ ] Task 118: run npm ci once before loops in autoTaskRunner
+- [ ] Task 119: simplify withFileLock and related logic
+- [ ] Task 120: unify parseMemoryLines with MemoryEntry union type
 
 
 ### Bitcoin Dashboard
