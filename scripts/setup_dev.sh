@@ -4,17 +4,16 @@
 set -e
 echo "▶ Checking npm environment..."
 
-# Check if package-lock.json exists and matches package.json
-if [ -f package-lock.json ]; then
-  echo "▶ Found package-lock.json, trying npm ci first..."
-  npm ci || {
-    echo "▶ npm ci failed, falling back to npm install..."
-    npm install
-  }
-else
-  echo "▶ No package-lock.json found, using npm install..."
+# Force package-lock.json to be in sync with package.json
+echo "▶ Updating package-lock.json to match package.json..."
+npm install --package-lock-only
+
+# Now that package-lock.json is updated, proceed with npm ci
+echo "▶ Installing dependencies via npm ci..."
+npm ci || {
+  echo "▶ npm ci failed, falling back to npm install..."
   npm install
-fi
+}
 
 # Ensure specific dev dependencies are installed
 echo "▶ Installing specific dev dependencies..."
