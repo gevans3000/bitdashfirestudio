@@ -22,8 +22,18 @@ if have_node; then
 else
   echo "▶ Installing Node $NEEDED_NODE_VERSION via Volta (fast binary)"
   curl -sSf https://get.volta.sh | bash -s -- --skip-setup
-  export VOLTA_HOME="$HOME/.volta" PATH="$VOLTA_HOME/bin:$PATH"
-  volta install "node@$NEEDED_NODE_VERSION"
+  # Safely initialize VOLTA_HOME
+  VOLTA_HOME="${HOME}/.volta"
+  export VOLTA_HOME
+  export PATH="${VOLTA_HOME}/bin:$PATH"
+  # Allow volta command to fail without stopping the script
+  volta install "node@$NEEDED_NODE_VERSION" || {
+    echo "▶ Volta installation failed, trying direct node use"
+    # Try to use any available node
+    command -v node >/dev/null || {
+      echo "❌ No Node.js available. Proceeding with limited functionality."
+    }
+  }
 fi
 
 node -v ; npm -v
