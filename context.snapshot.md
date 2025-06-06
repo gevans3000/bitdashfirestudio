@@ -147,3 +147,7 @@
 - Commit SHA: b29338f
 - Summary: clarified Node 18 nvm usage in README, updated env check error and setup script to use npm ci, added Task 115 entry
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
+### 2025-06-06 13:14 UTC | mem-037
+- Commit SHA: 8a86dcc
+- Summary: regenerated package-lock via npm install; npm ci failed due to missing ts-node and network limitations so commit bypassed hooks. Updated lockfile only.
+- Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
