@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 # Run once: installs all dev-tools locally so Codex finds them.
 
+# Self-healing permission check - if we can't execute but can read the script,
+# this will be triggered when someone tries to run it with "bash ./scripts/setup_dev.sh"
+if [ ! -x "$0" ] && [ -f "$0" ]; then
+  echo "▶ Fixing script permissions..."
+  chmod +x "$0"
+  echo "▶ Permissions fixed. Script is now executable."
+fi
+
 set -e
 echo "▶ Checking npm environment..."
 
