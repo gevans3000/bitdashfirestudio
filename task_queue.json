@@ -391,132 +391,32 @@
   },
   {
     "id": 95,
-    "description": "create memory CLI with rotate, snapshot-rotate, status, grep, update-log",
+    "description": "consolidate memory scripts into memory-cli with yargs",
     "status": "pending"
   },
   {
     "id": 96,
-    "description": "add jest tests verifying codex-context output with mocked git log",
-    "status": "done"
+    "description": "delete commit.log and update docs, tests, workflows",
+    "status": "pending"
   },
   {
     "id": 97,
-    "description": "export memory.log lines to memory.json using readMemoryLines helper",
+    "description": "run npm ci only once in autoTaskRunner loop",
     "status": "pending"
   },
   {
     "id": 98,
-    "description": "add weekly workflow running mem-rotate and commitlog to push updates",
+    "description": "rotate memory.log to 300 lines via pre-commit",
     "status": "pending"
   },
   {
     "id": 99,
-    "description": "extend memgrep to filter by --since and --until timestamps",
+    "description": "cache dev dependencies with dev-deps script and CI caching",
     "status": "pending"
   },
   {
     "id": 100,
-    "description": "update README rotation section showing mem-rotate and snapshot-rotate usage",
-    "status": "pending"
-  },
-  {
-    "id": 101,
-    "description": "make memory API TTL configurable via MEMORY_API_TTL env variable",
-    "status": "pending"
-  },
-  {
-    "id": 102,
-    "description": "support since/until query params to filter memory API results by timestamp",
-    "status": "pending"
-  },
-  {
-    "id": 103,
-    "description": "add snapshot-json script exporting context.snapshot.md to snapshot.json",
-    "status": "pending"
-  },
-  {
-    "id": 104,
-    "description": "extend memory CLI with list command showing the last N entries",
-    "status": "pending"
-  },
-  {
-    "id": 105,
-    "description": "build /memory Next.js page fetching /api/memory and rendering a table",
-    "status": "pending"
-  },
-  {
-    "id": 106,
-    "description": "enforce max 300 lines for memory.log in pre-commit hook",
-    "status": "pending"
-  },
-  {
-    "id": 107,
-    "description": "document memory CLI commands in README with examples",
-    "status": "pending"
-  },
-  {
-    "id": 108,
-    "description": "update GitHub Pages workflow to publish snapshot.json",
-    "status": "pending"
-  },
-  {
-    "id": 109,
-    "description": "create Jest test validating memory list -n 2 output",
-    "status": "pending"
-  },
-  {
-    "id": 110,
-    "description": "implement /api/snapshot endpoint exposing snapshot data",
-    "status": "pending"
-  },
-  {
-    "id": 111,
-    "description": "fix lint errors flagged under Node 18 by removing unused vars and typing any usage",
-    "status": "pending"
-  },
-  {
-    "id": 112,
-    "description": "update jest tests to restore cp mocks after each run preventing execSync redefinition",
-    "status": "pending"
-  },
-  {
-    "id": 113,
-    "description": "handle unequal array lengths in correlation test to avoid NaN values",
-    "status": "pending"
-  },
-  {
-    "id": 114,
-    "description": "refactor backtest.ts to use dynamic import with ts-node to break require cycle",
-    "status": "pending"
-  },
-  {
-    "id": 115,
-    "description": "clarify Node 18 nvm usage in README Getting Started",
-    "status": "pending"
-  },
-  {
-    "id": 116,
-    "description": "compile memory CLI into single executable using tsc",
-    "status": "pending"
-  },
-  {
-    "id": 117,
-    "description": "remove logs/commit.log and update README references",
-    "status": "pending"
-  },
-  {
-    "id": 118,
-    "description": "run npm ci once before loops in autoTaskRunner",
-    "status": "pending"
-  },
-  {
-    "id": 119,
-    "description": "simplify withFileLock and related logic",
-    "status": "pending"
-  },
-  {
-    "id": 120,
-    "description": "unify parseMemoryLines with MemoryEntry union type",
+    "description": "create setup-quickstart guide linked in README and AGENTS",
     "status": "pending"
   }
 ]
