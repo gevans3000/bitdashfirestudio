@@ -3,6 +3,8 @@ Codex must load CODEX_START.md before any task cycle.
 **Project:** Windsurf – Bitcoin & SPX 5‑Minute Trading Dashboard
 **Agent:** `DevAgent` (ChatGPT Codex)
 
+Refer to [docs/SETUP_QUICKSTART.md](docs/SETUP_QUICKSTART.md) for a rapid local setup overview.
+
 
 This charter is optimized around **Git-based memory**. Every commit and
 summary becomes part of the agent's long-term knowledge. Keep the task queue,
@@ -70,9 +72,8 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    f. Append the same summary with metadata to `memory.log`.
    g. Append a memory block to `context.snapshot.md` detailing the commit hash,
       timestamp and next goal.
-   h. Run `npm run commitlog` to snapshot the latest Git history.
-   i. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
-   j. Rebase → merge → delete branch.
+   h. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   i. Rebase → merge → delete branch.
 3. **HALT** – await next prompt.
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
@@ -89,8 +90,7 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 | `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
-Codex must **read `memory.log` and recent commit messages** on each new session to rebuild context. The `logs/commit.log` file mirrors the Git history for quick lookup.
-Run `npm run commitlog` after each commit to keep `logs/commit.log` current.
+Codex must **read `memory.log` and recent commit messages** on each new session to rebuild context.
 
 **Memory entry example**
 
@@ -179,7 +179,6 @@ export interface AgentMessage<T = unknown> {
 | `npm run test`     | Jest unit tests          |
 | `npm run backtest` | Historical strategy test |
 | `npm run dev-deps` | Install local dev deps   |
-| `npm run commitlog` | Update `logs/commit.log` |
 | `npm run auto` | Process tasks via AutoTaskRunner |
 | `npm run bootstrap` | Install deps then lint, test and backtest |
 
@@ -201,7 +200,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 ## 9 · Commit-Based Memory Workflow
 
 1. **Pre-Session** – run `npm run dev-deps` if `node_modules` is missing, then read `memory.log` and recent commits.
-2. **After Commit** – append the 333‑token summary to `memory.log`, run `npm run commitlog` and continue with `npm run auto` when applicable.
+2. **After Commit** – append the 333‑token summary to `memory.log` and continue with `npm run auto` when applicable.
 3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
 4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 

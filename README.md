@@ -6,6 +6,8 @@
 
 Personal dashboard for tracking Bitcoin and SPX/SPY price action and technical indicators to inform trading decisions.
 
+See [docs/SETUP_QUICKSTART.md](docs/SETUP_QUICKSTART.md) for a short setup guide.
+
 ### Features
 
 - BTC/USD and SPX/SPY price charts
@@ -129,19 +131,14 @@ GitHub Actions run lint, tests, the backtest and `npm run mem-check` on every pu
 ## Codex Workflow
 
 See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
-Generate a recent commit summary anytime with:
-
-```bash
-npm run commitlog
-```
 
 ### Recommended Workflow
 
 1. Run `npm ci` once when you start a session.
 2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
-4. After each commit `memory.log`, `logs/commit.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
-5. When resuming after a break, run `npm run commitlog` to review recent commits.
+4. After each commit `memory.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
+5. When resuming after a break, tail the end of `memory.log` to review recent commits.
 6. Test and backtest outputs are logged in `logs/`.
 
 ### Generating Context
@@ -158,7 +155,7 @@ Example output:
 ```text
 [MEMORY PREAMBLE—DO NOT EDIT BELOW]
 Recent commits (333 tokens):
-• chore(ci): add commitlog step (#237) –
+• chore(ci): update action versions (#239) –
 ...
 Pending tasks (333 tokens):
 Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-log
@@ -170,9 +167,8 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | Command | Purpose |
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json` |
-| `npm run commitlog` | Generate `logs/commit.log` from the last entries in `memory.log` |
 | `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, list, diff, json, clean-locks, check, locate, rebuild, sync, snapshot-update |
-| `npm run mem-rotate` | Trim `memory.log` to a set number of entries and refresh `logs/commit.log` |
+| `npm run mem-rotate` | Trim `memory.log` to a set number of entries |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |
 | `npm run memgrep` | Search `memory.log` and `context.snapshot.md` for a pattern |
@@ -198,7 +194,7 @@ npm run mem-rotate   # prune memory.log
 npm run snap-rotate  # prune context.snapshot.md
 ```
 
-A weekly GitHub workflow automatically runs `mem-rotate`, `clean-locks` and `commitlog` to push the
+A weekly GitHub workflow automatically runs `mem-rotate` and `clean-locks` to push the
 latest trimmed logs. Set `MEM_PATH` and `SNAPSHOT_PATH` if your memory files live elsewhere and
 adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the number of retained entries.
 `LOCK_TTL` defines how old `.lock` files must be before `clean-locks` deletes them.

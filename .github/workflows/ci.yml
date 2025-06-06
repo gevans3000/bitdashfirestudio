@@ -15,9 +15,8 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-      - run: npm ci
+      - run: npm run dev-deps
       - run: npm run lint
       - run: npm run test
       - run: npm run backtest
-      - run: npm run commitlog
       - run: npm run mem-check

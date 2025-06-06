@@ -18,7 +18,6 @@ Paste that block into the first message when launching Codex. The `npm run codex
 
 - **memory.log** – append one line per commit: `hash | Task <id> | summary | files | timestamp`.
 - **context.snapshot.md** – add a new `mem-XXX` section summarizing the commit (333 tokens max) and the next goal.
-- **logs/commit.log** – run `npm run commitlog` after committing so recent history is easy to load.
 
 Codex must read these files at the start of every run to rebuild context. Commit messages themselves serve as persistent memory, so keep them descriptive and follow the Conventional Commits format.
 
@@ -31,6 +30,6 @@ Limit commit summaries in both the commit body and context snapshot to about **3
 1. Run `npm run codex` and paste the output block into ChatGPT.
 2. Confirm AGENTS.md, memory.log and context.snapshot.md are loaded.
 3. Execute the next task from TASKS.md, committing with a clear message.
-4. Append the commit info to memory.log and context.snapshot.md, then run `npm run commitlog`.
+4. Append the commit info to memory.log and context.snapshot.md.
 
 Following these steps preserves context between sessions and keeps token usage manageable.
