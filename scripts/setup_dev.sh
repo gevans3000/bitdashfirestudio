@@ -1,4 +1,3 @@
-```bash
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------
 # Fast, idempotent bootstrap for Codex / CI / local dev
@@ -44,7 +43,7 @@ if [[ -f requirements.txt && "${SKIP_PYTHON:-0}" != 1 ]]; then
   python -m pip install --quiet -r requirements.txt
 fi
 
-echo "🟢 setup_dev.sh done – env ready."
+echo " setup_dev.sh done – env ready."
 echo "   npm run lint   # ESLint"
-echo "   npm run test   # Jest"
-```
+echo "   npm run backtest"
+echo "   npm run commitlog"
