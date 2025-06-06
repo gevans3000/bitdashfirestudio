@@ -60,33 +60,32 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
  - [x] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
  - [x] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
-- [ ] Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-log
+- [ ] Task 95: scaffold memory CLI using yargs
 - [x] Task 96: add jest tests verifying codex-context output with mocked git log
-- [ ] Task 97: export memory.log lines to memory.json using readMemoryLines helper
-- [ ] Task 98: add weekly workflow running mem-rotate and commitlog to push updates
-- [ ] Task 99: extend memgrep to filter by --since and --until timestamps
-- [ ] Task 100: update README rotation section showing mem-rotate and snapshot-rotate usage
-
-- [ ] Task 101: make memory API TTL configurable via MEMORY_API_TTL env variable
-- [ ] Task 102: support since/until query params to filter memory API results by timestamp
-- [ ] Task 103: add snapshot-json script exporting context.snapshot.md to snapshot.json
-- [ ] Task 104: extend memory CLI with list command showing the last N entries
-- [ ] Task 105: build /memory Next.js page fetching /api/memory and rendering a table
-- [ ] Task 106: enforce max 300 lines for memory.log in pre-commit hook
-- [ ] Task 107: document memory CLI commands in README with examples
-- [ ] Task 108: update GitHub Pages workflow to publish snapshot.json
-- [ ] Task 109: create Jest test validating memory list -n 2 output
-- [ ] Task 110: implement /api/snapshot endpoint exposing snapshot data
-- [ ] Task 111: fix lint errors flagged under Node 18 by removing unused vars and typing any usage
-- [ ] Task 112: update jest tests to restore cp mocks after each run preventing execSync redefinition
-- [ ] Task 113: handle unequal array lengths in correlation test to avoid NaN values
-- [ ] Task 114: refactor backtest.ts to use dynamic import with ts-node to break require cycle
-- [ ] Task 115: clarify Node 18 nvm usage in README Getting Started
-- [ ] Task 116: compile memory CLI into single executable using tsc
-- [ ] Task 117: remove logs/commit.log and update README references
-- [ ] Task 118: run npm ci once before loops in autoTaskRunner
-- [ ] Task 119: simplify withFileLock and related logic
-- [ ] Task 120: unify parseMemoryLines with MemoryEntry union type
+- [ ] Task 97: implement rotate command saving memory.log with date suffix
+- [ ] Task 98: implement snapshot-rotate command for context snapshot
+- [ ] Task 99: implement status command summarizing latest entry
+- [ ] Task 100: implement grep command to search memory.log
+- [ ] Task 101: implement update-log command using commitlog script
+- [ ] Task 102: add Jest tests covering memory CLI commands
+- [ ] Task 103: document memory CLI usage in README with examples
+- [ ] Task 104: create weekly workflow running mem-rotate and commitlog
+- [ ] Task 105: enforce max 300 lines in memory.log via pre-commit
+- [ ] Task 106: make memory API TTL configurable via MEMORY_API_TTL env
+- [ ] Task 107: support since/until query params for memory API
+- [ ] Task 108: extend CLI with list command to show last N entries
+- [ ] Task 109: build /memory page displaying table from /api/memory
+- [ ] Task 110: add snapshot-json script exporting context snapshot to snapshot.json
+- [ ] Task 111: create Jest test validating memory list -n 2 output
+- [ ] Task 112: implement /api/snapshot endpoint exposing snapshot data
+- [ ] Task 113: remove logs/commit.log and update README references
+- [ ] Task 114: run npm ci once before loops in autoTaskRunner
+- [ ] Task 115: simplify withFileLock and related logic
+- [ ] Task 116: unify parseMemoryLines with MemoryEntry union type
+- [ ] Task 117: fix lint errors flagged under Node 18
+- [ ] Task 118: update jest mocks to restore cp after each run
+- [ ] Task 119: handle unequal array lengths in correlation tests
+- [ ] Task 120: refactor backtest.ts to use dynamic import with ts-node
 
 
 ### Bitcoin Dashboard
