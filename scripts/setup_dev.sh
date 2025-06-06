@@ -1,36 +1,66 @@
 #!/usr/bin/env bash
-# Run once: installs all dev-tools locally so Codex finds them.
+# ---------------------------------------------------------------------------
+# Bootstraps a local + Codex/CI dev environment for gevans3000/bitdashfirestudio
+# ---------------------------------------------------------------------------
+# • Syncs package-lock, installs Node via nvm (or NodeSource fallback).
+# • Installs npm deps (ci-first), dev-tooling, and optional Python deps.
+# • Rebuilds native bindings for current arch.
+# • Idempotent: safe to run multiple times; exits non-zero on failure.
+# ---------------------------------------------------------------------------
 
-# Self-healing permission check - if we can't execute but can read the script,
-# this will be triggered when someone tries to run it with "bash ./scripts/setup_dev.sh"
-if [ ! -x "$0" ] && [ -f "$0" ]; then
-  echo "▶ Fixing script permissions..."
+# ── Self-healing exec permission ──────────────────────────────────────────
+if [[ ! -x "$0" && -f "$0" ]]; then
+  echo "▶ Fixing script permissions…"
   chmod +x "$0"
-  echo "▶ Permissions fixed. Script is now executable."
+  echo "▶ Permissions fixed."
 fi
 
-set -e
-echo "▶ Checking npm environment..."
+set -euo pipefail
+echo "▶ Bootstrapping dev environment…"
 
-# Force package-lock.json to be in sync with package.json
-echo "▶ Updating package-lock.json to match package.json..."
+# ── Node setup ───────────────────────────────────────────────────────────
+NODE_VERSION="${NODE_VERSION:-$(cat .nvmrc 2>/dev/null || echo 18)}"
+
+if command -v nvm >/dev/null 2>&1; then
+  echo "▶ Using nvm to install/use Node ${NODE_VERSION}"
+  nvm install "$NODE_VERSION"
+  nvm use     "$NODE_VERSION"
+else
+  echo "▶ nvm not found → installing Node via NodeSource (${NODE_VERSION})"
+  curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION%%.*}.x" | sudo -E bash -
+  sudo apt-get install -y nodejs
+fi
+
+node -v
+npm -v
+
+# ── Sync lockfile & install deps ─────────────────────────────────────────
+echo "▶ Ensuring package-lock.json matches package.json…"
 npm install --package-lock-only
 
-# Now that package-lock.json is updated, proceed with npm ci
-echo "▶ Installing dependencies via npm ci..."
-npm ci || {
-  echo "▶ npm ci failed, falling back to npm install..."
+echo "▶ Installing npm dependencies (ci preferred)…"
+if ! npm ci; then
+  echo "▶ npm ci failed → falling back to npm install"
   npm install
-}
+fi
 
-# Ensure specific dev dependencies are installed
-echo "▶ Installing specific dev dependencies..."
+echo "▶ Rebuilding native modules for this architecture…"
+npm rebuild
+
+# ── Dev-tooling (ESLint, Jest, TS) ───────────────────────────────────────
+echo "▶ Installing/ensuring dev dependencies…"
 npm install --save-dev \
   eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin \
   jest ts-jest @types/jest \
   ts-node typescript @types/node
 
-echo "▶ Done.  You can now run:"
+# ── Optional Python deps ─────────────────────────────────────────────────
+if [[ -f requirements.txt ]]; then
+  echo "▶ Installing Python requirements…"
+  python -m pip install --quiet -r requirements.txt
+fi
+
+echo "🟢 setup_dev.sh complete. Available commands:"
 echo "   npm run lint   # ESLint"
 echo "   npm run test   # Jest"
 echo "   npm run backtest"

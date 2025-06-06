@@ -1,0 +1,6 @@
+# .codexrc example
+#!/usr/bin/env bash
+set -euo pipefail
+git pull --rebase
+bash ./scripts/setup_dev.sh
+echo "🟢 Environment ready — /tasks run 1 to start."
