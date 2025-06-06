@@ -160,3 +160,7 @@
 - Summary: removed commitlog workflow, docs and tests
 - Next Goal: run npm ci only once in AutoTaskRunner
 
+### 2025-06-06 17:26 UTC | mem-040
+- Commit SHA: a2c5495
+- Summary: converted memory-cli to use yargs subcommands, added yargs dependency and updated lockfile. Marked Task 95 complete but lint, test and backtest failed so logs saved.
+- Next Goal: run npm ci only once in AutoTaskRunner

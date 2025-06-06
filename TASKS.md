@@ -59,7 +59,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
  - [x] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
  - [x] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
-- [ ] Task 95: consolidate memory scripts into memory-cli with yargs
+- [x] Task 95: consolidate memory scripts into memory-cli with yargs
 - [x] Task 96: delete commit.log and update docs, tests, workflows
 - [ ] Task 97: run npm ci only once in autoTaskRunner loop
 - [ ] Task 98: rotate memory.log to 300 lines via pre-commit
