@@ -60,32 +60,12 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 
  - [x] Task 93: fix codex helper command by running ts-node scripts/codex-context.ts
  - [x] Task 94: document MEM_PATH and SNAPSHOT_PATH in README with rotation env vars
-- [ ] Task 95: scaffold memory CLI using yargs
-- [x] Task 96: add jest tests verifying codex-context output with mocked git log
-- [ ] Task 97: implement rotate command saving memory.log with date suffix
-- [ ] Task 98: implement snapshot-rotate command for context snapshot
-- [ ] Task 99: implement status command summarizing latest entry
-- [ ] Task 100: implement grep command to search memory.log
-- [ ] Task 101: implement update-log command using commitlog script
-- [ ] Task 102: add Jest tests covering memory CLI commands
-- [ ] Task 103: document memory CLI usage in README with examples
-- [ ] Task 104: create weekly workflow running mem-rotate and commitlog
-- [ ] Task 105: enforce max 300 lines in memory.log via pre-commit
-- [ ] Task 106: make memory API TTL configurable via MEMORY_API_TTL env
-- [ ] Task 107: support since/until query params for memory API
-- [ ] Task 108: extend CLI with list command to show last N entries
-- [ ] Task 109: build /memory page displaying table from /api/memory
-- [ ] Task 110: add snapshot-json script exporting context snapshot to snapshot.json
-- [ ] Task 111: create Jest test validating memory list -n 2 output
-- [ ] Task 112: implement /api/snapshot endpoint exposing snapshot data
-- [ ] Task 113: remove logs/commit.log and update README references
-- [ ] Task 114: run npm ci once before loops in autoTaskRunner
-- [ ] Task 115: simplify withFileLock and related logic
-- [ ] Task 116: unify parseMemoryLines with MemoryEntry union type
-- [ ] Task 117: fix lint errors flagged under Node 18
-- [ ] Task 118: update jest mocks to restore cp after each run
-- [ ] Task 119: handle unequal array lengths in correlation tests
-- [ ] Task 120: refactor backtest.ts to use dynamic import with ts-node
+- [ ] Task 95: consolidate memory scripts into memory-cli with yargs
+- [ ] Task 96: delete commit.log and update docs, tests, workflows
+- [ ] Task 97: run npm ci only once in autoTaskRunner loop
+- [ ] Task 98: rotate memory.log to 300 lines via pre-commit
+- [ ] Task 99: cache dev dependencies with dev-deps script and CI caching
+- [ ] Task 100: create setup-quickstart guide linked in README and AGENTS
 
 
 ### Bitcoin Dashboard
