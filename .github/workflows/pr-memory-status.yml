@@ -1,0 +1,27 @@
+name: PR Memory Status
+
+on:
+  pull_request:
+
+jobs:
+  mem-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - run: npm run dev-deps
+      - id: status
+        run: |
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          npm run mem-status --silent >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ```
+            ${{ steps.status.outputs.output }}
+            ```
