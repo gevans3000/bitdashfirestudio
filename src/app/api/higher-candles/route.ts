@@ -3,6 +3,7 @@ import {
   fetchHourlyCandles,
   fetchFourHourCandles,
 } from "@/lib/data/binanceCandles";
+import { CACHE_TTL } from "@/lib/constants";
 
 interface CacheEntry {
   data: { hourly: any[]; fourHour: any[] };
@@ -10,7 +11,7 @@ interface CacheEntry {
 }
 
 let cache: CacheEntry | null = null;
-const TTL = 60 * 1000;
+const TTL = CACHE_TTL;
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {

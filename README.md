@@ -69,8 +69,8 @@ For a simple example that fetches macro data only when you click refresh, visit
 `/refresh-demo` after starting the development server. This page displays the
 current US Dollar Index (DXY) and 10-Year Treasury Yield using the free FRED
 API through the project's API routes. DXY data is cached for 15 minutes on the
-server to respect rate limits. Most other API calls are cached for at least one
-minute via `src/lib/fetchCache.ts` so repeated requests don't hammer upstream
+server to respect rate limits. Most other API calls use a shared 15-second
+cache via `src/lib/constants.ts` so repeated requests don't hammer upstream
 services.
 
 ## Data Sources

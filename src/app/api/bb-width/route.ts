@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { fetchBackfill } from '@/lib/data/coingecko'
 import { bollingerWidth } from '@/lib/indicators'
+import { CACHE_TTL } from '@/lib/constants'
 
 let cache: { data: number; ts: number } | null = null
-const TTL = 60 * 1000
+const TTL = CACHE_TTL
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {

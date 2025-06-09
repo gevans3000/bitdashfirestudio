@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { fetchBybitOpenInterest } from '@/lib/data/bybitOpenInterest'
+import { CACHE_TTL } from '@/lib/constants'
 
 let cache: { ts: number; data: any } | null = null
-const TTL = 60 * 1000
+const TTL = CACHE_TTL
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {

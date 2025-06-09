@@ -4,9 +4,10 @@ import {
   parseMemoryLines,
   MemoryEntry,
 } from '../../../../scripts/memory-utils'
+import { CACHE_TTL } from '@/lib/constants'
 
 let cache: { ts: number; data: MemoryEntry[] } | null = null
-const TTL = parseInt(process.env.MEMORY_API_TTL || '15', 10) * 1000
+const TTL = parseInt(process.env.MEMORY_API_TTL || String(CACHE_TTL / 1000), 10) * 1000
 
 export async function GET(req: Request) {
   if (!cache || Date.now() - cache.ts >= TTL) {
