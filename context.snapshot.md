@@ -180,3 +180,7 @@
 - Commit SHA: 0f00a3e
 - Summary: corrected mem-036 timestamp in context.snapshot.
 - Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 17:44 UTC | mem-045
+- Commit SHA: db90cd3
+- Summary: added PR memory status workflow that installs dev deps, runs mem-status and comments output on pull requests; exposed mem-status npm script. Lint, test and backtest failing so logged in block-pr-memory-status.txt.
+- Next Goal: run npm ci only once in AutoTaskRunner

@@ -210,3 +210,4 @@ fe24dba | Task <unknown> | unified cache TTL constant across API routes; added c
 2d90883 | docs(start): mention dev-deps in kickoff guide | CODEX_START.md | 2025-06-09T14:42:33Z
 77c16db | docs(policy): emphasize minimal compute | AGENTS.md, docs/CODEX_WORKFLOW.md, logs/block-docs-minimal-compute.txt | 2025-06-09T17:00:27+00:00
 0f00a3e | docs(memory): correct mem-036 timestamp | context.snapshot.md | 2025-06-09T17:09:29+00:00
+db90cd3 | feat(ci): add PR memory status workflow | .github/workflows/pr-memory-status.yml logs/block-pr-memory-status.txt package.json | 2025-06-09T17:44:09Z
