@@ -92,4 +92,53 @@ describe('autoTaskRunner writes', () => {
 
     fs.rmSync(dir, { recursive: true, force: true });
   });
+
+  it('halts when memory check fails', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'autorun-'));
+    const tasks = path.join(dir, 'TASKS.md');
+    const signals = path.join(dir, 'signals.json');
+    const logs = path.join(dir, 'logs');
+    fs.mkdirSync(logs);
+    fs.writeFileSync(tasks, '- [ ] Task 1: test\n');
+    fs.writeFileSync(signals, '{}\n');
+    const map = {
+      [path.join(repoRoot, 'TASKS.md')]: tasks,
+      [path.join(repoRoot, 'signals.json')]: signals,
+      [path.join(repoRoot, 'logs')]: logs,
+      [path.join(repoRoot, 'memory.log')]: path.join(dir, 'memory.log'),
+    } as Record<string, string>;
+
+    const atomicMock = jest.spyOn(utils, 'atomicWrite').mockImplementation(() => {});
+    const lockMock = jest.spyOn(utils, 'withFileLock').mockImplementation((_, fn) => { fn(); });
+
+    const spawnMock = jest.spyOn(cp, 'spawnSync').mockImplementation((cmd: string) => {
+      if (cmd === 'ts-node scripts/memory-check.ts') {
+        return { stdout: 'fail', stderr: '', status: 1 } as any;
+      }
+      return { stdout: '', stderr: '', status: 0 } as any;
+    });
+    const execMock = jest.spyOn(cp, 'execSync').mockReturnValue(Buffer.from(''));
+    const exitMock = jest.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+      throw new Error(String(code));
+    }) as never);
+
+    expect(() => {
+      withFsMocks(map, () => {
+        jest.isolateModules(() => {
+          const { runTasks } = require('../../src/scripts/autoTaskRunner');
+          runTasks();
+        });
+      });
+    }).toThrow('1');
+
+    const block = path.join(logs, 'block-1.txt');
+    expect(fs.existsSync(block)).toBe(true);
+    const content = fs.readFileSync(block, 'utf8');
+    expect(content).toContain('fail');
+    const s = JSON.parse(fs.readFileSync(signals, 'utf8'));
+    expect(s.error_flag).toBe(true);
+
+    fs.rmSync(dir, { recursive: true, force: true });
+    exitMock.mockRestore();
+  });
 });
