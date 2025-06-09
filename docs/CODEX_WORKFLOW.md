@@ -12,6 +12,8 @@ This document distills the key points from `CODEX-INSTRUCTIONS.txt` for working 
 - Keep `task_queue.json` synchronized with `TASKS.md` so automation can resume accurately.
 - Run `npm ci` once at the start of a session. Subsequent commits can reuse the installed `node_modules`.
 
+Each session ends after a single commit unless instructions explicitly allow more work. Start a new session to continue with the next commit.
+
 ## Keeping the Workspace Alive
 
 Codex runs in an ephemeral container. To avoid losing context:
