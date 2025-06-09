@@ -15,7 +15,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 4. Each task runs lint, test and backtest.
 5. After success the task is marked `[x]` and `task_queue.json` is updated.
 6. Append the 333‑token commit summary with hash and files to `memory.log` using the one-line format described in `AGENTS.md`.
-7. The commit message begins with `Task <number>:` so the git log stays in sync with the memory files.
+7. The commit message begins with `Task <number>:` and is checked by `commitlint` to keep the git log in sync.
 8. Review recent summaries from `memory.log` before starting a new session.
 10. The runner rebases on `main` and pushes after each commit.
 11. Reference commit hashes from `memory.log` when creating follow-up tasks.
