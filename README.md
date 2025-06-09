@@ -176,6 +176,7 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |
 | `npm run memgrep` | Search `memory.log` and `context.snapshot.md` for a pattern |
+| `npm run mem-status` | Show last memory entry, next mem id and pending task |
 | `npm run clean-locks` | Remove stale `.lock` files across the repository |
 | `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
