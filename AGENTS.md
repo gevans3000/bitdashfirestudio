@@ -55,28 +55,24 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 ## 1 · Core Automation Loop
 
-> **Exactly two commits per session, then stop.**
+> **Exactly one commit per session, then stop.**
 > If more tasks remain, a new session will restart the loop.
 
-1. **Bootstrap Commit**
+1. **Single Commit (bootstrap, task or fix)**
    a. Validate & patch this file (`AGENTS.md`) and helper files so automation rules exist.
-   b. Ensure package scripts `lint`, `test`, `backtest` run.
-   c. Commit as `chore(bootstrap): automation rules` with a 333‑token summary.
-   d. Append commit details to `memory.log` so the Git log mirrors persistent memory.
-2. **Task Commit**
-   a. Load `task_queue.json` and `TASKS.md`, choosing the first entry with `status: "pending"`.
-   b. Implement **only** that task.
-   c. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
-   d. Commit using **Conventional Commits** (`feat|fix(scope): …`).
-   e. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
-   f. Append the same summary with metadata to `memory.log`.
-   g. Append a memory block to `context.snapshot.md` detailing the commit hash,
+   b. When working on a task, load `task_queue.json` and `TASKS.md` to choose the first entry with `status: "pending"`.
+   c. Implement that task or fix.
+   d. Ensure package scripts `lint`, `test`, `backtest` run. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
+   e. Commit using **Conventional Commits** (`feat|fix|chore|docs|test(scope): …`).
+   f. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
+   g. Append the same summary with metadata to `memory.log`.
+   h. Append a memory block to `context.snapshot.md` detailing the commit hash,
       timestamp and next goal.
-   h. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
-   i. Rebase → merge → delete branch.
-3. **HALT** – await next prompt.
+   i. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   j. Rebase → merge → delete branch.
+2. **HALT** – await next prompt.
 
-**Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit *inside* the same numbered commit; if still red, write `/logs/block-<task>.txt` and stop.
+**Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit within the single session; if still red, write `/logs/block-<task>.txt` and stop.
 
 ---
 
