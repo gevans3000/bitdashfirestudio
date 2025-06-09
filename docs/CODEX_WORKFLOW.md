@@ -41,4 +41,5 @@ Keep this workspace running until I say "close workspace".
 - After each commit `memory.log` is updated with metadata.
 - When resuming later, view the tail of `memory.log` to review recent commits.
 - Test and backtest outputs are saved to `logs/` for reference. If they fail, fix and recommit.
+- Keep compute usage and code changes minimal—avoid superfluous refactors or heavy scripts.
 

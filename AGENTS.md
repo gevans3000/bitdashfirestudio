@@ -74,6 +74,8 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit within the single session; if still red, write `/logs/block-<task>.txt` and stop.
 
+**Minimal Compute:** Keep compute usage and code changes minimal—avoid superfluous refactors or heavy scripts. See `docs/CODEX_WORKFLOW.md`.
+
 ---
 
 ## 2 · Memory Files
