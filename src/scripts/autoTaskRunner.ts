@@ -105,6 +105,17 @@ export function runTasks() {
     execSync(`git add ${memoryPath}`);
     execSync(`git commit -m "chore(memory): record task ${taskNum}"`);
 
+    const check = run('ts-node scripts/memory-check.ts');
+    if (check.code !== 0) {
+      fs.writeFileSync(path.join(logDir, `block-${taskNum}.txt`), check.output);
+      signals.error_flag = true;
+      withFileLock(signalsPath, () => {
+        atomicWrite(signalsPath, JSON.stringify(signals, null, 2) + '\n');
+      });
+      console.error('Memory validation failed. See logs for details.');
+      process.exit(1);
+    }
+
     tryExec('git pull --rebase origin main');
     tryExec('git push origin HEAD:main');
 
