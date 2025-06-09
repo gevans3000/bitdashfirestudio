@@ -33,17 +33,17 @@
   341:11  error  'exitMock' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
 /workspace/bitdashfirestudio/src/app/api/economic-events/route.ts
-  4:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  5:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 /workspace/bitdashfirestudio/src/app/api/funding-schedule/route.ts
-  4:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  5:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 /workspace/bitdashfirestudio/src/app/api/higher-candles/route.ts
-  8:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-  8:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  9:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  9:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 /workspace/bitdashfirestudio/src/app/api/open-interest/route.ts
-  4:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  5:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 /workspace/bitdashfirestudio/src/app/api/prev-day/route.ts
   19:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any

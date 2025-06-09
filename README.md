@@ -51,8 +51,10 @@ Ensure **Node.js 18** is installed before continuing.
    ```bash
    npm run setup-hooks
    ```
+5. Commits must follow Conventional Commits with a subject like `Task 123:`. A
+   `commit-msg` hook runs `commitlint` to enforce this format.
 
-5. Start the development server:
+6. Start the development server:
    ```bash
    npm run dev
    ```
@@ -137,9 +139,11 @@ See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
 1. Run `npm ci` once when you start a session.
 2. Review `memory.log` for the latest summary line.
 3. Open `TASKS.md` and complete the next task.
-4. After each commit `memory.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
-5. When resuming after a break, tail the end of `memory.log` to review recent commits.
-6. Test and backtest outputs are logged in `logs/`.
+4. Commit messages must start with `Task <number>:`. The `commit-msg` hook runs
+   `commitlint` to verify this format.
+5. After each commit `memory.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
+6. When resuming after a break, tail the end of `memory.log` to review recent commits.
+7. Test and backtest outputs are logged in `logs/`.
 
 ### Generating Context
 
