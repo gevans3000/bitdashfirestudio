@@ -26,6 +26,7 @@
     "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
     "memlog": "ts-node scripts/update-memory-log.ts",
     "mem-rotate": "ts-node scripts/mem-rotate.ts",
+    "mem-status": "ts-node scripts/mem-status.ts",
     "snap-rotate": "ts-node scripts/snapshot-rotate.ts",
     "mem-check": "ts-node scripts/memory-check.ts",
     "memory": "ts-node scripts/memory-cli.ts",
