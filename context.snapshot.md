@@ -168,3 +168,7 @@
 - Commit SHA: fe24dba
 - Summary: unified API caching TTL via shared constant and updated docs
 - Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 14:42 UTC | mem-042
+- Commit SHA: 2d90883
+- Summary: added kickoff guide bullet reminding to run dev-deps when node_modules is missing.
+- Next Goal: run npm ci only once in AutoTaskRunner
