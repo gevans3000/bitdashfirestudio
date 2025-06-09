@@ -219,6 +219,28 @@ SNAP_ROTATE_LIMIT=150 \
 npm run mem-rotate && ts-node scripts/snapshot-rotate.ts
 ```
 
+## Memory CLI Usage
+
+The `memory` script consolidates all log-management commands.
+
+| Command | Example | Purpose |
+| ------- | ------- | ------- |
+| `rotate [limit]` | `npm run memory rotate 200` | Trim `memory.log` to the last N entries |
+| `snapshot-rotate [limit]` | `npm run memory snapshot-rotate 100` | Trim `context.snapshot.md` |
+| `status` | `npm run memory status` | Show the latest entry and next task |
+| `grep <pattern>` | `npm run memory grep "mem-042"` | Search memory files for a pattern |
+| `locate <hash|mem-id>` | `npm run memory locate 0f00a3e` | Display snapshot block for a commit |
+| `update-log` | `npm run memory update-log` | Refresh `memory.log` from git history |
+| `list [N]` | `npm run memory list 5` | Show the last N entries |
+| `diff` | `npm run memory diff` | List commits missing from `memory.log` |
+| `json` | `npm run memory json > memory.json` | Export `memory.log` to JSON |
+| `clean-locks` | `npm run memory clean-locks` | Remove stale `.lock` files |
+| `check` | `npm run memory check` | Verify memory file consistency |
+| `restore <backup> <memory|snapshot>` | `npm run memory restore backup.tar.gz memory` | Restore from backup |
+| `rebuild [path]` | `npm run memory rebuild` | Rebuild logs from git history |
+| `sync <branch>` | `npm run memory sync origin/main` | Merge memory log from another branch |
+| `snapshot-update` | `npm run memory snapshot-update` | Append last commit summary to snapshot |
+
 ## Using Codex with Persistent Memory
 
 See [CODEX_START.md](CODEX_START.md) for full instructions on launching Codex with persistent memory.

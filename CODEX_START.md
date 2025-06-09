@@ -20,6 +20,7 @@ Paste that block into the first message when launching Codex. The `npm run codex
 - **context.snapshot.md** – add a new `mem-XXX` section summarizing the commit (333 tokens max) and the next goal.
 
 Codex must read these files at the start of every run to rebuild context. Commit messages themselves serve as persistent memory, so keep them descriptive and follow the Conventional Commits format.
+For example `memory rotate` and other subcommands are documented in the [Memory CLI Usage](README.md#memory-cli-usage) section of the README.
 
 ## Token Guidance
 

@@ -180,3 +180,8 @@
 - Commit SHA: 0f00a3e
 - Summary: corrected mem-036 timestamp in context.snapshot.
 - Next Goal: run npm ci only once in AutoTaskRunner
+
+### 2025-06-09 17:46 UTC | mem-045
+- Commit SHA: 2dd7c5b
+- Summary: added Memory CLI Usage section in README with examples; cross-linked from CODEX_START.
+- Next Goal: run npm ci only once in AutoTaskRunner
