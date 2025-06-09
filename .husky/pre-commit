@@ -1,5 +1,6 @@
 #!/bin/sh
 MEM_ROTATE_LIMIT=300 npm run mem-rotate >/dev/null 2>&1
+npm run validate-tasks || true
 npm run lint || true
 npm run test || true
 npm run mem-check || true

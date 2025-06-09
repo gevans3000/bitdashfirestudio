@@ -16,6 +16,7 @@ jobs:
           node-version: '18'
           cache: 'npm'
       - run: npm run dev-deps
+      - run: npm run validate-tasks
       - run: npm run lint
       - run: npm run test
       - run: npm run backtest

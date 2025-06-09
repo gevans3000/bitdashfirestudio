@@ -184,3 +184,15 @@
 - Commit SHA: db90cd3
 - Summary: added PR memory status workflow that installs dev deps, runs mem-status and comments output on pull requests; exposed mem-status npm script. Lint, test and backtest failing so logged in block-pr-memory-status.txt.
 - Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 19:36 UTC | mem-046
+- Commit SHA: ea781f6
+- Summary: added validate-tasks script, integrated into pre-commit and CI, documented in README, created unit test; lint, test, backtest failing.
+- Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 19:38 UTC | mem-047
+- Commit SHA: 9b5b4fc
+- Summary: corrected mem-046 entry after commit to keep memory files in sync.
+- Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 19:39 UTC | mem-048
+- Commit SHA: aeedee3
+- Summary: recorded mem-047 entry for fix commit to keep history consistent.
+- Next Goal: run npm ci only once in AutoTaskRunner
