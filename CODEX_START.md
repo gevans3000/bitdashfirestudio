@@ -31,6 +31,7 @@ Limit commit summaries in both the commit body and context snapshot to about **3
 2. Run `npm run dev-deps` if `node_modules` is missing before starting.
 3. Confirm AGENTS.md, memory.log and context.snapshot.md are loaded.
 4. Execute the next task from TASKS.md, committing with a clear message.
-5. Append the commit info to memory.log and context.snapshot.md.
+5. End the session after that single commit unless you are explicitly told to continue.
+6. Append the commit info to memory.log and context.snapshot.md.
 
 Following these steps preserves context between sessions and keeps token usage manageable.
