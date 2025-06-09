@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { fetchBackfill } from '@/lib/data/coingecko'
 import { fetchHourlyCandles, fetchFourHourCandles } from '@/lib/data/binanceCandles'
 import { exponentialMovingAverage, emaCrossoverState, EmaTrend } from '@/lib/indicators'
+import { CACHE_TTL } from '@/lib/constants'
 
 interface CacheEntry {
   data: { trend5m: EmaTrend; trend1h: EmaTrend; trend4h: EmaTrend }
@@ -9,7 +10,7 @@ interface CacheEntry {
 }
 
 let cache: CacheEntry | null = null
-const TTL = 60 * 1000
+const TTL = CACHE_TTL
 
 export async function GET() {
   if (cache && Date.now() - cache.ts < TTL) {
