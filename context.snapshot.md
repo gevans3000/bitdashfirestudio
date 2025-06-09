@@ -172,3 +172,7 @@
 - Commit SHA: 2d90883
 - Summary: added kickoff guide bullet reminding to run dev-deps when node_modules is missing.
 - Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 17:00 UTC | mem-043
+- Commit SHA: 77c16db
+- Summary: emphasized minimal compute usage in AGENTS and CODEX_WORKFLOW; logged failing checks.
+- Next Goal: run npm ci only once in AutoTaskRunner
