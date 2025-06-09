@@ -143,7 +143,7 @@
 - Commit SHA: e8934ed
 - Summary: added .eslintrc.json from setup snippet and updated lint script to load it; documented interplay with eslint.config.js in README.
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
-### $(date -u '+%Y-%m-%d %H:%M UTC') | mem-036
+### 2025-06-05 18:24 UTC | mem-036
 - Commit SHA: b29338f
 - Summary: clarified Node 18 nvm usage in README, updated env check error and setup script to use npm ci, added Task 115 entry
 - Next Goal: create memory CLI with rotate, snapshot-rotate, status, grep and update-log
@@ -175,4 +175,8 @@
 ### 2025-06-09 17:00 UTC | mem-043
 - Commit SHA: 77c16db
 - Summary: emphasized minimal compute usage in AGENTS and CODEX_WORKFLOW; logged failing checks.
+- Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-09 17:09 UTC | mem-044
+- Commit SHA: 0f00a3e
+- Summary: corrected mem-036 timestamp in context.snapshot.
 - Next Goal: run npm ci only once in AutoTaskRunner
