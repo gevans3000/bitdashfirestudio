@@ -128,7 +128,7 @@ Using 5-minute BTC data from CoinGecko (90 days) the strategy achieved roughly a
 
 ## Continuous Integration
 
-GitHub Actions run lint, tests, the backtest and `npm run mem-check` on every pull request to ensure memory files stay in sync with Git history.
+GitHub Actions run lint, tests, the backtest and `npm run memory check` on every pull request to ensure memory files stay in sync with Git history.
 
 ## Codex Workflow
 
@@ -179,13 +179,7 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | Command | Purpose |
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `TASKS.md`; installs dependencies once then validates memory after each commit |
-| `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, list, diff, json, clean-locks, check, locate, rebuild, sync, snapshot-update |
-| `npm run mem-rotate` | Trim `memory.log` to a set number of entries |
-| `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
-| `npm run mem-diff` | List commit hashes missing from `memory.log` |
-| `npm run memgrep` | Search `memory.log` and `context.snapshot.md` for a pattern |
-| `npm run mem-status` | Show last memory entry, next mem id and pending task |
-| `npm run clean-locks` | Remove stale `.lock` files across the repository |
+| `npm run memory` | Consolidated memory CLI with subcommands like `rotate`, `check`, `diff`, `grep`, `status`, `list` and `clean-locks` |
 | `node --loader ts-node/esm scripts/update-memory.ts` | Update `memory.log`, `context.snapshot.md`, rotate the log and validate memory |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
@@ -203,8 +197,8 @@ Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run memory rotate` to chang
 Keep `memory.log` and `context.snapshot.md` trimmed so the agent loads quickly:
 
 ```bash
-npm run mem-rotate   # prune memory.log
-npm run snap-rotate  # prune context.snapshot.md
+npm run memory rotate          # prune memory.log
+npm run memory snapshot-rotate # prune context.snapshot.md
 ```
 
 ### Manual Archival
@@ -215,7 +209,7 @@ Use this command to stash the current memory files before resetting them:
 npm run archive-memory  # moves memory.log and snapshot to ./logs/archive/
 ```
 
-A weekly GitHub workflow automatically runs `mem-rotate` and `clean-locks` to push the
+A weekly GitHub workflow automatically runs `npm run memory rotate` and `npm run memory clean-locks` to push the
 latest trimmed logs. Set `MEM_PATH` and `SNAPSHOT_PATH` if your memory files live elsewhere and
 adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the number of retained entries.
 `LOCK_TTL` defines how old `.lock` files must be before `clean-locks` deletes them.
@@ -224,9 +218,9 @@ The memory scripts honor several environment variables:
 
 - `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
 - `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
-- `MEM_ROTATE_LIMIT` – entries kept by `npm run mem-rotate` (default: `200`)
-- `SNAP_ROTATE_LIMIT` – entries kept by `snapshot-rotate` (default: `100`)
-- `LOCK_TTL` – milliseconds before `clean-locks` removes `.lock` files (default: `300000`)
+- `MEM_ROTATE_LIMIT` – entries kept by `npm run memory rotate` (default: `200`)
+- `SNAP_ROTATE_LIMIT` – entries kept by `npm run memory snapshot-rotate` (default: `100`)
+- `LOCK_TTL` – milliseconds before `npm run memory clean-locks` removes `.lock` files (default: `300000`)
 - `MEMORY_API_TTL` – seconds API responses are cached (default: `15`)
 
 Example:
@@ -237,7 +231,7 @@ MEM_PATH=/tmp/mem.log \
 SNAPSHOT_PATH=/tmp/snapshot.md \
 MEM_ROTATE_LIMIT=300 \
 SNAP_ROTATE_LIMIT=150 \
-npm run mem-rotate && ts-node scripts/snapshot-rotate.ts
+npm run memory rotate && npm run memory snapshot-rotate
 ```
 
 ## Using Codex with Persistent Memory

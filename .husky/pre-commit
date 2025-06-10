@@ -6,5 +6,5 @@ if ! grep -qE '^Task [0-9]+:' "$MSG_FILE"; then
 fi
 npm run lint || true
 npm run test || true
-npm run mem-check || true
+npm run memory check || true
 
