@@ -25,7 +25,7 @@ Limit commit summaries in both the commit body and context snapshot to about **3
 ## Recap
 
 1. Run `npm run codex` and paste the output block into ChatGPT.
-2. Run `npm run dev-deps` if `node_modules` is missing before starting.
+2. Run `npm run dev-deps` if `node_modules` is missing before starting. This restores cached dev dependencies when available.
 3. Execute the next task from `TASKS.md`, committing with a clear message (`Task <id>:`).
 4. The `post-commit` hook will handle all memory updates automatically.
 5. End the session after the commit is complete unless instructed to continue.

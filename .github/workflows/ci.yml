@@ -15,6 +15,13 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+      - name: Cache dev dependencies
+        uses: actions/cache@v4
+        with:
+          path: .cache/node_modules.tar.gz
+          key: ${{ runner.os }}-devdeps-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-devdeps-
       - run: npm run dev-deps
       - run: npm run lint
       - run: npm run test

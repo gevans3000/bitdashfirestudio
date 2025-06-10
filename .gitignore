@@ -45,3 +45,5 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.loglogs/commit.log
+memory.json
+snapshot.json
