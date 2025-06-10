@@ -26,7 +26,6 @@ function updateSnapshot() {
 
 function markTaskDone(id: number) {
   const tasksPath = path.join(repoRoot, 'TASKS.md');
-  const queuePath = path.join(repoRoot, 'task_queue.json');
   let updated = false;
   withFileLock(tasksPath, () => {
     const lines = fs.readFileSync(tasksPath, 'utf8').split('\n');
@@ -40,15 +39,7 @@ function markTaskDone(id: number) {
     }
     if (updated) atomicWrite(tasksPath, lines.join('\n'));
   });
-  if (updated) {
-    withFileLock(queuePath, () => {
-      const queue = JSON.parse(fs.readFileSync(queuePath, 'utf8'));
-      for (const t of queue) {
-        if (t.id === id) t.status = 'done';
-      }
-      atomicWrite(queuePath, JSON.stringify(queue, null, 2) + '\n');
-    });
-  }
+  // task queue removed; only update TASKS.md
 }
 
 function currentTaskId(): number | null {

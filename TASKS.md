@@ -3,17 +3,16 @@
 
 > **Goal:** Optimize 5-minute BTC scalping with SPX context through small, atomic tasks Codex can execute autonomously.
 
-All tasks live in `task_queue.json` as `{ "id": number, "description": string, "status": "pending"|"done" }` objects. Keep this file synchronized with the checklist below so the harness always works from an accurate queue.
+Each task below is prefixed with `Task <id>` and tracked directly in this file.
 
 ---
 
 ## Workflow
 
 1. Review `memory.log` for context.
-2. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially.
-3. Tasks are loaded from `task_queue.json`; keep this file in sync with the checklist.
-4. Each task runs lint, test and backtest.
-5. After success the task is marked `[x]` and `task_queue.json` is updated.
+2. Run `npm run auto` to let the AutoTaskRunner process tasks sequentially from this file.
+3. Each task runs lint, test and backtest.
+4. After success the task is marked `[x]`.
 6. Append the 333‑token commit summary with hash and files to `memory.log` using the one-line format described in `AGENTS.md`.
 7. The commit message begins with `Task <number>:` and is checked by `commitlint` to keep the git log in sync.
 8. Review recent summaries from `memory.log` before starting a new session.
@@ -171,6 +170,6 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - Priority widgets and indicators are functional and visible.
 - Test, lint and backtest logs are saved under `/logs`.
 - Each completed task is auto-committed with a passing build.
-- `task_queue.json`, `context.snapshot.md` and `memory.md` reflect the new status.
+- `context.snapshot.md` and `memory.md` reflect the new status.
 - Git log mirrors TASKS.md history for quick recovery.
 - Follow-up tasks mention the commit hash that introduced related changes.

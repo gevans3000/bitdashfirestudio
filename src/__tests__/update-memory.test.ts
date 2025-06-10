@@ -65,12 +65,9 @@ describe('update-memory', () => {
   it('updates memory log, snapshot and rotates', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'um-'));
     const tasks = path.join(dir, 'TASKS.md');
-    const queue = path.join(dir, 'task_queue.json');
     fs.writeFileSync(tasks, '- [ ] Task 1: test');
-    fs.writeFileSync(queue, '[{"id":1,"description":"test","status":"pending"}]');
     const paths = {
       [path.join(repoRoot, 'TASKS.md')]: tasks,
-      [path.join(repoRoot, 'task_queue.json')]: queue,
     } as Record<string, string>;
 
     const calls: string[] = [];
@@ -90,10 +87,8 @@ describe('update-memory', () => {
 
     execMock.mockRestore();
     const outTasks = fs.readFileSync(tasks, 'utf8');
-    const queueObj = JSON.parse(fs.readFileSync(queue, 'utf8'));
 
     expect(outTasks).toContain('- [x] Task 1: test');
-    expect(queueObj[0].status).toBe('done');
     expect(calls.some((c) => c.includes('update-memory-log.ts'))).toBe(true);
     expect(calls.some((c) => c.includes('mem-rotate.ts'))).toBe(true);
     expect(calls.some((c) => c.includes('memory-check.ts'))).toBe(true);

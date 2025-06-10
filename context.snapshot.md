@@ -249,3 +249,8 @@
 - Commit SHA: 9f15b1a510e50d19983f9304c7892b6767304a1c
 - Summary: Task 105 added archive-memory script and docs
 - Next Goal: run npm ci only once in autoTaskRunner loop
+
+### 2025-06-10 14:27 UTC | mem-061
+- Commit SHA: d68850c
+- Summary: removed task_queue.json workflow, docs and validation; scripts updated.
+- Next Goal: rotate memory.log in update-memory.ts
