@@ -230,3 +230,5 @@ ec2c89a | Task 103: finalize commit message check | .husky/pre-commit | 2025-06-
 ef94da3 | chore(memory): record Task 103 completion | TASKS.md, context.snapshot.md, memory.log, task_queue.json | 2025-06-10T13:24:25Z
 8303262 | chore(memory): append mem-057 entry | context.snapshot.md | 2025-06-10T13:24:40Z
 b8d36c2 | chore(memory): log mem-057 hash | memory.log | 2025-06-10T13:24:45Z
+69806de | Task 104: add mem-update command and tests | TASKS.md, package.json, scripts/setup-hooks.sh, src/__tests__/update-memory.test.ts, task_queue.json | 2025-06-10T13:41:28Z
+d01d08f | chore(tasks): mark Task 104 done | TASKS.md, task_queue.json | 2025-06-10T13:42:14Z
