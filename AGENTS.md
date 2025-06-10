@@ -60,16 +60,17 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 1. **Single Commit (bootstrap, task or fix)**
    a. Validate & patch this file (`AGENTS.md`) and helper files so automation rules exist.
-   b. When working on a task, load `task_queue.json` and `TASKS.md` to choose the first entry with `status: "pending"`.
-   c. Implement that task or fix.
-   d. Ensure package scripts `lint`, `test`, `backtest` run. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
-   e. Commit using **Conventional Commits** (`feat|fix|chore|docs|test(scope): …`).
-   f. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
-   g. Append the same summary with metadata to `memory.log`.
-   h. Append a memory block to `context.snapshot.md` detailing the commit hash,
+   b. If the user supplies a new task in ChatGPT, append it to `TASKS.md` and `task_queue.json` with the next ID **before** starting work. Run `npm run validate-tasks` to keep both files in sync. The standard automation loop still applies—lint, test, backtest, commit and update memory files.
+   c. When working on a task, load `task_queue.json` and `TASKS.md` to choose the first entry with `status: "pending"`.
+   d. Implement that task or fix.
+   e. Ensure package scripts `lint`, `test`, `backtest` run. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
+   f. Commit using **Conventional Commits** (`feat|fix|chore|docs|test(scope): …`).
+   g. Body = 333‑token summary → part A “What I did”, part B “What’s next”.
+   h. Append the same summary with metadata to `memory.log`.
+   i. Append a memory block to `context.snapshot.md` detailing the commit hash,
       timestamp and next goal.
-   i. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
-   j. Rebase → merge → delete branch.
+   j. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   k. Rebase → merge → delete branch.
 2. **HALT** – await next prompt.
 
 **Self‑Healing:** If lint/test/backtest fails, attempt one `fix(scope)` commit within the single session; if still red, write `/logs/block-<task>.txt` and stop.

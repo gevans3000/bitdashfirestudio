@@ -216,3 +216,5 @@ ea781f6 | feat(ci): enforce TASKS queue validation | .github/workflows/ci.yml,.h
 aeedee3 | chore(memory): record mem-047 | context.snapshot.md,memory.log | 2025-06-09T19:39:01+00:00
 0ec34a1 | chore(memory): record mem-048 | context.snapshot.md,memory.log | 2025-06-09T19:39:43+00:00
 9b43879 | feat(auto): validate memory after task commit | README.md, src/scripts/autoTaskRunner.ts, src/__tests__/autoTaskRunner.state.test.ts | 2025-06-09T20:12:24Z
+912dcc9 | Task 0 | clarified AGENTS instructions to sync new ChatGPT tasks to TASKS.md and task_queue.json using validate-tasks; noted standard automation loop applies; logged failing lint/test/backtest. | AGENTS.md,logs/block-docs-tasks-sync.txt | 2025-06-10T12:23:36Z
+0cf7d78 | Task 0 | record mem-050 entry | context.snapshot.md,memory.log | 2025-06-10T12:24:14Z

@@ -200,3 +200,13 @@
 - Commit SHA: 9b43879
 - Summary: introduced memory validation step in AutoTaskRunner and updated docs with test coverage.
 - Next Goal: run npm ci only once in AutoTaskRunner
+### 2025-06-10 12:23 UTC | mem-050
+- Commit SHA: 912dcc9
+- Summary: clarified AGENTS workflow for adding chat-generated tasks to TASKS.md and task_queue.json before starting work and to validate with validate-tasks. Mentioned that lint, test, backtest, commit and memory updates still apply. Logged failing scripts.
+- Next Goal: run npm ci only once in AutoTaskRunner
+
+### 2025-06-10 12:24 UTC | mem-051
+- Commit SHA: 0cf7d78
+- Summary: recorded mem-050 entry in memory files to keep history consistent.
+- Next Goal: run npm ci only once in AutoTaskRunner
+
