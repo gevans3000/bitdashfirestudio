@@ -238,3 +238,4 @@ d68850c5adc36fa6d8991525ce6e676ed92c42e5 | Task 106 | remove task queue and docs
 40f26cb | Task 108 | removed autoTaskRunner.js and append-memory.sh; docs now use ts scripts; failing lint/test/backtest logged | app.md scripts/append-memory.sh scripts/autoTaskRunner.js logs/block-108.txt | 2025-06-10T15:15:57Z
 3346629 | chore | record mem-063 entry | context.snapshot.md,TASKS.md,memory.log | 2025-06-10T15:16:32Z
 fb5d2ce | Task 109 | unify startup command across docs | .codexrc,AGENTS.md,CODEX_START.md,README.md | 2025-06-10T15:49:41Z
+e08d23a | Task 106 | sync task statuses after removing task_queue; mark tasks 97 and 100 done | TASKS.md | 2025-06-10T16:07:39Z

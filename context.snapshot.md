@@ -266,3 +266,8 @@
 - Commit SHA: fb5d2ce
 - Summary: unified startup instructions across AGENTS, README, CODEX_START and .codexrc; standard command 'npm run codex && npm run auto'.
 - Next Goal: run npm ci only once in autoTaskRunner loop
+
+### 2025-06-10 16:07 UTC | mem-065
+- Commit SHA: e08d23a
+- Summary: updated TASKS.md to mark Task 97 and Task 100 as complete after removing task queue. Automation now records completed tasks only in TASKS.md. Task 98 remains done; Task 99 still open.
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
