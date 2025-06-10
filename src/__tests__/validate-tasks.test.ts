@@ -1,27 +1,36 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { spawnSync } from 'child_process';
 import { repoRoot } from '../../scripts/memory-utils';
 
-function withFsMocks(paths: Record<string, string>, fn: () => void) {
-  const origExists = fs.existsSync;
-  const origRead = fs.readFileSync;
-  const existsMock = jest.spyOn(fs, 'existsSync').mockImplementation((p: any) => {
-    if (paths[p as string]) return origExists.call(fs, paths[p as string]);
-    return origExists.call(fs, p);
-  });
-  const readMock = jest
-    .spyOn(fs, 'readFileSync')
-    .mockImplementation((p: any, opt?: any) => {
-      if (paths[p as string]) p = paths[p as string];
-      return origRead.call(fs, p, opt);
-    });
-  try {
-    fn();
-  } finally {
-    existsMock.mockRestore();
-    readMock.mockRestore();
-  }
+function runValidate(md: string, queue: string) {
+  const wrapper = path.join(os.tmpdir(), `validate-${Date.now()}.mjs`);
+  const script = `import fs from 'fs';
+const paths = JSON.parse(process.argv[2]);
+const origRead = fs.readFileSync;
+const origExists = fs.existsSync;
+fs.readFileSync = (p, o) => origRead.call(fs, paths[p] || p, o);
+fs.existsSync = (p) => origExists.call(fs, paths[p] || p);
+import('${path
+    .join(repoRoot, 'scripts/validate-tasks.ts')
+    .replace(/\\/g, '\\\\')}');`;
+  fs.writeFileSync(wrapper, script);
+  const res = spawnSync(
+    'node',
+    [
+      '-r',
+      'ts-node/register',
+      wrapper,
+      JSON.stringify({
+        [path.join(repoRoot, 'TASKS.md')]: md,
+        [path.join(repoRoot, 'task_queue.json')]: queue,
+      }),
+    ],
+    { encoding: 'utf8' },
+  );
+  fs.rmSync(wrapper, { force: true });
+  return res;
 }
 
 describe('validate-tasks', () => {
@@ -32,27 +41,23 @@ describe('validate-tasks', () => {
     fs.writeFileSync(md, '- [ ] Task 1: test\n');
     fs.writeFileSync(queue, JSON.stringify([{ id: 1, description: 'test', status: 'done' }], null, 2));
 
-    const exitMock = jest
-      .spyOn(process, 'exit')
-      .mockImplementation(((code?: number) => { throw new Error(String(code)); }) as any);
-    const errMock = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    expect(() => {
-      withFsMocks(
-        {
-          [path.join(repoRoot, 'TASKS.md')]: md,
-          [path.join(repoRoot, 'task_queue.json')]: queue,
-        },
-        () => {
-          jest.isolateModules(() => {
-            require('../../scripts/validate-tasks.ts');
-          });
-        }
-      );
-    }).toThrow('1');
+    const res = runValidate(md, queue);
+    expect(res.status).toBe(1);
 
     fs.rmSync(dir, { recursive: true, force: true });
-    errMock.mockRestore();
-    exitMock.mockRestore();
+  });
+
+  it('prints success when files match', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'valt-'));
+    const md = path.join(dir, 'TASKS.md');
+    const queue = path.join(dir, 'task_queue.json');
+    fs.writeFileSync(md, '- [ ] Task 1: test\n');
+    fs.writeFileSync(queue, JSON.stringify([{ id: 1, description: 'test', status: 'pending' }], null, 2));
+
+    const res = runValidate(md, queue);
+    expect(res.status).toBe(0);
+    expect(res.stdout).toContain('Tasks are in sync.');
+
+    fs.rmSync(dir, { recursive: true, force: true });
   });
 });
