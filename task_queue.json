@@ -82,7 +82,7 @@
   {
     "id": 33,
     "description": "notify on daily Google Trends spike",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 34,
@@ -422,6 +422,11 @@
   {
     "id": 101,
     "description": "unify memory update hook with update-memory.ts script",
+    "status": "done"
+  },
+  {
+    "id": 102,
+    "description": "rewrite codex_context.sh with concise git/sed/jq and add test",
     "status": "done"
   }
 ]

@@ -66,6 +66,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 99: cache dev dependencies with dev-deps script and CI caching
 - [ ] Task 100: create setup-quickstart guide linked in README and AGENTS
 - [x] Task 101: unify memory update hook with update-memory.ts script
+- [x] Task 102: rewrite codex_context.sh with concise git/sed/jq and add test
 
 
 ### Bitcoin Dashboard
