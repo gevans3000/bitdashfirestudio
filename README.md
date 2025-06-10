@@ -204,6 +204,14 @@ npm run mem-rotate   # prune memory.log
 npm run snap-rotate  # prune context.snapshot.md
 ```
 
+### Manual Archival
+
+Use this command to stash the current memory files before resetting them:
+
+```bash
+npm run archive-memory  # moves memory.log and snapshot to ./logs/archive/
+```
+
 A weekly GitHub workflow automatically runs `mem-rotate` and `clean-locks` to push the
 latest trimmed logs. Set `MEM_PATH` and `SNAPSHOT_PATH` if your memory files live elsewhere and
 adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the number of retained entries.

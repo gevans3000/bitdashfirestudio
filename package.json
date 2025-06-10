@@ -32,6 +32,7 @@
     "mem-check": "ts-node scripts/memory-check.ts",
     "mem-update": "node --loader ts-node/esm scripts/update-memory.ts",
     "memory": "ts-node scripts/memory-cli.ts",
+    "archive-memory": "ts-node scripts/archive-memory.ts",
     "memgrep": "ts-node scripts/memgrep.ts",
     "clean-locks": "ts-node scripts/clean-locks.ts",
     "codex": "bash ./scripts/codex_context.sh",

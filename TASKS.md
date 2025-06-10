@@ -69,6 +69,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 102: rewrite codex_context.sh with concise git/sed/jq and add test
 - [x] Task 103: check COMMIT_EDITMSG for '^Task [0-9]+:' in pre-commit and abort if missing
 - [x] Task 104: merge memory scripts into update-memory.ts with mem-update command and tests
+- [x] Task 105: add archive-memory script and docs
 
 
 ### Bitcoin Dashboard
