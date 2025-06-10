@@ -13,6 +13,13 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+      - name: Cache dev dependencies
+        uses: actions/cache@v4
+        with:
+          path: .cache/node_modules.tar.gz
+          key: ${{ runner.os }}-devdeps-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-devdeps-
       - run: npm run dev-deps
       - run: npm run mem-rotate
       - run: ts-node scripts/memory-check.ts
