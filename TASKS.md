@@ -61,7 +61,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 95: consolidate memory scripts into memory-cli with yargs
 - [x] Task 96: delete commit.log and update docs, tests, workflows
 - [ ] Task 97: run npm ci only once in autoTaskRunner loop
-- [ ] Task 98: rotate memory.log to 300 lines via pre-commit
+- [x] Task 98: rotate memory.log to 300 lines via pre-commit (obsolete)
 - [ ] Task 99: cache dev dependencies with dev-deps script and CI caching
 - [ ] Task 100: create setup-quickstart guide linked in README and AGENTS
 - [x] Task 101: unify memory update hook with update-memory.ts script

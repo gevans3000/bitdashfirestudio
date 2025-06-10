@@ -142,10 +142,13 @@ See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
 4. Commit messages must start with `Task <number>:`. The `commit-msg` hook runs
    `commitlint` to verify this format.
 5. A pre-commit hook greps `.git/COMMIT_EDITMSG` for `^Task [0-9]+:` and aborts
-   if the pattern is missing before running lint, tests and memory checks.
-6. After each commit a single `post-commit` hook runs `node --loader ts-node/esm scripts/update-memory.ts`.
+   if the pattern is missing before running lint, tests and memory checks. This
+   hook **does not** modify or rotate memory files.
+6. After each commit a single `post-commit` hook runs
+   `node --loader ts-node/esm scripts/update-memory.ts`.
    This script appends the commit to `memory.log`, updates `context.snapshot.md`,
-   rotates the log to 300 lines and validates memory consistency.
+   rotates the log to 300 lines and validates memory consistency. Rotation only
+   happens here, never during pre-commit.
 7. When resuming after a break, tail the end of `memory.log` to review recent commits.
 8. Test and backtest outputs are logged in `logs/`.
 
