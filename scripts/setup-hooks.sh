@@ -5,7 +5,7 @@ POST_HOOK_PATH="$REPO_ROOT/.git/hooks/post-commit"
 
 cat > "$POST_HOOK_PATH" <<'HOOK'
 #!/usr/bin/env bash
-node --loader ts-node/esm scripts/update-memory.ts >/dev/null 2>&1
+npm run mem-update >/dev/null 2>&1
 HOOK
 
 chmod +x "$POST_HOOK_PATH"

@@ -433,5 +433,10 @@
     "id": 103,
     "description": "check COMMIT_EDITMSG for '^Task [0-9]+:' in pre-commit script; abort commit if pattern missing",
     "status": "done"
+  },
+  {
+    "id": 104,
+    "description": "merge memory scripts into update-memory.ts with mem-update command and tests",
+    "status": "done"
   }
 ]

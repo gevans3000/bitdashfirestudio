@@ -30,6 +30,7 @@
     "validate-tasks": "ts-node scripts/validate-tasks.ts",
     "snap-rotate": "ts-node scripts/snapshot-rotate.ts",
     "mem-check": "ts-node scripts/memory-check.ts",
+    "mem-update": "node --loader ts-node/esm scripts/update-memory.ts",
     "memory": "ts-node scripts/memory-cli.ts",
     "memgrep": "ts-node scripts/memgrep.ts",
     "clean-locks": "ts-node scripts/clean-locks.ts",
