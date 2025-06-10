@@ -52,7 +52,7 @@ The application uses a file-based persistent memory system. Key files and their 
 
 ### 2.2. Automation (`autoTaskRunner`)
 
-*   **Core Script:** `src/scripts/autoTaskRunner.ts` (executed via `scripts/autoTaskRunner.js`).
+*   **Core Script:** `src/scripts/autoTaskRunner.ts`.
 *   **Workflow:**
     1.  Reads `TASKS.md` to find the next pending task (line starting with `- [ ]`).
     2.  Marks the task as complete (`- [x]`) in `TASKS.md`.
@@ -105,7 +105,6 @@ The application uses a file-based persistent memory system. Key files and their 
     *   `memory-check.ts`: Validates memory files.
     *   `mem-rotate.ts`: Rotates `memory.log`.
     *   `commitlog.ts`: Creates `logs/commit.log`.
-    *   `autoTaskRunner.js`: Node.js wrapper to run the TypeScript auto-runner.
 *   **`src/scripts/`:** Contains more complex TypeScript logic, currently housing the main `autoTaskRunner.ts`.
 *   **`logs/`:** Directory for various log files generated during operation.
 *   **Other `src/` directories (e.g., `src/app/`, `src/components/`, `src/lib/`):** Appear to be related to a Next.js application, which may or may not be directly integrated with the memory/automation system described here. This document primarily focuses on the memory and automation aspects found in `scripts/` and `src/scripts/`.
@@ -144,7 +143,7 @@ The application uses a file-based persistent memory system. Key files and their 
 
 *   **Automated Task Runner:**
     ```bash
-    node scripts/autoTaskRunner.js
+    npm run auto
     ```
     This will start processing tasks from `TASKS.md`.
 
