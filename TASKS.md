@@ -74,6 +74,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [ ] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
 - [x] Task 108: delete obsolete memory scripts from scripts/ and package.json
 - [x] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
+- [ ] Task 110: investigate and fix broken post-commit hook
 
 
 ### Bitcoin Dashboard
