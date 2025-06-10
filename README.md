@@ -141,7 +141,9 @@ See `docs/CODEX_WORKFLOW.md` for tips on using the Codex agent effectively.
 3. Open `TASKS.md` and complete the next task.
 4. Commit messages must start with `Task <number>:`. The `commit-msg` hook runs
    `commitlint` to verify this format.
-5. After each commit `memory.log` and `context.snapshot.md` are refreshed automatically by the `post-commit` hook. The hook runs `npm run mem-check` after rotating the log and trims `memory.log` to the last 200 entries.
+5. After each commit a single `post-commit` hook runs `node --loader ts-node/esm scripts/update-memory.ts`.
+   This script appends the commit to `memory.log`, updates `context.snapshot.md`,
+   rotates the log to 300 lines and validates memory consistency.
 6. When resuming after a break, tail the end of `memory.log` to review recent commits.
 7. Test and backtest outputs are logged in `logs/`.
 
@@ -179,7 +181,7 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | `npm run mem-status` | Show last memory entry, next mem id and pending task |
 | `npm run validate-tasks` | Ensure TASKS.md matches task_queue.json |
 | `npm run clean-locks` | Remove stale `.lock` files across the repository |
-| `ts-node scripts/update-snapshot.ts` | Append commit summary and next task to `context.snapshot.md` |
+| `node --loader ts-node/esm scripts/update-memory.ts` | Update `memory.log`, `context.snapshot.md`, rotate the log and validate memory |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
 | `ts-node scripts/snapshot-json.ts` | Export `context.snapshot.md` to `snapshot.json` |

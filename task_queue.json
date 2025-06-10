@@ -418,5 +418,10 @@
     "id": 100,
     "description": "create setup-quickstart guide linked in README and AGENTS",
     "status": "pending"
+  },
+  {
+    "id": 101,
+    "description": "unify memory update hook with update-memory.ts script",
+    "status": "done"
   }
 ]
