@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { repoRoot, memPath, snapshotPath, withFileLock } from './memory-utils';
+import { repoRoot, memPath, snapshotPath, withFileLock } from '../memory-utils';
 
 const archiveDir = path.join(repoRoot, 'logs', 'archive');
 fs.mkdirSync(archiveDir, { recursive: true });

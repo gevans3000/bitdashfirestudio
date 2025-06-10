@@ -77,6 +77,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [ ] Task 110: investigate and fix broken post-commit hook
 - [ ] Task 111: remove obsolete docs from repo
 - [ ] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
+- [ ] Task 113: move archive & restore utilities into scripts/memory and document usage
 
 
 ### Bitcoin Dashboard
