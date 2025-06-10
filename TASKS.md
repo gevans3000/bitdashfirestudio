@@ -70,7 +70,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 104: merge memory scripts into update-memory.ts with mem-update command and tests
 - [x] Task 105: add archive-memory script and docs
 
-- [ ] Task 106: remove task_queue.json; autoTaskRunner reads TASKS.md; update docs
+- [x] Task 106: remove task_queue.json; autoTaskRunner reads TASKS.md; update docs
 - [ ] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
 - [x] Task 108: delete obsolete memory scripts from scripts/ and package.json
 - [x] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
