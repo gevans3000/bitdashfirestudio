@@ -65,6 +65,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 98: rotate memory.log to 300 lines via pre-commit
 - [ ] Task 99: cache dev dependencies with dev-deps script and CI caching
 - [ ] Task 100: create setup-quickstart guide linked in README and AGENTS
+- [x] Task 101: unify memory update hook with update-memory.ts script
 
 
 ### Bitcoin Dashboard
