@@ -67,6 +67,7 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [ ] Task 100: create setup-quickstart guide linked in README and AGENTS
 - [x] Task 101: unify memory update hook with update-memory.ts script
 - [x] Task 102: rewrite codex_context.sh with concise git/sed/jq and add test
+- [x] Task 103: check COMMIT_EDITMSG for '^Task [0-9]+:' in pre-commit and abort if missing
 
 
 ### Bitcoin Dashboard

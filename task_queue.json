@@ -87,192 +87,192 @@
   {
     "id": 34,
     "description": "integrate mempool fee pressure gauge",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 35,
     "description": "implement risk/position-size calculator logic",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 36,
     "description": "add UI for risk/position-size calculator",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 37,
     "description": "track trades for session stats",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 38,
     "description": "display session P&L and hit rate",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 39,
     "description": "fetch SPY volume using Yahoo Finance",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 40,
     "description": "correlate SPY volume with BTC moves",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 41,
     "description": "collect Crypto-Twitter sentiment data",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 42,
     "description": "compute short-term sentiment index",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 43,
     "description": "stream liquidations and open interest",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 44,
     "description": "merge liquidation and OI signals",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 45,
     "description": "calculate rolling BTC/SPX correlation",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 46,
     "description": "chart correlation over time",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 47,
     "description": "pull Fed funds rate schedule",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 48,
     "description": "integrate economic-event calendar feed",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 49,
     "description": "Binance order-book WebSocket",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 50,
     "description": "stream Binance OHLCV candles",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 51,
     "description": "CoinGecko historical BTC fetcher",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 52,
     "description": "Yahoo Finance fetcher for SPX/SPY/VIX/DXY",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 53,
     "description": "FRED macro series fetcher",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 54,
     "description": "caching layer with 15 s TTL and rate limits",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 55,
     "description": "show toast alerts on signals",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 56,
     "description": "configurable alert panel",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 57,
     "description": "quick-entry trade journal",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 58,
     "description": "annotate historical signals on the chart",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 59,
     "description": "unit tests for each indicator",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 60,
     "description": "validate indicators on historical data",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 61,
     "description": "real-time backtester with metrics",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 62,
     "description": "generate API reference documentation",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 63,
     "description": "create user guide",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 64,
     "description": "write developer setup guide",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 65,
     "description": "document signals.json thresholds",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 66,
     "description": "describe each configuration parameter",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 67,
     "description": "key-level proximity indicators",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 68,
     "description": "customizable TradingView widget",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 69,
     "description": "one-click indicator toggles",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 70,
     "description": "real-time strategy-performance tracker",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 71,
     "description": "monitor data latency and system load",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 72,
@@ -402,22 +402,22 @@
   {
     "id": 97,
     "description": "run npm ci only once in autoTaskRunner loop",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 98,
     "description": "rotate memory.log to 300 lines via pre-commit",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 99,
     "description": "cache dev dependencies with dev-deps script and CI caching",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 100,
     "description": "create setup-quickstart guide linked in README and AGENTS",
-    "status": "pending"
+    "status": "done"
   },
   {
     "id": 101,
@@ -427,6 +427,11 @@
   {
     "id": 102,
     "description": "rewrite codex_context.sh with concise git/sed/jq and add test",
+    "status": "done"
+  },
+  {
+    "id": 103,
+    "description": "check COMMIT_EDITMSG for '^Task [0-9]+:' in pre-commit script; abort commit if pattern missing",
     "status": "done"
   }
 ]
