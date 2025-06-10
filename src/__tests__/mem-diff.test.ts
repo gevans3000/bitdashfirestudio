@@ -1,5 +1,6 @@
 import * as cp from 'child_process';
 import * as utils from '../../scripts/memory-utils';
+import { memDiff } from '../../scripts/memory-cli';
 
 describe('mem-diff', () => {
   it('prints hashes missing from memory.log', () => {
@@ -12,7 +13,7 @@ describe('mem-diff', () => {
     const logMock = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     jest.isolateModules(() => {
-      require('../../scripts/mem-diff.ts');
+      memDiff();
     });
 
     expect(logMock).toHaveBeenCalledWith('def456');
@@ -35,7 +36,7 @@ describe('mem-diff', () => {
     const logMock = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     jest.isolateModules(() => {
-      require('../../scripts/mem-diff.ts');
+      memDiff();
     });
 
     expect(logMock).toHaveBeenCalledWith('All commits present in memory.log');

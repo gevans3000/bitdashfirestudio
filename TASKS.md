@@ -76,6 +76,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
 - [ ] Task 110: investigate and fix broken post-commit hook
 - [ ] Task 111: remove obsolete docs from repo
+- [ ] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
 
 
 ### Bitcoin Dashboard

@@ -2,6 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import * as utils from '../../scripts/memory-utils';
+import { memStatus } from '../../scripts/memory-cli';
 
 const { memPath, snapshotPath, repoRoot } = utils;
 
@@ -44,7 +45,7 @@ describe('mem-status', () => {
       },
       () => {
         jest.isolateModules(() => {
-          require('../../scripts/mem-status.ts');
+          memStatus();
         });
       }
     );

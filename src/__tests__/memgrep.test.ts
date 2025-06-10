@@ -2,6 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { memPath, snapshotPath } from '../../scripts/memory-utils';
+import { memgrep } from '../../scripts/memory-cli';
 
 function withFsMocks(paths: Record<string, string>, fn: () => void) {
   const origExists = fs.existsSync;
@@ -46,8 +47,7 @@ describe('memgrep', () => {
 
     withFsMocks({ [memPath]: tmpMem, [snapshotPath]: tmpSnap }, () => {
       jest.isolateModules(() => {
-        process.argv = ['node', 'memgrep.ts', 'fix'];
-        require('../../scripts/memgrep.ts');
+        memgrep('fix');
       });
     });
 
@@ -72,8 +72,7 @@ describe('memgrep', () => {
 
     withFsMocks({ [memPath]: tmpMem, [snapshotPath]: tmpSnap }, () => {
       jest.isolateModules(() => {
-        process.argv = ['node', 'memgrep.ts', 'nomatch'];
-        require('../../scripts/memgrep.ts');
+        memgrep('nomatch');
       });
     });
 
@@ -104,16 +103,7 @@ describe('memgrep', () => {
 
     withFsMocks({ [memPath]: tmpMem, [snapshotPath]: tmpSnap }, () => {
       jest.isolateModules(() => {
-        process.argv = [
-          'node',
-          'memgrep.ts',
-          'fix',
-          '--since',
-          '2025-01-02T00:00:00Z',
-          '--until',
-          '2025-01-04T00:00:00Z',
-        ];
-        require('../../scripts/memgrep.ts');
+        memgrep('fix', '2025-01-02T00:00:00Z', '2025-01-04T00:00:00Z');
       });
     });
 
