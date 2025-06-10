@@ -7,7 +7,7 @@ Refer to [docs/SETUP_QUICKSTART.md](docs/SETUP_QUICKSTART.md) for a rapid local 
 
 
 This charter is optimized around **Git-based memory**. Every commit and
-summary becomes part of the agent's long-term knowledge. Keep the task queue,
+summary becomes part of the agent's long-term knowledge. Keep `TASKS.md`,
 memory files and commit history aligned so Codex can resume work even after a
 context reset.
 
