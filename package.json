@@ -27,7 +27,6 @@
     "memlog": "ts-node scripts/update-memory-log.ts",
     "mem-rotate": "ts-node scripts/mem-rotate.ts",
     "mem-status": "ts-node scripts/mem-status.ts",
-    "validate-tasks": "ts-node scripts/validate-tasks.ts",
     "snap-rotate": "ts-node scripts/snapshot-rotate.ts",
     "mem-check": "ts-node scripts/memory-check.ts",
     "mem-update": "node --loader ts-node/esm scripts/update-memory.ts",

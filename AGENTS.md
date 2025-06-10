@@ -11,8 +11,8 @@ summary becomes part of the agent's long-term knowledge. Keep the task queue,
 memory files and commit history aligned so Codex can resume work even after a
 context reset.
 
-Codex operates through a lightweight **harness** that reads `task_queue.json`,
-runs lint, test and backtest commands, then commits the resulting changes. Each
+Codex operates through a lightweight **harness** that reads `TASKS.md`, runs
+lint, test and backtest commands, then commits the resulting changes. Each
 commit acts as a memory checkpoint so the agent can safely resume even after the
 workspace resets.
 
@@ -20,7 +20,7 @@ workspace resets.
 
 ## Roles & Responsibilities
 
-- **Planner** – reads `task_queue.json` to prioritize and split work.
+- **Planner** – reads `TASKS.md` to prioritize and split work.
 - **Coder** – implements features and fixes according to each task.
 - **Tester** – runs lint, test and backtest commands, reporting failures.
 - **Reviewer** – checks commit quality and ensures guidelines are met.
@@ -60,8 +60,8 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 
 1. **Single Commit (bootstrap, task or fix)**
    a. Validate & patch this file (`AGENTS.md`) and helper files so automation rules exist.
-   b. If the user supplies a new task in ChatGPT, append it to `TASKS.md` and `task_queue.json` with the next ID **before** starting work. Run `npm run validate-tasks` to keep both files in sync. The standard automation loop still applies—lint, test, backtest, commit and update memory files.
-   c. When working on a task, load `task_queue.json` and `TASKS.md` to choose the first entry with `status: "pending"`.
+   b. If the user supplies a new task in ChatGPT, append it to `TASKS.md` with the next ID **before** starting work. The standard automation loop still applies—lint, test, backtest, commit and update memory files.
+   c. When working on a task, load `TASKS.md` to choose the first unchecked entry.
    d. Implement that task or fix.
    e. Ensure package scripts `lint`, `test`, `backtest` run. Run `npm ci` if `node_modules` are missing, then `npm run lint && npm run test && npm run backtest`.
    f. Commit using **Conventional Commits** (`feat|fix|chore|docs|test(scope): …`).
@@ -69,7 +69,7 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
    h. Append the same summary with metadata to `memory.log`.
    i. Append a memory block to `context.snapshot.md` detailing the commit hash,
       timestamp and next goal.
-   j. Mark the task `done` in `task_queue.json` and check the box in `TASKS.md`.
+   j. Check the task box in `TASKS.md`.
    k. Rebase → merge → delete branch.
 2. **HALT** – await next prompt.
 
@@ -86,7 +86,6 @@ These roles operate sequentially within the `DevAgent` to keep automation predic
 | `context.snapshot.md` | Live chronological memory log |
 | `memory.log`          | Append-only history of commit summaries and hashes |
 | Git history           | Primary record of changes, diffs and context |
-| `task_queue.json`     | Machine-readable list of tasks with status |
 | `/logs/*.txt`         | Fail‑logs, backtest output, debug notes               |
 
 Codex must **read `memory.log` and recent commit messages** on each new session to rebuild context.
@@ -191,7 +190,6 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 * Tests & lint pass
 * `memory.log` updated with commit hash and summary
 * Commit merged to `main`
-* `task_queue.json` and `TASKS.md` in sync
 * No unresolved errors or conflicts
 
 ---
@@ -200,7 +198,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 1. **Pre-Session** – run `npm run dev-deps` if `node_modules` is missing, then read `memory.log` and recent commits.
 2. **After Commit** – append the 333‑token summary to `memory.log` and continue with `npm run auto` when applicable.
-3. **Sync Tasks** – update `task_queue.json` and check the box in `TASKS.md`.
+3. **Sync Tasks** – check the task box in `TASKS.md`.
 4. **Reference History** – use commit hashes from `memory.log` when describing follow-up tasks.
 
 ### Codex Workflow

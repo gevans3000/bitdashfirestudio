@@ -9,7 +9,6 @@ This document distills the key points from `CODEX-INSTRUCTIONS.txt` for working 
 - Include a 333-token body that is appended to `memory.log`.
 - Keep the subject line around 50 characters; wrap body lines near 72 characters.
 - Commit history and `memory.log` act as long-term memory. Review them before starting a new session.
-- Keep `task_queue.json` synchronized with `TASKS.md` so automation can resume accurately.
 - Run `npm ci` once at the start of a session. Subsequent commits can reuse the installed `node_modules`.
 
 Each session ends after a single commit unless instructions explicitly allow more work. Start a new session to continue with the next commit.
@@ -37,7 +36,7 @@ Keep this workspace running until I say "close workspace".
 
 - Run `npm ci` once at the start of each session.
 - Review `memory.log` for the latest summary and next objective.
-- Execute the next pending item from `task_queue.json` and update `TASKS.md`.
+- Execute the next pending item from `TASKS.md` and commit the changes.
 - After each commit `memory.log` is updated with metadata.
 - When resuming later, view the tail of `memory.log` to review recent commits.
 - Test and backtest outputs are saved to `logs/` for reference. If they fail, fix and recommit.

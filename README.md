@@ -174,14 +174,13 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 
 | Command | Purpose |
 | ------- | ------- |
-| `npm run auto` | Execute the AutoTaskRunner to process tasks in `task_queue.json`; each run validates memory after committing |
+| `npm run auto` | Execute the AutoTaskRunner to process tasks in `TASKS.md`; each run validates memory after committing |
 | `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, list, diff, json, clean-locks, check, locate, rebuild, sync, snapshot-update |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
 | `npm run mem-diff` | List commit hashes missing from `memory.log` |
 | `npm run memgrep` | Search `memory.log` and `context.snapshot.md` for a pattern |
 | `npm run mem-status` | Show last memory entry, next mem id and pending task |
-| `npm run validate-tasks` | Ensure TASKS.md matches task_queue.json |
 | `npm run clean-locks` | Remove stale `.lock` files across the repository |
 | `node --loader ts-node/esm scripts/update-memory.ts` | Update `memory.log`, `context.snapshot.md`, rotate the log and validate memory |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |

@@ -4,7 +4,6 @@ if ! grep -qE '^Task [0-9]+:' "$MSG_FILE"; then
   echo "Aborting commit: message must start with 'Task <number>:'" >&2
   exit 1
 fi
-npm run validate-tasks || true
 npm run lint || true
 npm run test || true
 npm run mem-check || true
