@@ -72,7 +72,8 @@ export function runTasks() {
       });
       fs.writeFileSync(path.join(logDir, `block-${taskNum}.txt`), 'Task failed.');
       console.error('Task failed. See logs for details.');
-      process.exit(1);
+      // halt current task but continue loop so other tasks run
+      return;
     }
 
     execSync('git add TASKS.md logs signals.json');
@@ -113,7 +114,8 @@ export function runTasks() {
         atomicWrite(signalsPath, JSON.stringify(signals, null, 2) + '\n');
       });
       console.error('Memory validation failed. See logs for details.');
-      process.exit(1);
+      // stop this task but keep runner alive for subsequent tasks
+      return;
     }
 
     tryExec('git pull --rebase origin main');
