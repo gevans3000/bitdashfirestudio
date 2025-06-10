@@ -438,5 +438,10 @@
     "id": 104,
     "description": "merge memory scripts into update-memory.ts with mem-update command and tests",
     "status": "done"
+  },
+  {
+    "id": 105,
+    "description": "add archive-memory script and docs",
+    "status": "done"
   }
 ]
