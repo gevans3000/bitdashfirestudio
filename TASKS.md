@@ -71,6 +71,11 @@ All tasks live in `task_queue.json` as `{ "id": number, "description": string, "
 - [x] Task 104: merge memory scripts into update-memory.ts with mem-update command and tests
 - [x] Task 105: add archive-memory script and docs
 
+- [ ] Task 106: remove task_queue.json; autoTaskRunner reads TASKS.md; update docs
+- [ ] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
+- [ ] Task 108: delete obsolete memory scripts from scripts/ and package.json
+- [ ] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
+
 
 ### Bitcoin Dashboard
 

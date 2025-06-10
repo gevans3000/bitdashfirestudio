@@ -443,5 +443,25 @@
     "id": 105,
     "description": "add archive-memory script and docs",
     "status": "done"
+  },
+  {
+    "id": 106,
+    "description": "remove task_queue.json; autoTaskRunner reads TASKS.md; update docs",
+    "status": "pending"
+  },
+  {
+    "id": 107,
+    "description": "rotate memory.log in update-memory.ts; drop pre-commit rotation",
+    "status": "pending"
+  },
+  {
+    "id": 108,
+    "description": "delete obsolete memory scripts from scripts/ and package.json",
+    "status": "pending"
+  },
+  {
+    "id": 109,
+    "description": "define single workflow entry; update README, AGENTS, CODEX_START",
+    "status": "pending"
   }
 ]
