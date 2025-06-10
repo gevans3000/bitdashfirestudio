@@ -2,5 +2,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 git pull --rebase
-bash ./scripts/setup_dev.sh || exit 1
+bash ./scripts/setup_dev.sh
 echo "🟢 Environment ready. Use 'npm run codex' to begin a session."
