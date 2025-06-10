@@ -1,0 +1,744 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> bitdash-firestudio@1.0.0 test
+> jest
+
+FAIL src/__tests__/autoTaskRunner.state.test.ts
+  ● autoTaskRunner writes › uses locks and atomic writes for tasks and signals
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      78 |     const lockMock = jest.spyOn(utils, 'withFileLock').mockImplementation((_, fn) => { fn(); });
+      79 |
+    > 80 |     const spawnMock = jest.spyOn(cp, 'spawnSync').mockReturnValue({ stdout: '', stderr: '', status: 0 } as any);
+         |                            ^
+      81 |     const execMock = jest.spyOn(cp, 'execSync').mockReturnValue(Buffer.from(''));
+      82 |
+      83 |     withFsMocks(map, () => {
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/autoTaskRunner.state.test.ts:80:28)
+
+  ● autoTaskRunner writes › halts when memory check fails
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      112 |     const lockMock = jest.spyOn(utils, 'withFileLock').mockImplementation((_, fn) => { fn(); });
+      113 |
+    > 114 |     const spawnMock = jest.spyOn(cp, 'spawnSync').mockImplementation((cmd: string) => {
+          |                            ^
+      115 |       if (cmd === 'ts-node scripts/memory-check.ts') {
+      116 |         return { stdout: 'fail', stderr: '', status: 1 } as any;
+      117 |       }
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/autoTaskRunner.state.test.ts:114:28)
+
+FAIL src/__tests__/memory-check.test.ts
+  ● memory-check › passes for ordered log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      45 |     );
+      46 |     const execMock = jest
+    > 47 |       .spyOn(cp, 'execSync')
+         |        ^
+      48 |       .mockImplementation((cmd: string) => {
+      49 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('test');
+      50 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:47:8)
+
+  ● memory-check › allows commit after task with earlier timestamp
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      80 |     );
+      81 |     const execMock = jest
+    > 82 |       .spyOn(cp, 'execSync')
+         |        ^
+      83 |       .mockImplementation((cmd: string) => {
+      84 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('msg');
+      85 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:82:8)
+
+  ● memory-check › fails for unordered log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      114 |     );
+      115 |     const execMock = jest
+    > 116 |       .spyOn(cp, 'execSync')
+          |        ^
+      117 |       .mockImplementation((cmd: string) => {
+      118 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('test');
+      119 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:116:8)
+
+  ● memory-check › fails for missing mem-id
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      154 |     );
+      155 |     const execMock = jest
+    > 156 |       .spyOn(cp, 'execSync')
+          |        ^
+      157 |       .mockImplementation((cmd: string) => {
+      158 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('test');
+      159 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:156:8)
+
+  ● memory-check › fails for mismatched summary
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      187 |     );
+      188 |     const execMock = jest
+    > 189 |       .spyOn(cp, 'execSync')
+          |        ^
+      190 |       .mockImplementation((cmd: string) => {
+      191 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('correct');
+      192 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:189:8)
+
+  ● memory-check › fails for invalid entry format
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      220 |     );
+      221 |     const execMock = jest
+    > 222 |       .spyOn(cp, 'execSync')
+          |        ^
+      223 |       .mockImplementation((cmd: string) => {
+      224 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('something');
+      225 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:222:8)
+
+  ● memory-check › fails when commit hashes repeat
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      257 |     );
+      258 |     const execMock = jest
+    > 259 |       .spyOn(cp, 'execSync')
+          |        ^
+      260 |       .mockImplementation((cmd: string) => {
+      261 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('c');
+      262 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:259:8)
+
+  ● memory-check › fails when tasks timestamps decrease
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      295 |     );
+      296 |     const execMock = jest
+    > 297 |       .spyOn(cp, 'execSync')
+          |        ^
+      298 |       .mockImplementation((cmd: string) => {
+      299 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('t');
+      300 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:297:8)
+
+  ● memory-check › fails when commit timestamps decrease
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      333 |     );
+      334 |     const execMock = jest
+    > 335 |       .spyOn(cp, 'execSync')
+          |        ^
+      336 |       .mockImplementation((cmd: string) => {
+      337 |         if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('m');
+      338 |         return Buffer.from('');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-check.test.ts:335:8)
+
+FAIL src/__tests__/mem-rotate.test.ts
+  ● mem-rotate › truncates memory.log and backs up previous log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      92 |     fs.writeFileSync(tmpMem, "1\n2\n3\n4\n5\n6\n");
+      93 |
+    > 94 |     const execMock = jest.spyOn(cp, "execSync").mockReturnValue(Buffer.from(""));
+         |                           ^
+      95 |
+      96 |     const map = {
+      97 |       [memPath]: tmpMem,
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/mem-rotate.test.ts:94:27)
+
+  ● mem-rotate › does not modify files during dry run
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      126 |     fs.writeFileSync(tmpMem, "1\n2\n3\n");
+      127 |
+    > 128 |     const execMock = jest.spyOn(cp, "execSync");
+          |                           ^
+      129 |
+      130 |     const map = {
+      131 |       [memPath]: tmpMem,
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/mem-rotate.test.ts:128:27)
+
+FAIL src/__tests__/memory-utils.test.ts
+  ● Console
+
+    console.error
+      Malformed memory line: abc123 just text
+
+      223 |       };
+      224 |     } else {
+    > 225 |       console.error(`Malformed memory line: ${raw}`);
+          |               ^
+      226 |       entry = {
+      227 |         entryType: 'commit',
+      228 |         hash,
+
+      at Object.parseMemoryLines (scripts/memory-utils.ts:225:15)
+      at Object.<anonymous> (src/__tests__/memory-utils.test.ts:339:27)
+
+    console.error
+      Malformed memory line: abcd123 | test
+
+      223 |       };
+      224 |     } else {
+    > 225 |       console.error(`Malformed memory line: ${raw}`);
+          |               ^
+      226 |       entry = {
+      227 |         entryType: 'commit',
+      228 |         hash,
+
+      at Object.parseMemoryLines (scripts/memory-utils.ts:225:15)
+      at Object.<anonymous> (src/__tests__/memory-utils.test.ts:355:27)
+
+  ● update-memory-log › appends new commit entries from git log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      123 |
+      124 |     const execMock = jest
+    > 125 |       .spyOn(cp, "execSync")
+          |        ^
+      126 |       .mockImplementation((cmd: string) => {
+      127 |         if (cmd.startsWith("git cat-file -e")) return Buffer.from("");
+      128 |         if (cmd.startsWith("git log")) {
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-utils.test.ts:125:8)
+
+  ● update-memory-log › runs memory-check when --verify flag passed
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      157 |
+      158 |     const execMock = jest
+    > 159 |       .spyOn(cp, "execSync")
+          |        ^
+      160 |       .mockImplementation((cmd: string) => {
+      161 |         if (cmd.startsWith("git cat-file -e")) return Buffer.from("");
+      162 |         if (cmd.startsWith("git log")) {
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-utils.test.ts:159:8)
+
+  ● update-memory-log › deduplicates existing entries
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      194 |
+      195 |     const execMock = jest
+    > 196 |       .spyOn(cp, "execSync")
+          |        ^
+      197 |       .mockReturnValue(Buffer.from(""));
+      198 |
+      199 |     withFsMocks({ [memPath]: tmpMem }, () => {
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-utils.test.ts:196:8)
+
+FAIL src/__tests__/snapshot-rotate.test.ts
+  ● Console
+
+    console.log
+      context.snapshot.md trimmed to last 2 entries
+
+      at Object.<anonymous> (scripts/snapshot-rotate.ts:43:13)
+
+    console.log
+      [dry-run] Would backup to /workspace/bitdashfirestudio/logs/context.snapshot.2025-01-01T00:00:00.000Z.bak and trim context.snapshot.md to last 1 entries
+
+      at Object.<anonymous> (scripts/snapshot-rotate.ts:35:13)
+
+  ● snapshot-rotate › truncates context.snapshot.md and creates backup
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 0
+    + Received  + 1
+
+      ### 2025-01-01 | mem-002
+      b
+      ### 2025-01-02 | mem-003
+      c
+
+    +
+
+      114 |     const snapOut = fs.readFileSync(tmpSnap, 'utf8');
+      115 |     const backupOut = fs.readFileSync(tmpBackup, 'utf8');
+    > 116 |     expect(snapOut).toBe(
+          |                     ^
+      117 |       '### 2025-01-01 | mem-002\n' +
+      118 |         'b\n' +
+      119 |         '### 2025-01-02 | mem-003\n' +
+
+      at Object.<anonymous> (src/__tests__/snapshot-rotate.test.ts:116:21)
+
+FAIL src/__tests__/update-snapshot.test.ts
+  ● update-snapshot › calls append-memory with locking and atomic write
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      106 |     withFsMocks(map, openCalls, renameCalls, unlinkCalls, () => {
+      107 |       const execMock = jest
+    > 108 |         .spyOn(cp, 'execSync')
+          |          ^
+      109 |         .mockImplementation((cmd: string) => {
+      110 |           if (cmd.startsWith('git log -1')) return Buffer.from(summary);
+      111 |           if (cmd.startsWith("grep -m 1")) return Buffer.from(nextTask);
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at src/__tests__/update-snapshot.test.ts:108:10
+      at withFsMocks (src/__tests__/update-snapshot.test.ts:80:5)
+      at Object.<anonymous> (src/__tests__/update-snapshot.test.ts:106:5)
+
+FAIL src/__tests__/memgrep.test.ts
+  ● memgrep › prints matching lines with ids or hashes
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: StringContaining "abc123:"
+    Received array: ["abc123: abc123 | fix bug | file | 2025-01-01T00:00:00Z", "mem-001: minor fix details"]
+
+    Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.
+
+      53 |
+      54 |     const outputs = logMock.mock.calls.map((c) => c[0]);
+    > 55 |     expect(outputs).toContain(expect.stringContaining('abc123:'));
+         |                     ^
+      56 |     expect(outputs).toContain('mem-001: minor fix details');
+      57 |     expect(outputs.some((o) => /def456/.test(o))).toBe(false);
+      58 |     expect(outputs.some((o) => /mem-002/.test(o))).toBe(false);
+
+      at Object.<anonymous> (src/__tests__/memgrep.test.ts:55:21)
+
+  ● memgrep › prints nothing when no match found
+
+    expect(jest.fn()).not.toHaveBeenCalled()
+
+    Expected number of calls: 0
+    Received number of calls: 2
+
+    1: "abc123: abc123 | fix bug | file | 2025-01-01T00:00:00Z"
+    2: "mem-001: minor fix details"
+
+      78 |     });
+      79 |
+    > 80 |     expect(logMock).not.toHaveBeenCalled();
+         |                         ^
+      81 |
+      82 |     logMock.mockRestore();
+      83 |     fs.rmSync(dir, { recursive: true, force: true });
+
+      at Object.<anonymous> (src/__tests__/memgrep.test.ts:80:25)
+
+  ● memgrep › respects --since and --until range
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: StringContaining "bbb222:"
+    Received array: ["abc123: abc123 | fix bug | file | 2025-01-01T00:00:00Z", "mem-001: minor fix details", "bbb222: bbb222 | fix late | file | 2025-01-03T00:00:00Z"]
+
+    Looks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.
+
+      119 |
+      120 |     const outputs = logMock.mock.calls.map((c) => c[0]);
+    > 121 |     expect(outputs).toContain(expect.stringContaining('bbb222:'));
+          |                     ^
+      122 |     expect(outputs).toContain('mem-011: late note');
+      123 |     expect(outputs.some((o) => /aaa111/.test(o))).toBe(false);
+      124 |     expect(outputs.some((o) => /mem-010/.test(o))).toBe(false);
+
+      at Object.<anonymous> (src/__tests__/memgrep.test.ts:121:21)
+
+PASS src/__tests__/mem-locate.test.ts
+FAIL src/__tests__/update-memory.test.ts
+  ● update-memory › updates memory log, snapshot and rotates
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      72 |
+      73 |     const calls: string[] = [];
+    > 74 |     const execMock = jest.spyOn(cp, 'execSync').mockImplementation((cmd: string) => {
+         |                           ^
+      75 |       calls.push(cmd);
+      76 |       if (cmd.includes('git log -1 --pretty=%s')) return Buffer.from('Task 1: summary');
+      77 |       if (cmd.startsWith('grep -m 1')) return Buffer.from('next');
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/update-memory.test.ts:74:27)
+
+PASS src/__tests__/indicators.test.ts
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint: 
+hint: 	git config --global init.defaultBranch <name>
+hint: 
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint: 
+hint: 	git branch -m <name>
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint: 
+hint: 	git config --global init.defaultBranch <name>
+hint: 
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint: 
+hint: 	git branch -m <name>
+FAIL src/__tests__/memory-cli.test.ts
+  ● memory-cli › runs mem-diff for diff command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs memory-json for json command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs clean-locks for clean-locks command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs memory-check for check command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs rebuild-memory for rebuild command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs update-snapshot for snapshot-update command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+  ● memory-cli › runs mem-list for list command
+
+    TypeError: Cannot redefine property: spawnSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |   beforeEach(() => {
+    > 20 |     spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
+         |                ^
+      21 |   });
+      22 |
+      23 |   afterEach(() => jest.restoreAllMocks());
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/memory-cli.test.ts:20:16)
+
+FAIL src/__tests__/rebuild-memory.test.ts
+  ● rebuild-memory › writes commit history to memory.log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      18 |
+      19 |     const origExec = cp.execSync;
+    > 20 |     const execMock = jest.spyOn(cp, 'execSync').mockImplementation((cmd: string, opts?: any) => {
+         |                           ^
+      21 |       if (cmd.startsWith('ts-node') && cmd.includes('append-memory.ts')) {
+      22 |         return Buffer.from('');
+      23 |       }
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/rebuild-memory.test.ts:20:27)
+
+  ● rebuild-memory › writes sequential mem-ids to snapshot
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      53 |     let count = 0;
+      54 |     const execMock = jest
+    > 55 |       .spyOn(cp, 'execSync')
+         |        ^
+      56 |       .mockImplementation((cmd: string, opts?: any) => {
+      57 |         if (cmd.startsWith('ts-node') && cmd.includes('append-memory.ts')) {
+      58 |           const sha = origExec('git rev-parse --short HEAD', {
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/rebuild-memory.test.ts:55:8)
+
+PASS src/__tests__/mem-status.test.ts
+FAIL src/__tests__/memory-api.test.ts
+  ● memory api route › returns parsed memory entries
+
+    Cannot find module '@/lib/constants' from 'src/app/api/memory/route.ts'
+
+       5 |   MemoryEntry,
+       6 | } from '../../../../scripts/memory-utils'
+    >  7 | import { CACHE_TTL } from '@/lib/constants'
+         | ^
+       8 |
+       9 | let cache: { ts: number; data: MemoryEntry[] } | null = null
+      10 | const TTL = parseInt(process.env.MEMORY_API_TTL || String(CACHE_TTL / 1000), 10) * 1000
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/app/api/memory/route.ts:7:1)
+      at src/__tests__/memory-api.test.ts:18:13
+      at Object.<anonymous> (src/__tests__/memory-api.test.ts:17:10)
+
+  ● memory api route › returns empty array when file missing
+
+    Cannot find module '@/lib/constants' from 'src/app/api/memory/route.ts'
+
+       5 |   MemoryEntry,
+       6 | } from '../../../../scripts/memory-utils'
+    >  7 | import { CACHE_TTL } from '@/lib/constants'
+         | ^
+       8 |
+       9 | let cache: { ts: number; data: MemoryEntry[] } | null = null
+      10 | const TTL = parseInt(process.env.MEMORY_API_TTL || String(CACHE_TTL / 1000), 10) * 1000
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/app/api/memory/route.ts:7:1)
+      at src/__tests__/memory-api.test.ts:33:13
+      at Object.<anonymous> (src/__tests__/memory-api.test.ts:32:10)
+
+  ● memory api route › caches results using TTL
+
+    Cannot find module '@/lib/constants' from 'src/app/api/memory/route.ts'
+
+       5 |   MemoryEntry,
+       6 | } from '../../../../scripts/memory-utils'
+    >  7 | import { CACHE_TTL } from '@/lib/constants'
+         | ^
+       8 |
+       9 | let cache: { ts: number; data: MemoryEntry[] } | null = null
+      10 | const TTL = parseInt(process.env.MEMORY_API_TTL || String(CACHE_TTL / 1000), 10) * 1000
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/app/api/memory/route.ts:7:1)
+      at src/__tests__/memory-api.test.ts:54:13
+      at Object.<anonymous> (src/__tests__/memory-api.test.ts:53:10)
+
+FAIL src/__tests__/memory-json.test.ts
+  ● memory-json › writes memory.json using atomicWrite with lock
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "/workspace/bitdashfirestudio/memory.json", Any<Function>
+
+    Number of calls: 0
+
+      48 |       ) + '\n';
+      49 |
+    > 50 |     expect(lockMock).toHaveBeenCalledWith(outPath, expect.any(Function));
+         |                      ^
+      51 |     expect(atomicMock).toHaveBeenCalledWith(outPath, expected);
+      52 |
+      53 |     readMock.mockRestore();
+
+      at Object.<anonymous> (src/__tests__/memory-json.test.ts:50:22)
+
+FAIL src/__tests__/mem-sync.test.ts
+  ● mem-sync › merges logs from branch
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      13 |     const otherLines = 'a1 | A | y | 2025-01-01T00:00:00Z\n'
+      14 |     const exec = jest
+    > 15 |       .spyOn(cp, 'execSync')
+         |        ^
+      16 |       .mockReturnValue(otherLines as any)
+      17 |     const read = jest
+      18 |       .spyOn(utils, 'readMemoryLines')
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/mem-sync.test.ts:15:8)
+
+FAIL src/__tests__/mem-diff.test.ts
+  ● mem-diff › prints hashes missing from memory.log
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+       8 |       .mockReturnValue(['abc123 | test | file | 2025-01-01']);
+       9 |     const execMock = jest
+    > 10 |       .spyOn(cp, 'execSync')
+         |        ^
+      11 |       .mockReturnValue(Buffer.from('def456\nabc123\n'));
+      12 |     const logMock = jest.spyOn(console, 'log').mockImplementation(() => {});
+      13 |
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/mem-diff.test.ts:10:8)
+
+  ● mem-diff › prints success message when all hashes present
+
+    TypeError: Cannot redefine property: execSync
+        at Function.defineProperty (<anonymous>)
+
+      31 |       ]);
+      32 |     const execMock = jest
+    > 33 |       .spyOn(cp, 'execSync')
+         |        ^
+      34 |       .mockReturnValue(Buffer.from('def456\nabc123\n'));
+      35 |     const logMock = jest.spyOn(console, 'log').mockImplementation(() => {});
+      36 |
+
+      at ModuleMocker.spyOn (node_modules/jest-mock/build/index.js:776:16)
+      at Object.<anonymous> (src/__tests__/mem-diff.test.ts:33:8)
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> bitdash-firestudio@1.0.0 backtest
+> node --loader ts-node/esm scripts/backtest.ts
+
+(node:6341) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("ts-node/esm", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/esm/loader:309
+        throw new ERR_REQUIRE_CYCLE_MODULE(message);
+              ^
+
+Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module /workspace/bitdashfirestudio/scripts/backtest.ts in a cycle.
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:309:15)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1371:24)
+    at Module._compile (node:internal/modules/cjs/loader:1511:5)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at cjsLoader (node:internal/modules/esm/translators:298:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24) {
+  code: 'ERR_REQUIRE_CYCLE_MODULE'
+}
+
+Node.js v20.19.2
