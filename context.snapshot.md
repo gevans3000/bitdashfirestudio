@@ -257,3 +257,7 @@
 - Commit SHA: 8aecb6e
 - Summary: rotate memory in post-commit; docs clarify pre-commit does not modify memory; Task 98 marked obsolete
 - Next Goal: run npm ci only once in autoTaskRunner loop
+### 2025-06-10 15:16 UTC | mem-063
+- Commit SHA: 40f26cb
+- Summary: removed obsolete autoTaskRunner.js and append-memory.sh wrappers; docs updated to run TypeScript directly. Lint, test and backtest still failing; results in logs/block-108.txt.
+- Next Goal: run npm ci only once in autoTaskRunner loop

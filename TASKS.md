@@ -72,7 +72,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 
 - [ ] Task 106: remove task_queue.json; autoTaskRunner reads TASKS.md; update docs
 - [ ] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
-- [ ] Task 108: delete obsolete memory scripts from scripts/ and package.json
+- [x] Task 108: delete obsolete memory scripts from scripts/ and package.json
 - [ ] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
 
 

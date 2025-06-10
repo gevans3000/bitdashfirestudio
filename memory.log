@@ -235,3 +235,5 @@ d01d08f | chore(tasks): mark Task 104 done | TASKS.md, task_queue.json | 2025-06
 9f15b1a510e50d19983f9304c7892b6767304a1c | Task 105 | add archive-memory script and docs | README.md,docs/SETUP_QUICKSTART.md,package.json,scripts/archive-memory.ts,TASKS.md,task_queue.json | 2025-06-10T14:01:19+00:00
 d68850c5adc36fa6d8991525ce6e676ed92c42e5 | Task 106 | remove task queue and docs | .github/workflows/ci.yml,.husky/pre-commit,AGENTS.md,CODEX_START.md,README.md,TASKS.md,docs/CODEX_WORKFLOW.md,package.json,scripts/update-memory.ts,src/__tests__/update-memory.test.ts | 2025-06-10T14:27:34Z
 8aecb6e | Task 107: rotate memory in post-commit | README.md,TASKS.md,scripts/update-memory.ts | 2025-06-10T14:35:26Z
+40f26cb | Task 108 | removed autoTaskRunner.js and append-memory.sh; docs now use ts scripts; failing lint/test/backtest logged | app.md scripts/append-memory.sh scripts/autoTaskRunner.js logs/block-108.txt | 2025-06-10T15:15:57Z
+3346629 | chore | record mem-063 entry | context.snapshot.md,TASKS.md,memory.log | 2025-06-10T15:16:32Z
