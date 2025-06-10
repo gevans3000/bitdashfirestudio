@@ -17,7 +17,7 @@ function tryExec(cmd: string) {
 }
 
 function ensureDeps() {
-  tryExec('npm ci');
+  tryExec('npm run dev-deps');
 }
 
 export function runTasks() {
