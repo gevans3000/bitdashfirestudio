@@ -27,8 +27,8 @@ Limit commit summaries in both the commit body and context snapshot to about **3
 
 ## Recap
 
-1. Run `npm run codex` and paste the output block into ChatGPT.
-2. If you receive a new ad-hoc request, add it to `TASKS.md` then run `npm run codex` again to print the refreshed context.
+1. Run `npm run codex && npm run auto` and paste the output block into ChatGPT.
+2. If you receive a new ad-hoc request, add it to `TASKS.md` then run the same command again to print the refreshed context and continue.
 3. Run `npm run dev-deps` if `node_modules` is missing before starting.
 4. Confirm AGENTS.md, memory.log and context.snapshot.md are loaded.
 5. Execute the next task from TASKS.md, committing with a clear message.

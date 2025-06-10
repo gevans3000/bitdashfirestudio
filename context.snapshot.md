@@ -261,3 +261,8 @@
 - Commit SHA: 40f26cb
 - Summary: removed obsolete autoTaskRunner.js and append-memory.sh wrappers; docs updated to run TypeScript directly. Lint, test and backtest still failing; results in logs/block-108.txt.
 - Next Goal: run npm ci only once in autoTaskRunner loop
+
+### 2025-06-10 15:49 UTC | mem-064
+- Commit SHA: fb5d2ce
+- Summary: unified startup instructions across AGENTS, README, CODEX_START and .codexrc; standard command 'npm run codex && npm run auto'.
+- Next Goal: run npm ci only once in autoTaskRunner loop

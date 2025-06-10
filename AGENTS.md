@@ -203,7 +203,7 @@ Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline)
 
 ### Codex Workflow
 
-1. Run `npm run codex` at the start of each ChatGPT session.
+1. Run `npm run codex && npm run auto` at the start of each ChatGPT session.
 2. Paste the printed context block into your first message to Codex.
 3. Craft descriptive commit messages referencing `TASKS.md` and update memory files after committing.
 
