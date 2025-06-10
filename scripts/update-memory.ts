@@ -2,27 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { repoRoot, atomicWrite, withFileLock } from './memory-utils';
+import { updateLog, snapshotUpdate, rotate } from './memory-cli';
 
-function run(script: string) {
-  const cmd = `node --loader ts-node/esm ${script}`;
-  execSync(cmd, { cwd: repoRoot, stdio: 'inherit', shell: '/bin/bash' });
-}
-
-function updateSnapshot() {
-  const summary = execSync('git log -1 --pretty=format:%s%n%n%b', {
-    cwd: repoRoot,
-    encoding: 'utf8',
-  }).trim() || 'No summary provided.';
-  let next = 'none';
-  try {
-    next = execSync("grep -m 1 '^- \\[ \\]' TASKS.md | sed -E 's/^- \\[ \\] //'", {
-      cwd: repoRoot,
-      shell: '/bin/bash',
-      encoding: 'utf8',
-    }).trim() || 'none';
-  } catch {}
-  run(`scripts/append-memory.ts ${JSON.stringify(summary)} ${JSON.stringify(next)}`);
-}
 
 function markTaskDone(id: number) {
   const tasksPath = path.join(repoRoot, 'TASKS.md');
@@ -49,13 +30,17 @@ function currentTaskId(): number | null {
 }
 
 function main() {
-  run('scripts/update-memory-log.ts');
-  updateSnapshot();
+  updateLog();
+  snapshotUpdate();
   const id = currentTaskId();
   if (id !== null) markTaskDone(id);
   // rotate memory.log on every commit
-  run('scripts/mem-rotate.ts');
-  run('scripts/memory-check.ts');
+  rotate();
+  execSync('node --loader ts-node/esm scripts/memory-check.ts', {
+    cwd: repoRoot,
+    stdio: 'inherit',
+    shell: '/bin/bash',
+  });
 }
 
 main();

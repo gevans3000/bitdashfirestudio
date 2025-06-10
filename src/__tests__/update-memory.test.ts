@@ -78,6 +78,10 @@ describe('update-memory', () => {
       if (cmd.startsWith('git rev-parse')) return Buffer.from('abc123');
       return Buffer.from('');
     });
+    const cli = require('../../scripts/memory-cli') as typeof import('../../scripts/memory-cli');
+    const uMock = jest.spyOn(cli, 'updateLog').mockImplementation(() => {});
+    const sMock = jest.spyOn(cli, 'snapshotUpdate').mockImplementation(() => {});
+    const rMock = jest.spyOn(cli, 'rotate').mockImplementation(() => {});
 
     withFsMocks(paths, () => {
       jest.isolateModules(() => {
@@ -86,11 +90,15 @@ describe('update-memory', () => {
     });
 
     execMock.mockRestore();
+    uMock.mockRestore();
+    sMock.mockRestore();
+    rMock.mockRestore();
     const outTasks = fs.readFileSync(tasks, 'utf8');
 
     expect(outTasks).toContain('- [x] Task 1: test');
-    expect(calls.some((c) => c.includes('update-memory-log.ts'))).toBe(true);
-    expect(calls.some((c) => c.includes('mem-rotate.ts'))).toBe(true);
+    expect(uMock).toHaveBeenCalled();
+    expect(sMock).toHaveBeenCalled();
+    expect(rMock).toHaveBeenCalled();
     expect(calls.some((c) => c.includes('memory-check.ts'))).toBe(true);
 
     fs.rmSync(dir, { recursive: true, force: true });
