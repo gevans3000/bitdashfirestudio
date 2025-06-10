@@ -14,12 +14,9 @@ Use around 333 tokens of recent commit summaries plus the 33‑token next task a
 
 Paste that block into the first message when launching Codex. The `npm run codex` script prints the latest commit summaries and next task to make this easy.
 
-## Persistent Memory Workflow
+## Automated Memory Workflow
 
-- **memory.log** – append one line per commit: `hash | Task <id> | summary | files | timestamp`.
-- **context.snapshot.md** – add a new `mem-XXX` section summarizing the commit (333 tokens max) and the next goal.
-
-Codex must read these files at the start of every run to rebuild context. Commit messages themselves serve as persistent memory, so keep them descriptive and follow the Conventional Commits format.
+After you commit your work with a correctly formatted message (`Task <id>:`), a `post-commit` hook automatically updates all necessary memory files, including `memory.log` and `context.snapshot.md`. You do not need to manage these files manually.
 
 ## Token Guidance
 
@@ -27,12 +24,10 @@ Limit commit summaries in both the commit body and context snapshot to about **3
 
 ## Recap
 
-1. Run `npm run codex && npm run auto` and paste the output block into ChatGPT.
-2. If you receive a new ad-hoc request, add it to `TASKS.md` then run the same command again to print the refreshed context and continue.
-3. Run `npm run dev-deps` if `node_modules` is missing before starting.
-4. Confirm AGENTS.md, memory.log and context.snapshot.md are loaded.
-5. Execute the next task from TASKS.md, committing with a clear message.
-6. End the session after that single commit unless you are explicitly told to continue.
-7. Append the commit info to memory.log and context.snapshot.md.
+1. Run `npm run codex` and paste the output block into ChatGPT.
+2. Run `npm run dev-deps` if `node_modules` is missing before starting.
+3. Execute the next task from `TASKS.md`, committing with a clear message (`Task <id>:`).
+4. The `post-commit` hook will handle all memory updates automatically.
+5. End the session after the commit is complete unless instructed to continue.
 
 Following these steps preserves context between sessions and keeps token usage manageable.
