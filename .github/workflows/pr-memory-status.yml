@@ -23,7 +23,7 @@ jobs:
       - id: status
         run: |
           echo "output<<EOF" >> $GITHUB_OUTPUT
-          npm run mem-status --silent >> $GITHUB_OUTPUT
+          npm run memory status --silent >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
       - uses: peter-evans/create-or-update-comment@v4
         with:

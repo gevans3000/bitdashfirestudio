@@ -21,10 +21,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-devdeps-
       - run: npm run dev-deps
-      - run: npm run mem-rotate
-      - run: ts-node scripts/memory-check.ts
+      - run: npm run memory rotate
+      - run: npm run memory check
       # clean up old lock files before committing
-      - run: ts-node scripts/clean-locks.ts
+      - run: npm run memory clean-locks
       - name: Push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
