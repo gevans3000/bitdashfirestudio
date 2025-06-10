@@ -3,4 +3,4 @@
 set -euo pipefail
 git pull --rebase
 bash ./scripts/setup_dev.sh || exit 1
-echo "🟢 Environment ready — /tasks run 1 to start."
+echo "🟢 Environment ready — run 'npm run codex && npm run auto' to begin."
