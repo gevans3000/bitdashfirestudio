@@ -16,6 +16,10 @@ function tryExec(cmd: string) {
   }
 }
 
+function ensureDeps() {
+  tryExec('npm ci');
+}
+
 export function runTasks() {
   const tasksPath = path.join(repoRoot, 'TASKS.md');
   const signalsPath = path.join(repoRoot, 'signals.json');
@@ -24,7 +28,8 @@ export function runTasks() {
   const memoryPath = memPath;
   process.chdir(repoRoot);
 
-  tryExec('npm ci');
+  // install dependencies before entering the main loop
+  ensureDeps();
 
   while (true) {
     const lines = fs.readFileSync(tasksPath, 'utf8').split('\n');

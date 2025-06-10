@@ -178,7 +178,7 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 
 | Command | Purpose |
 | ------- | ------- |
-| `npm run auto` | Execute the AutoTaskRunner to process tasks in `TASKS.md`; each run validates memory after committing |
+| `npm run auto` | Execute the AutoTaskRunner to process tasks in `TASKS.md`; installs dependencies once then validates memory after each commit |
 | `npm run memory` | Manage memory files: rotate, snapshot-rotate, status, grep, update-log, list, diff, json, clean-locks, check, locate, rebuild, sync, snapshot-update |
 | `npm run mem-rotate` | Trim `memory.log` to a set number of entries |
 | `npm run mem-check` | Verify memory hashes and snapshot blocks (auto after `mem-rotate`) |
