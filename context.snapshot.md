@@ -210,3 +210,7 @@
 - Summary: recorded mem-050 entry in memory files to keep history consistent.
 - Next Goal: run npm ci only once in AutoTaskRunner
 
+### 2025-06-10 12:32 UTC | mem-052
+- Commit SHA: cb9cea9
+- Summary: updated kickoff guide to cover ad-hoc tasks workflow and logged failing lint/test/backtest results.
+- Next Goal: run npm ci only once in AutoTaskRunner
