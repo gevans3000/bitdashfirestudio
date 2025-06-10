@@ -53,6 +53,7 @@ function main() {
   updateSnapshot();
   const id = currentTaskId();
   if (id !== null) markTaskDone(id);
+  // rotate memory.log on every commit
   run('scripts/mem-rotate.ts');
   run('scripts/memory-check.ts');
 }

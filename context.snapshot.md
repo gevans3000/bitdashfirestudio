@@ -253,4 +253,7 @@
 ### 2025-06-10 14:27 UTC | mem-061
 - Commit SHA: d68850c
 - Summary: removed task_queue.json workflow, docs and validation; scripts updated.
-- Next Goal: rotate memory.log in update-memory.ts
+### 2025-06-10 14:35 UTC | mem-062
+- Commit SHA: 8aecb6e
+- Summary: rotate memory in post-commit; docs clarify pre-commit does not modify memory; Task 98 marked obsolete
+- Next Goal: run npm ci only once in autoTaskRunner loop
