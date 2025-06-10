@@ -1,87 +1,63 @@
-import path from 'path';
-import * as cp from 'child_process';
-import { repoRoot } from '../../scripts/memory-utils';
+const mockCheck = jest.fn();
+jest.mock('../../scripts/memory-check.ts', () => {
+  mockCheck();
+  return {};
+});
 
-const scriptDir = path.resolve(__dirname, '../../scripts');
+import * as cli from '../../scripts/memory-cli';
 
 function run(args: string[]) {
   const orig = process.argv;
   process.argv = ['node', 'memory-cli.ts', ...args];
   jest.isolateModules(() => {
-    require('../../scripts/memory-cli.ts');
+    cli.main();
   });
   process.argv = orig;
 }
 
 describe('memory-cli', () => {
-  let spy: jest.SpyInstance;
-
-  beforeEach(() => {
-    spy = jest.spyOn(cp, 'spawnSync').mockReturnValue({ status: 0 } as any);
-  });
-
   afterEach(() => jest.restoreAllMocks());
 
   it('runs mem-diff for diff command', () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const diffSpy = jest.spyOn(cli, 'memDiff').mockImplementation(() => {});
     run(['diff']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'mem-diff.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(diffSpy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 
   it('runs memory-json for json command', () => {
+    const jsonSpy = jest.spyOn(cli, 'memoryJson').mockImplementation(() => {});
     run(['json']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'memory-json.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(jsonSpy).toHaveBeenCalled();
   });
 
   it('runs clean-locks for clean-locks command', () => {
+    const clSpy = jest.spyOn(cli, 'cleanLocks').mockImplementation(() => {});
     run(['clean-locks']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'clean-locks.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(clSpy).toHaveBeenCalled();
   });
 
   it('runs memory-check for check command', () => {
     run(['check']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'memory-check.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(mockCheck).toHaveBeenCalled();
   });
 
   it('runs rebuild-memory for rebuild command', () => {
+    const rebuildSpy = jest.spyOn(cli, 'rebuildMemory').mockImplementation(() => {});
     run(['rebuild']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'rebuild-memory.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(rebuildSpy).toHaveBeenCalled();
   });
 
   it('runs update-snapshot for snapshot-update command', () => {
+    const snapSpy = jest.spyOn(cli, 'snapshotUpdate').mockImplementation(() => {});
     run(['snapshot-update']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'update-snapshot.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(snapSpy).toHaveBeenCalled();
   });
 
   it('runs mem-list for list command', () => {
+    const listSpy = jest.spyOn(cli, 'memList').mockImplementation(() => {});
     run(['list']);
-    expect(spy).toHaveBeenCalledWith(
-      'ts-node',
-      [path.join(scriptDir, 'mem-list.ts')],
-      { stdio: 'inherit', cwd: repoRoot }
-    );
+    expect(listSpy).toHaveBeenCalled();
   });
 });

@@ -1,51 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { execSync } from 'child_process';
-import {
-  repoRoot,
-  memPath,
-  readMemoryLines,
-  atomicWrite,
-  withFileLock,
-} from './memory-utils';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { rotate } from './memory-cli';
 
-const args = process.argv.slice(2);
-const dryRun = args.includes('--dry-run');
-const limitArg = args.find((a) => a !== '--dry-run');
-const limit = parseInt(limitArg || process.env.MEM_ROTATE_LIMIT || '200', 10);
-
-const lines = readMemoryLines();
-
-if (lines.length > limit) {
-  const trimmed = lines.slice(-limit);
-  const backupDir = path.join(repoRoot, 'logs');
-  fs.mkdirSync(backupDir, { recursive: true });
-  const ts = new Date().toISOString();
-  const backupPath = path.join(backupDir, `memory.log.${ts}.bak`);
-  if (dryRun) {
-    console.log(
-      `[dry-run] Would backup to ${backupPath} and trim memory.log to last ${limit} entries`
-    );
-  } else {
-    withFileLock(memPath, () => {
-      atomicWrite(backupPath, lines.join('\n') + '\n');
-      atomicWrite(memPath, trimmed.join('\n') + '\n');
-    });
-    console.log(`memory.log trimmed to last ${limit} entries`);
-  }
-} else {
-  console.log('memory.log already within limit');
-}
-
-if (!dryRun) {
-  try {
-    execSync('ts-node scripts/memory-check.ts', {
-      cwd: repoRoot,
-      stdio: 'inherit',
-    });
-  } catch (err: any) {
-    process.exit(err.status || 1);
-  }
-} else {
-  console.log('[dry-run] Skipping memory-check');
-}
+const argv = yargs(hideBin(process.argv)).option('dry-run', { type: 'boolean' }).parseSync();
+const [limitArg] = argv._ as (string | number)[];
+const limit = limitArg ? parseInt(limitArg as string, 10) : undefined;
+rotate(limit, argv.dryRun as boolean);

@@ -3,6 +3,7 @@ import os from "os";
 import path from "path";
 import * as cp from "child_process";
 import * as utils from "../../scripts/memory-utils";
+import { rotate } from "../../scripts/memory-cli";
 
 const { memPath, repoRoot } = utils;
 
@@ -100,9 +101,7 @@ describe("mem-rotate", () => {
     withFsMocks(map, () => {
       process.env.MEM_ROTATE_LIMIT = "3";
       jest.useFakeTimers().setSystemTime(new Date(iso));
-      jest.isolateModules(() => {
-        require("../../scripts/mem-rotate.ts");
-      });
+      rotate(3, false);
       jest.useRealTimers();
     });
     expect(execMock).toHaveBeenCalledWith(
@@ -134,12 +133,7 @@ describe("mem-rotate", () => {
     withFsMocks(map, () => {
       process.env.MEM_ROTATE_LIMIT = "2";
       jest.useFakeTimers().setSystemTime(new Date(iso));
-      jest.isolateModules(() => {
-        const orig = process.argv;
-        process.argv = ["node", "script", "--dry-run"];
-        require("../../scripts/mem-rotate.ts");
-        process.argv = orig;
-      });
+      rotate(2, true);
       jest.useRealTimers();
     });
 
