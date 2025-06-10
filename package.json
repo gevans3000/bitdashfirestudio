@@ -24,15 +24,11 @@
     "backtest": "node --loader ts-node/esm scripts/backtest.ts",
     "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
-    "memlog": "ts-node scripts/update-memory-log.ts",
-    "mem-rotate": "ts-node scripts/mem-rotate.ts",
-    "mem-status": "ts-node scripts/mem-status.ts",
-    "snap-rotate": "ts-node scripts/snapshot-rotate.ts",
-    "mem-check": "ts-node scripts/memory-check.ts",
+
     "mem-update": "node --loader ts-node/esm scripts/update-memory.ts",
     "memory": "ts-node scripts/memory-cli.ts",
     "archive-memory": "ts-node scripts/archive-memory.ts",
-    "memgrep": "ts-node scripts/memgrep.ts",
+
     "clean-locks": "ts-node scripts/clean-locks.ts",
     "codex": "bash ./scripts/codex_context.sh",
     "setup-hooks": "bash scripts/setup-hooks.sh",
