@@ -78,6 +78,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [ ] Task 111: remove obsolete docs from repo
 - [ ] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
 - [ ] Task 113: move archive & restore utilities into scripts/memory and document usage
+- [ ] Task 114: remove update-memory-log.ts & update-snapshot.ts; ensure memory-cli handles update-log & snapshot-update and migrate tests
 
 
 ### Bitcoin Dashboard

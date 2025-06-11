@@ -49,6 +49,12 @@ describe('memory-cli', () => {
     expect(rebuildSpy).toHaveBeenCalled();
   });
 
+  it('runs update-log for update-log command', () => {
+    const updSpy = jest.spyOn(cli, 'updateLog').mockImplementation(() => {});
+    run(['update-log']);
+    expect(updSpy).toHaveBeenCalled();
+  });
+
   it('runs update-snapshot for snapshot-update command', () => {
     const snapSpy = jest.spyOn(cli, 'snapshotUpdate').mockImplementation(() => {});
     run(['snapshot-update']);

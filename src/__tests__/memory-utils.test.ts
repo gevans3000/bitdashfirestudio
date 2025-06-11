@@ -3,6 +3,7 @@ import os from "os";
 import path from "path";
 import * as cp from "child_process";
 import * as utils from "../../scripts/memory-utils";
+import * as cli from "../../scripts/memory-cli";
 
 const { snapshotPath, memPath } = utils;
 
@@ -112,7 +113,7 @@ describe("nextMemId", () => {
   });
 });
 
-describe("update-memory-log", () => {
+describe("update-log", () => {
   it("appends new commit entries from git log", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "memlog-"));
     const tmpMem = path.join(tmpDir, "memory.log");
@@ -136,9 +137,7 @@ describe("update-memory-log", () => {
       });
 
     withFsMocks({ [memPath]: tmpMem }, () => {
-      jest.isolateModules(() => {
-        require("../../scripts/update-memory-log.ts");
-      });
+      cli.updateLog();
     });
 
     execMock.mockRestore();
@@ -166,12 +165,7 @@ describe("update-memory-log", () => {
       });
 
     withFsMocks({ [memPath]: tmpMem }, () => {
-      jest.isolateModules(() => {
-        const orig = process.argv;
-        process.argv = ["node", "update-memory-log.ts", "--verify"];
-        require("../../scripts/update-memory-log.ts");
-        process.argv = orig;
-      });
+      cli.updateLog(true);
     });
 
     expect(execMock).toHaveBeenCalledWith(
@@ -197,9 +191,7 @@ describe("update-memory-log", () => {
       .mockReturnValue(Buffer.from(""));
 
     withFsMocks({ [memPath]: tmpMem }, () => {
-      jest.isolateModules(() => {
-        require("../../scripts/update-memory-log.ts");
-      });
+      cli.updateLog();
     });
 
     execMock.mockRestore();
