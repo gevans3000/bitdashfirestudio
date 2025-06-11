@@ -194,36 +194,19 @@ Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run memory rotate` to chang
 
 ## Rotating Memory Files
 
-Keep `memory.log` and `context.snapshot.md` trimmed so the agent loads quickly:
+Keep `memory.log` trimmed so the agent loads quickly:
 
 ```bash
-npm run memory rotate          # prune memory.log
-npm run memory snapshot-rotate # prune context.snapshot.md
+npm run memory rotate # Prunes memory.log to the specified limit
 ```
 
-### Manual Archival
-
-Use the `memory archive` subcommand to stash the current memory files before
-resetting them. Restore later with `memory restore`:
-
-```bash
-npm run memory archive                # moves memory.log and snapshot to ./logs/archive/
-npm run memory restore <file> memory  # restore memory.log from a backup
-npm run memory restore <file> snapshot # restore context.snapshot.md
-```
-
-A weekly GitHub workflow automatically runs `npm run memory rotate` and `npm run memory clean-locks` to push the
-latest trimmed logs. Set `MEM_PATH` and `SNAPSHOT_PATH` if your memory files live elsewhere and
-adjust `MEM_ROTATE_LIMIT` and `SNAP_ROTATE_LIMIT` to control the number of retained entries.
-`LOCK_TTL` defines how old `.lock` files must be before `clean-locks` deletes them.
+A weekly GitHub workflow automatically runs `npm run memory rotate` to push the latest trimmed logs.
 
 The memory scripts honor several environment variables:
 
 - `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
 - `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
 - `MEM_ROTATE_LIMIT` – entries kept by `npm run memory rotate` (default: `300`)
-- `SNAP_ROTATE_LIMIT` – entries kept by `npm run memory snapshot-rotate` (default: `100`)
-- `LOCK_TTL` – milliseconds before `npm run memory clean-locks` removes `.lock` files (default: `300000`)
 - `MEMORY_API_TTL` – seconds API responses are cached (default: `15`)
 
 Example:
@@ -232,9 +215,7 @@ Example:
 # Rotate custom logs and limits
 MEM_PATH=/tmp/mem.log \
 SNAPSHOT_PATH=/tmp/snapshot.md \
-MEM_ROTATE_LIMIT=300 \
-SNAP_ROTATE_LIMIT=150 \
-npm run memory rotate && npm run memory snapshot-rotate
+MEM_ROTATE_LIMIT=500 npm run memory rotate
 ```
 
 ## Using Codex with Persistent Memory
