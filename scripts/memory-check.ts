@@ -6,7 +6,7 @@ import {
   snapshotPath,
   parseMemoryLines,
   validateMemoryEntry,
-} from './memory-utils.js';
+} from './memory-utils.ts';
 
 // Export a function that can be called by other modules
 export function checkMemory(): string[] {
@@ -110,7 +110,7 @@ export function checkMemory(): string[] {
 }
 
 // Handle direct script execution
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   const errors = checkMemory();
   if (errors.length) {
     console.error('Memory check failed:');

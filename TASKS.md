@@ -85,6 +85,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [ ] Task 118: ensure tracked text files end with trailing newline
 - [ ] Task 119: document that memory.log is trimmed since git retains full history
 - [ ] Task 120: update `.idx/dev.nix` to use `pkgs.nodejs_18` for Node 18 environment
+- [ ] Task 121: delete or rewrite outdated memory CLI tests calling removed commands
 
 
 ### Bitcoin Dashboard

@@ -13,5 +13,6 @@ export function correlation(a: number[], b: number[]): number {
     denomA += da * da;
     denomB += db * db;
   }
+  if (denomA === 0 || denomB === 0) return 0;
   return num / Math.sqrt(denomA * denomB);
 }

@@ -1,13 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
-
-// Resolve base directory compatible with ESM and CJS
-const baseDir = typeof __dirname !== 'undefined'
-  ? __dirname
-  : path.dirname(fileURLToPath(import.meta.url));
-
-export const repoRoot = path.resolve(baseDir, "..");
+// Avoid import.meta for Jest CJS compatibility
+export const repoRoot = process.cwd();
 export const memPath = process.env.MEM_PATH
   ? path.resolve(process.env.MEM_PATH)
   : path.join(repoRoot, "memory.log");
