@@ -221,7 +221,7 @@ The memory scripts honor several environment variables:
 
 - `MEM_PATH` – path to `memory.log` (default: `<repo>/memory.log`)
 - `SNAPSHOT_PATH` – path to `context.snapshot.md` (default: `<repo>/context.snapshot.md`)
-- `MEM_ROTATE_LIMIT` – entries kept by `npm run memory rotate` (default: `200`)
+- `MEM_ROTATE_LIMIT` – entries kept by `npm run memory rotate` (default: `300`)
 - `SNAP_ROTATE_LIMIT` – entries kept by `npm run memory snapshot-rotate` (default: `100`)
 - `LOCK_TTL` – milliseconds before `npm run memory clean-locks` removes `.lock` files (default: `300000`)
 - `MEMORY_API_TTL` – seconds API responses are cached (default: `15`)

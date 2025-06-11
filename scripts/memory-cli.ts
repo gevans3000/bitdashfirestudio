@@ -16,7 +16,7 @@ import {
 } from './memory-utils';
 import { cleanLocks } from './clean-locks';
 
-export function rotate(limit = parseInt(process.env.MEM_ROTATE_LIMIT || '200', 10), dryRun = false): void {
+export function rotate(limit = parseInt(process.env.MEM_ROTATE_LIMIT || '300', 10), dryRun = false): void {
   const lines = readMemoryLines();
   if (lines.length > limit) {
     const trimmed = lines.slice(-limit);
