@@ -79,6 +79,7 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
 - [x] Task 113: move archive & restore utilities into scripts/memory and document usage
 - [x] Task 114: remove update-memory-log.ts & update-snapshot.ts; ensure memory-cli handles update-log & snapshot-update and migrate tests
+- [ ] Task 115: align rotate default with docs by keeping 300 lines
 
 
 ### Bitcoin Dashboard
