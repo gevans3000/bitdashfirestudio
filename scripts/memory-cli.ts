@@ -1,16 +1,16 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { checkMemory } from './memory-check.js';
+import { checkMemory } from './memory-check.ts';
 import {
   updateLog,
   snapshotUpdate,
   rebuildMemory,
   rotate,
-} from './memory-logic.js';
+} from './memory-logic.ts';
 
 // Re-export functions for direct use, if needed elsewhere.
-export * from './memory-logic.js';
+export * from './memory-logic';
 
 function main(argv = hideBin(process.argv)): void {
   yargs(argv)
@@ -39,7 +39,7 @@ function main(argv = hideBin(process.argv)): void {
     .parse();
 }
 
-// Use modern ES Module detection for main module
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run only when executed directly
+if (require.main === module) {
   main();
 }
