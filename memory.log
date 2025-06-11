@@ -239,3 +239,12 @@ d68850c5adc36fa6d8991525ce6e676ed92c42e5 | Task 106 | remove task queue and docs
 3346629 | chore | record mem-063 entry | context.snapshot.md,TASKS.md,memory.log | 2025-06-10T15:16:32Z
 fb5d2ce | Task 109 | unify startup command across docs | .codexrc,AGENTS.md,CODEX_START.md,README.md | 2025-06-10T15:49:41Z
 e08d23a | Task 106 | sync task statuses after removing task_queue; mark tasks 97 and 100 done | TASKS.md | 2025-06-10T16:07:39Z
+fb1ac6e | Task 111: remove obsolete docs (#289) | TASKS.md,TASKS2.md,app.md,app2.md,bitdash-setup.txt,docs/blueprint.md,memorymaker.md,newtasks.md,updates.md | 2025-06-10T20:25:05Z
+65461e2 | feat: Task 112: consolidate memory CLI (#290) | TASKS.md,scripts/memory-cli.ts,scripts/mem-diff.ts,scripts/mem-rotate.ts,scripts/memgrep.ts | 2025-06-10T20:56:47Z
+a3fa01c | Task 99: cache dev deps via dev-deps script (#291) | TASKS.md,src/scripts/autoTaskRunner.ts | 2025-06-10T21:03:57Z
+5831e32 | Task 107: refactor update-memory to use memory-cli (#292) | scripts/update-memory.ts,src/__tests__/update-memory.test.ts | 2025-06-10T21:12:52Z
+c60d158 | Task 111: update docs for unified memory cli (#293) | .github/workflows/ci.yml,.github/workflows/mem-maintenance.yml,.github/workflows/pr-memory-status.yml,.husky/pre-commit,README.md,docs/SETUP_QUICKSTART.md | 2025-06-10T21:24:26Z
+339b35a | feat: Task 113: organize archive and restore utilities (#294) | README.md,TASKS.md,docs/SETUP_QUICKSTART.md,logs/block-113.txt,package.json,scripts/memory-cli.ts,scripts/memory/archive.ts,scripts/memory/restore.ts | 2025-06-11T11:59:50Z
+b0cbf14 | feat: Task 110: log mem-update errors (#295) | .husky/post-commit,scripts/memory-cli.ts | 2025-06-11T12:20:12Z
+2ebcb3d | feat: Task 112: remove legacy memory wrappers (#296) | logs/block-112-lint.txt,logs/block-112-test.txt,scripts/mem-diff.ts,scripts/mem-list.ts,scripts/mem-locate.ts,scripts/mem-rotate.ts,scripts/mem-status.ts,scripts/mem-sync.ts,scripts/memgrep.ts,src/__tests__/mem-list.test.ts,src/__tests__/mem-locate.test.ts,src/__tests__/mem-sync.test.ts | 2025-06-11T12:28:31Z
+befad85 | feat: Task 114: remove deprecated memory update scripts (#297) | TASKS.md,scripts/update-memory-log.ts,scripts/update-snapshot.ts,src/__tests__/memory-cli.test.ts,src/__tests__/memory-utils.test.ts,src/__tests__/update-snapshot.test.ts | 2025-06-11T12:48:26Z

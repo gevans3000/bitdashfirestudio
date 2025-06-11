@@ -271,3 +271,39 @@
 - Commit SHA: e08d23a
 - Summary: updated TASKS.md to mark Task 97 and Task 100 as complete after removing task queue. Automation now records completed tasks only in TASKS.md. Task 98 remains done; Task 99 still open.
 - Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-10 20:25 UTC | mem-066
+- Commit SHA: fb1ac6e
+- Summary: Task 111: remove obsolete docs (#289)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-10 20:56 UTC | mem-067
+- Commit SHA: 65461e2
+- Summary: feat: Task 112: consolidate memory CLI (#290)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-10 21:03 UTC | mem-068
+- Commit SHA: a3fa01c
+- Summary: Task 99: cache dev deps via dev-deps script (#291)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-10 21:12 UTC | mem-069
+- Commit SHA: 5831e32
+- Summary: Task 107: refactor update-memory to use memory-cli (#292)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-10 21:24 UTC | mem-070
+- Commit SHA: c60d158
+- Summary: Task 111: update docs for unified memory cli (#293)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-11 11:59 UTC | mem-071
+- Commit SHA: 339b35a
+- Summary: feat: Task 113: organize archive and restore utilities (#294)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-11 12:20 UTC | mem-072
+- Commit SHA: b0cbf14
+- Summary: feat: Task 110: log mem-update errors (#295)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-11 12:28 UTC | mem-073
+- Commit SHA: 2ebcb3d
+- Summary: feat: Task 112: remove legacy memory wrappers (#296)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
+### 2025-06-11 12:48 UTC | mem-074
+- Commit SHA: befad85
+- Summary: feat: Task 114: remove deprecated memory update scripts (#297)
+- Next Goal: cache dev dependencies with dev-deps script and CI caching
