@@ -240,3 +240,4 @@ npm run memory rotate && npm run memory snapshot-rotate
 ## Using Codex with Persistent Memory
 
 See [CODEX_START.md](CODEX_START.md) for full instructions on launching Codex with persistent memory.
+\nTest change for post-commit verification.

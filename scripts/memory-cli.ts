@@ -38,7 +38,11 @@ export function rotate(limit = parseInt(process.env.MEM_ROTATE_LIMIT || '300', 1
   }
   if (!dryRun) {
     try {
-      execSync('ts-node scripts/memory-check.ts', { cwd: repoRoot, stdio: 'inherit' });
+      execSync('npx tsx scripts/memory-check.ts', {
+        cwd: repoRoot,
+        stdio: 'inherit',
+        shell: '/bin/bash',
+      });
     } catch (err: any) {
       process.exit(err.status || 1);
     }
@@ -267,7 +271,11 @@ export function updateLog(verify = false): void {
   console.log('memory.log updated');
   if (verify) {
     try {
-      execSync('ts-node scripts/memory-check.ts', { cwd: repoRoot, stdio: 'inherit' });
+      execSync('npx tsx scripts/memory-check.ts', {
+        cwd: repoRoot,
+        stdio: 'inherit',
+        shell: '/bin/bash',
+      });
     } catch (err: any) {
       process.exit(err.status || 1);
     }
@@ -330,7 +338,11 @@ export function rebuildMemory(pathArg?: string): void {
   const append = path.join(__dirname, 'append-memory.ts');
   for (const e of entries) {
     execSync(`git checkout ${e.h} --quiet`, { cwd: repo, stdio: 'ignore' });
-    execSync(`ts-node ${append} ${JSON.stringify(e.s)} ${JSON.stringify('rebuild')}`, { cwd: repo, stdio: 'ignore', shell: '/bin/bash' });
+    execSync(`npx tsx ${append} ${JSON.stringify(e.s)} ${JSON.stringify('rebuild')}`, {
+      cwd: repo,
+      stdio: 'ignore',
+      shell: '/bin/bash',
+    });
   }
   execSync(`git checkout ${original} --quiet`, { cwd: repo, stdio: 'ignore' });
   const linesOut = entries.map((e) => `${e.h} | ${e.s} | ${e.f.join(', ')} | ${e.d}`);
@@ -356,7 +368,14 @@ export function snapshotUpdate(): void {
   }
   const summary = lastCommitSummary();
   const nextTask = nextOpenTask();
-  execSync(`ts-node scripts/append-memory.ts ${JSON.stringify(summary)} ${JSON.stringify(nextTask)}`, { cwd: repoRoot, stdio: 'inherit', shell: '/bin/bash' });
+  execSync(
+    `npx tsx scripts/append-memory.ts ${JSON.stringify(summary)} ${JSON.stringify(nextTask)}`,
+    {
+      cwd: repoRoot,
+      stdio: 'inherit',
+      shell: '/bin/bash',
+    },
+  );
 }
 
 export function main(argv = hideBin(process.argv)): void {
