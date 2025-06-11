@@ -49,8 +49,8 @@ describe('mem-locate', () => {
 
     withFsMocks(map, () => {
       jest.isolateModules(() => {
-        process.argv = ['node', 'mem-locate.ts', 'abc123'];
-        require('../../scripts/mem-locate.ts');
+        process.argv = ['node', 'memory-cli.ts', 'locate', 'abc123'];
+        require('../../scripts/memory-cli.ts');
       });
     });
 
@@ -74,8 +74,8 @@ describe('mem-locate', () => {
 
     withFsMocks(map, () => {
       jest.isolateModules(() => {
-        process.argv = ['node', 'mem-locate.ts', 'mem-002'];
-        require('../../scripts/mem-locate.ts');
+        process.argv = ['node', 'memory-cli.ts', 'locate', 'mem-002'];
+        require('../../scripts/memory-cli.ts');
       });
     });
 
@@ -99,8 +99,8 @@ describe('mem-locate', () => {
 
     withFsMocks(map, () => {
       jest.isolateModules(() => {
-        process.argv = ['node', 'mem-locate.ts', 'def456'];
-        require('../../scripts/mem-locate.ts');
+        process.argv = ['node', 'memory-cli.ts', 'locate', 'def456'];
+        require('../../scripts/memory-cli.ts');
       });
     });
 

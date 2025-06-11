@@ -29,9 +29,9 @@ describe('mem-list', () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     withFs({ [memPath]: memFile }, () => {
       const orig = process.argv
-      process.argv = ['node', 'script', '-n', '2']
+      process.argv = ['node', 'memory-cli.ts', 'list', '-n', '2']
       jest.isolateModules(() => {
-        require('../../scripts/mem-list.ts')
+        require('../../scripts/memory-cli.ts')
       })
       process.argv = orig
     })
