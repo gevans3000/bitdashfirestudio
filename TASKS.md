@@ -71,14 +71,14 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 105: add archive-memory script and docs
 
 - [x] Task 106: remove task_queue.json; autoTaskRunner reads TASKS.md; update docs
-- [ ] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
+- [x] Task 107: rotate memory.log in update-memory.ts; drop pre-commit rotation
 - [x] Task 108: delete obsolete memory scripts from scripts/ and package.json
 - [x] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
 - [ ] Task 110: investigate and fix broken post-commit hook
 - [ ] Task 111: remove obsolete docs from repo
-- [ ] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
-- [ ] Task 113: move archive & restore utilities into scripts/memory and document usage
-- [ ] Task 114: remove update-memory-log.ts & update-snapshot.ts; ensure memory-cli handles update-log & snapshot-update and migrate tests
+- [x] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
+- [x] Task 113: move archive & restore utilities into scripts/memory and document usage
+- [x] Task 114: remove update-memory-log.ts & update-snapshot.ts; ensure memory-cli handles update-log & snapshot-update and migrate tests
 
 
 ### Bitcoin Dashboard
