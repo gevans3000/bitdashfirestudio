@@ -93,10 +93,20 @@ check_modules_newer() {
 if [[ -d node_modules ]] && check_modules_newer; then
   echo "▶ node_modules is current – skipping npm ci"
 else
-  echo "▶ Installing dependencies via npm ci (quiet mode)…"
-  # Use a more resilient npm install approach
+  echo "▶ Installing dependencies..."
+  
+  # Check if package-lock is in sync with package.json
+  if npm ci --dry-run 2>&1 | grep -q "can only install packages when your package.json and package-lock.json.*are in sync"; then
+    echo "⚠️ package.json and package-lock.json are out of sync. Updating lock file first..."
+    # Only update the lock file without installing
+    npm install --package-lock-only --no-audit --fund=false
+  fi
+  
+  # Try npm ci first (preferred for CI environments)
   npm ci --no-audit --fund=false --progress=false --omit=optional || {
     echo "⚠️ npm ci failed, falling back to npm install"
+    
+    # Try full npm install as fallback
     npm install --no-audit --fund=false --progress=false --omit=optional || {
       echo "❌ Dependency installation failed. Continuing with limited functionality."
     }
