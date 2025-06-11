@@ -8,20 +8,29 @@ import {
   rebuildMemory,
   rotate,
 } from './memory-logic.ts';
+import { archive } from './memory/archive.ts';
+import { restore } from './memory/restore.ts';
 
 // Re-export functions for direct use, if needed elsewhere.
 export * from './memory-logic';
 
-function main(argv = hideBin(process.argv)): void {
+export function main(argv = hideBin(process.argv)): void {
   yargs(argv)
     .scriptName('memory')
     .command('rotate [limit]', 'Trim memory.log', (y) =>
       y.positional('limit', { type: 'number' }).option('dry-run', { type: 'boolean' }),
       (args) => rotate(args.limit as number | undefined, args.dryRun as boolean)
     )
+    .command('archive', 'Move memory.log and snapshot to logs/archive', () => {}, () => archive())
     .command('update-log', 'Refresh memory.log from git history', (y) => y.option('verify', { type: 'boolean' }), (a) => updateLog(a.verify as boolean))
     .command('snapshot-update', 'Append last commit summary to snapshot', () => {}, () => snapshotUpdate())
     .command('rebuild [path]', 'Rebuild memory files from git history', (y) => y.positional('path', { type: 'string' }), (a) => rebuildMemory(a.path as string | undefined))
+    .command('restore <backup> <target>', 'Restore memory or snapshot file', (y) =>
+      y
+        .positional('backup', { type: 'string' })
+        .positional('target', { choices: ['memory', 'snapshot'] as const }),
+      (a) => restore(a.backup as string, a.target as 'memory' | 'snapshot')
+    )
     .command('check', 'Verify memory files', () => {}, () => {
         const errors = checkMemory();
         if (errors.length) {
