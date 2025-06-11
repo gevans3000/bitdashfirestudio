@@ -200,7 +200,7 @@ Keep `memory.log` trimmed so the agent loads quickly:
 npm run memory rotate # Prunes memory.log to the specified limit
 ```
 
-A weekly GitHub workflow automatically runs `npm run memory rotate` to push the latest trimmed logs.
+A weekly GitHub workflow automatically runs `npm run memory rotate` to push the latest trimmed logs. Because the full commit history is stored in Git, `memory.log` only keeps recent summaries.
 
 The memory scripts honor several environment variables:
 
