@@ -36,7 +36,7 @@ function main() {
   if (id !== null) markTaskDone(id);
   // rotate memory.log on every commit
   rotate();
-  execSync('node --loader ts-node/esm scripts/memory-check.ts', {
+  execSync('npx tsx scripts/memory-check.ts', {
     cwd: repoRoot,
     stdio: 'inherit',
     shell: '/bin/bash',
