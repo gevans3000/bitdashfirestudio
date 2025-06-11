@@ -22,8 +22,8 @@ describe('mem-sync', () => {
       .spyOn(utils, 'withFileLock')
       .mockImplementation((_, fn) => fn())
     jest.isolateModules(() => {
-      process.argv = ['node', 'mem-sync.ts', 'other']
-      require('../../scripts/mem-sync.ts')
+      process.argv = ['node', 'memory-cli.ts', 'sync', 'other']
+      require('../../scripts/memory-cli.ts')
     })
     expect(exec).toHaveBeenCalledWith('git show other:memory.log', {
       cwd: repoRoot,
