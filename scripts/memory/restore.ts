@@ -4,13 +4,13 @@ import {
   snapshotPath,
   atomicWrite,
   withFileLock,
-} from "./memory-utils";
+} from "../memory-utils";
 
 const [backup, target] = process.argv.slice(2);
 
 if (!backup || !target || (target !== "memory" && target !== "snapshot")) {
   console.error(
-    "Usage: ts-node scripts/restore-memory.ts <backup-file> <memory|snapshot>",
+    "Usage: ts-node scripts/memory/restore.ts <backup-file> <memory|snapshot>",
   );
   process.exit(1);
 }

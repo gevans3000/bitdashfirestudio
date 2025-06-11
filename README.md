@@ -203,10 +203,13 @@ npm run memory snapshot-rotate # prune context.snapshot.md
 
 ### Manual Archival
 
-Use this command to stash the current memory files before resetting them:
+Use the `memory archive` subcommand to stash the current memory files before
+resetting them. Restore later with `memory restore`:
 
 ```bash
-npm run archive-memory  # moves memory.log and snapshot to ./logs/archive/
+npm run memory archive                # moves memory.log and snapshot to ./logs/archive/
+npm run memory restore <file> memory  # restore memory.log from a backup
+npm run memory restore <file> snapshot # restore context.snapshot.md
 ```
 
 A weekly GitHub workflow automatically runs `npm run memory rotate` and `npm run memory clean-locks` to push the

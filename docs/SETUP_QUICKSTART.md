@@ -6,7 +6,7 @@ Follow these steps to get the project running locally.
 2. Copy `.env.example` to `.env.local` and adjust settings as needed.
 3. Run `npm run lint && npm run test && npm run backtest` to verify the environment.
 4. Start the development server with `npm run dev`.
-5. Optionally run `npm run archive-memory` to back up memory logs.
+5. Optionally run `npm run memory archive` to back up memory logs.
 6. Use `npm run memory <command>` for log maintenance. For example `npm run memory rotate` trims `memory.log` and `npm run memory check` verifies consistency.
 
 Refer to `AGENTS.md` for automation details and `README.md` for full documentation.

@@ -47,6 +47,25 @@ export function rotate(limit = parseInt(process.env.MEM_ROTATE_LIMIT || '200', 1
   }
 }
 
+export function archiveFiles(): void {
+  const archiveDir = path.join(repoRoot, 'logs', 'archive');
+  fs.mkdirSync(archiveDir, { recursive: true });
+  const ts = new Date().toISOString().replace(/[:]/g, '-');
+  function move(src: string, name: string) {
+    if (!fs.existsSync(src)) {
+      console.log(`${name} not found`);
+      return;
+    }
+    const dest = path.join(archiveDir, `${name}.${ts}`);
+    withFileLock(src, () => {
+      fs.renameSync(src, dest);
+    });
+    console.log(`Archived ${name} to ${dest}`);
+  }
+  move(memPath, 'memory.log');
+  move(snapshotPath, 'context.snapshot.md');
+}
+
 export function snapshotRotate(limit = parseInt(process.env.SNAP_ROTATE_LIMIT || '100', 10), dryRun = false): void {
   if (!fs.existsSync(snapshotPath)) {
     console.log('context.snapshot.md not found');
@@ -347,6 +366,7 @@ export function main(argv = hideBin(process.argv)): void {
       y.positional('limit', { type: 'number' }).option('dry-run', { type: 'boolean' }),
       (args) => snapshotRotate(args.limit as number | undefined, args.dryRun as boolean)
     )
+    .command('archive', 'Move memory.log and snapshot to logs/archive', () => {}, () => archiveFiles())
     .command('status', 'Print last entry and next task', () => {}, () => memStatus())
     .command('grep <pattern>', 'Search memory files', (y) =>
       y.positional('pattern', { type: 'string' })
