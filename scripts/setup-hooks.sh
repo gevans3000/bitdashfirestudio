@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-POST_HOOK_PATH="$REPO_ROOT/.git/hooks/post-commit"
+HOOKS_DIR="$REPO_ROOT/.husky"
+GIT_HOOKS_DIR="$REPO_ROOT/.git/hooks"
 
-install -m 755 "$REPO_ROOT/.husky/post-commit" "$POST_HOOK_PATH"
-echo "post-commit hook installed at $POST_HOOK_PATH"
+# Install all hooks found in .husky directory
+for hook in "$HOOKS_DIR"/*; do
+  if [ -f "$hook" ]; then
+    hook_name="$(basename "$hook")"
+    target="$GIT_HOOKS_DIR/$hook_name"
+    
+    # Skip README or other non-hook files
+    if [[ "$hook_name" == _* ]] || [[ "$hook_name" == *.md ]]; then
+      continue
+    fi
+    
+    echo "Installing $hook_name hook"
+    install -m 755 "$hook" "$target"
+    echo "✅ $hook_name hook installed at $target"
+  fi
+done
+
+echo "All git hooks installed successfully"
 
