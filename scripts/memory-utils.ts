@@ -2,11 +2,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Define __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Resolve base directory compatible with ESM and CJS
+const baseDir = typeof __dirname !== 'undefined'
+  ? __dirname
+  : path.dirname(fileURLToPath(import.meta.url));
 
-export const repoRoot = path.resolve(__dirname, "..");
+export const repoRoot = path.resolve(baseDir, "..");
 export const memPath = process.env.MEM_PATH
   ? path.resolve(process.env.MEM_PATH)
   : path.join(repoRoot, "memory.log");
