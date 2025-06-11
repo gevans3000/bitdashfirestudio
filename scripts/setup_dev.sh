@@ -17,53 +17,21 @@ have_node() {
   [[ "$(node -v)" == v${NEEDED_NODE_VERSION%%.*}* ]]
 }
 
-# Function to ensure Volta is working correctly
-setup_volta() {
-  # Check if volta is installed
-  if ! command -v volta >/dev/null 2>&1; then
-    echo "▶ Installing Volta..."
-    curl -sSf https://get.volta.sh | bash -s -- --skip-setup || {
-      echo "⚠️ Volta installation failed - will try alternative approach"
-      return 1
-    }
-  fi
-
-  # Ensure VOLTA_HOME is set and in PATH
-  export VOLTA_HOME="${HOME}/.volta"
-  export PATH="${VOLTA_HOME}/bin:$PATH"
-  
-  # Verify volta is working
-  if ! command -v volta >/dev/null 2>&1; then
-    echo "⚠️ Volta not found in PATH after setup - will try alternative approach"
-    return 1
-  fi
-  
-  return 0
-}
-
+# If Node with the required major version is available, reuse it
 if have_node; then
   echo "▶ Detected Node $(node -v) – reuse"
 else
-  echo "▶ Installing Node $NEEDED_NODE_VERSION via Volta (fast binary)"
-  
-  # Try to setup Volta first
-  if setup_volta; then
-    echo "▶ Using Volta to install Node $NEEDED_NODE_VERSION"
-    volta install "node@$NEEDED_NODE_VERSION" || {
-      echo "⚠️ Volta install of Node failed"
-    }
-  fi
-  
-  # If we still don't have the right Node version, try NVM if available
-  if ! have_node && command -v nvm >/dev/null 2>&1; then
-    echo "▶ Trying to use NVM to install Node $NEEDED_NODE_VERSION"
+  echo "▶ Node $NEEDED_NODE_VERSION required"
+
+  # Try NVM first if available
+  if command -v nvm >/dev/null 2>&1; then
+    echo "▶ Installing Node $NEEDED_NODE_VERSION via nvm"
     nvm install "$NEEDED_NODE_VERSION" && nvm use "$NEEDED_NODE_VERSION"
   fi
-  
-  # As a last resort, if we're in a GitHub Codex environment, create a NODE_BIN variable
-  # that will run node with the correct version
+
+  # As a last resort, create a NODE_BIN variable that will run node with the correct version
   if ! have_node; then
-    echo "⚠️ Could not install correct Node version - setting up NODE_BIN wrapper"
+    echo "⚠️ Could not install Node $NEEDED_NODE_VERSION - setting up NODE_BIN wrapper"
     NODE_BIN="npx node@$NEEDED_NODE_VERSION"
     export NODE_BIN
     echo "Using NODE_BIN=$NODE_BIN as a fallback"
