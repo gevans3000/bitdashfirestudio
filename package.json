@@ -25,7 +25,7 @@
     "backtest": "volta run node --loader ts-node/esm scripts/backtest.ts",
     "dev-deps": "bash scripts/dev-deps.sh",
     "auto": "volta run node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
-    "mem-update": "volta run tsx scripts/update-memory.ts",
+    "mem-update": "npx tsx scripts/update-memory.ts",
     "memory": "volta run node --loader ts-node/esm scripts/memory-cli.ts",
     "codex": "bash ./scripts/codex_context.sh",
     "setup-hooks": "bash scripts/setup-hooks.sh",
