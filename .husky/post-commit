@@ -1,2 +1,10 @@
 #!/usr/bin/env bash
-npm run mem-update >/dev/null 2>&1
+set -e
+log_dir="logs"
+mkdir -p "$log_dir"
+log_file="$log_dir/post-commit-$(date -u +%Y%m%d%H%M%S).log"
+if ! npm run mem-update >"$log_file" 2>&1; then
+  echo "mem-update failed; see $log_file" >&2
+else
+  rm -f "$log_file"
+fi
