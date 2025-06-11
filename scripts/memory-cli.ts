@@ -227,9 +227,13 @@ export function updateLog(verify = false): void {
     }
   }
   const logCmd = lastHash
-    ? `git log ${lastHash}..HEAD --reverse --pretty=format:%h|%s|%cI --name-only`
-    : 'git log --reverse --pretty=format:%h|%s|%cI --name-only';
-  const lines = execSync(logCmd, { cwd: repoRoot, encoding: 'utf8' })
+    ? `git log ${lastHash}..HEAD --reverse --pretty=format:%h\\|%s\\|%cI --name-only`
+    : 'git log --reverse --pretty=format:%h\\|%s\\|%cI --name-only';
+  const lines = execSync(logCmd, {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    shell: '/bin/bash',
+  })
     .trim()
     .split('\n');
   let current: { h: string; s: string; d: string; f: string[] } | undefined;
