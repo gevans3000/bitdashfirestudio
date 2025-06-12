@@ -63,7 +63,7 @@ else
   # As a last resort, create a NODE_BIN variable that will run node with the correct version
   if ! have_node; then
     echo "⚠️ Could not install Node $NEEDED_NODE_VERSION - setting up NODE_BIN wrapper"
-    NODE_BIN="npx node@$NEEDED_NODE_VERSION"
+    NODE_BIN="npx -y node@$NEEDED_NODE_VERSION"
     export NODE_BIN
     echo "Using NODE_BIN=$NODE_BIN as a fallback"
   fi
