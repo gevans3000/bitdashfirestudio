@@ -75,12 +75,17 @@ Each task below is prefixed with `Task <id>` and tracked directly in this file.
 - [x] Task 108: delete obsolete memory scripts from scripts/ and package.json
 - [x] Task 109: define single workflow entry; update README, AGENTS, CODEX_START
 - [x] Task 110: investigate and fix broken post-commit hook
-- [ ] Task 111: remove obsolete docs from repo
+- [x] Task 111: remove obsolete docs from repo
 - [x] Task 112: refactor memory-cli with native subcommands; port mem-rotate, memgrep, mem-diff, mem-status and update tests
 - [x] Task 113: move archive & restore utilities into scripts/memory and document usage
 - [x] Task 114: remove update-memory-log.ts & update-snapshot.ts; ensure memory-cli handles update-log & snapshot-update and migrate tests
-- [ ] Task 115: align rotate default with docs by keeping 300 lines
+- [x] Task 115: align rotate default with docs by keeping 300 lines
 - [ ] Task 116: test `memory archive` moves logs to archive and `memory restore` restores them
+- [ ] Task 117: update package.json scripts to drop `volta run` and call `node` directly; ensure Node 18 compatibility
+- [ ] Task 118: ensure tracked text files end with trailing newline
+- [ ] Task 119: document that memory.log is trimmed since git retains full history
+- [ ] Task 120: update `.idx/dev.nix` to use `pkgs.nodejs_18` for Node 18 environment
+- [ ] Task 121: delete or rewrite outdated memory CLI tests calling removed commands
 
 
 ### Bitcoin Dashboard

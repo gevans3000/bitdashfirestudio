@@ -1,11 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
-
-// Define __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 import {
   repoRoot,
@@ -13,7 +8,7 @@ import {
   snapshotPath,
   readMemoryLines,
   nextMemId,
-} from './memory-utils.js';
+} from './memory-utils.ts';
 
 /**
  * Rotate memory log when it exceeds the limit

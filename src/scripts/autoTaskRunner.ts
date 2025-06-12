@@ -3,6 +3,8 @@ import path from 'path';
 import { spawnSync, execSync } from 'child_process';
 import { repoRoot, memPath, withFileLock, atomicWrite } from '../../scripts/memory-utils';
 
+/* eslint no-constant-condition: off, no-inner-declarations: off */
+
 function run(cmd: string): { output: string; code: number } {
   const res = spawnSync(cmd, { shell: true, encoding: 'utf8' });
   return { output: (res.stdout || '') + (res.stderr || ''), code: res.status ?? 0 };

@@ -9,29 +9,43 @@ set -euo pipefail
 
 echo "▶ Bootstrapping dev environment..."
 
-# --- Node.js 18.x Setup ---
-REQUIRED_NODE_MAJOR=18
+# -- Node (skip if already OK) -------------------------------------------
+NEEDED_NODE_VERSION="${NODE_VERSION:-$(cat .nvmrc 2>/dev/null || echo 18)}"
 
-ensure_node18() {
-  local nodev
-  if command -v node >/dev/null 2>&1; then
-    nodev=$(node -v | grep -oE '[0-9]+' | head -1)
-    if [ "$nodev" = "$REQUIRED_NODE_MAJOR" ]; then
-      echo "✔ Node.js $REQUIRED_NODE_MAJOR.x detected: $(node -v)"
-      return 0
-    fi
+have_node() {
+  command -v node >/dev/null &&
+  [[ "$(node -v)" == v${NEEDED_NODE_VERSION%%.*}* ]]
+}
+
+# Function to ensure Volta is working correctly
+setup_volta() {
+  # Check if volta is installed
+  if ! command -v volta >/dev/null 2>&1; then
+    echo "▶ Installing Volta..."
+    curl -sSf https://get.volta.sh | bash -s -- --skip-setup || {
+      echo "⚠️ Volta installation failed - will try alternative approach"
+      return 1
+    }
   fi
 
-  echo "⚠️ Node.js $REQUIRED_NODE_MAJOR not found. Attempting to use nvm, volta, or npx..."
+  # Ensure VOLTA_HOME is set and in PATH
+  export VOLTA_HOME="${HOME}/.volta"
+  export PATH="${VOLTA_HOME}/bin:$PATH"
+  
+  # Verify volta is working
+  if ! command -v volta >/dev/null 2>&1; then
+    echo "⚠️ Volta not found in PATH after setup - will try alternative approach"
+    return 1
+  fi
+  
+  return 0
+}
 
-  # Try volta
-  if command -v volta >/dev/null 2>&1; then
-    volta install node@$REQUIRED_NODE_MAJOR || true
-    export PATH="$HOME/.volta/bin:$PATH"
-    if node -v | grep -q "^v$REQUIRED_NODE_MAJOR"; then
-      echo "✔ Node.js $REQUIRED_NODE_MAJOR.x via Volta"
-      return 0
-    fi
+if have_node; then
+  echo "▶ Detected Node $(node -v) – reuse"
+else
+  echo "▶ Installing Node $NEEDED_NODE_VERSION via Volta (fast binary)"
+  
   # Try to setup Volta first
   if setup_volta; then
     echo "▶ Using Volta to install Node $NEEDED_NODE_VERSION"
@@ -45,11 +59,10 @@ ensure_node18() {
     echo "▶ Trying to use NVM to install Node $NEEDED_NODE_VERSION"
     nvm install "$NEEDED_NODE_VERSION" && nvm use "$NEEDED_NODE_VERSION"
   fi
-  
-  # As a last resort, if we're in a GitHub Codex environment, create a NODE_BIN variable
-  # that will run node with the correct version
+
+  # As a last resort, create a NODE_BIN variable that will run node with the correct version
   if ! have_node; then
-    echo "⚠️ Could not install correct Node version - setting up NODE_BIN wrapper"
+    echo "⚠️ Could not install Node $NEEDED_NODE_VERSION - setting up NODE_BIN wrapper"
     NODE_BIN="npx node@$NEEDED_NODE_VERSION"
     export NODE_BIN
     echo "Using NODE_BIN=$NODE_BIN as a fallback"

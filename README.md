@@ -179,7 +179,7 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | Command | Purpose |
 | ------- | ------- |
 | `npm run auto` | Execute the AutoTaskRunner to process tasks in `TASKS.md`; installs dependencies once then validates memory after each commit |
-| `npm run memory` | Consolidated memory CLI with subcommands like `rotate`, `check`, `diff`, `grep`, `status`, `list` and `clean-locks` |
+| `npm run memory` | Consolidated memory CLI with subcommands like `rotate`, `archive`, `restore`, `update-log` and `check` |
 | `node --loader ts-node/esm scripts/update-memory.ts` | Update `memory.log`, `context.snapshot.md`, rotate the log and validate memory |
 | `ts-node scripts/rebuild-memory.ts [path]` | Rebuild `memory.log` and `context.snapshot.md` from git history |
 | `ts-node scripts/memory-json.ts` | Export `memory.log` lines to `memory.json` |
@@ -200,7 +200,7 @@ Keep `memory.log` trimmed so the agent loads quickly:
 npm run memory rotate # Prunes memory.log to the specified limit
 ```
 
-A weekly GitHub workflow automatically runs `npm run memory rotate` to push the latest trimmed logs.
+A weekly GitHub workflow automatically runs `npm run memory rotate` to push the latest trimmed logs. Because the full commit history is stored in Git, `memory.log` only keeps recent summaries.
 
 The memory scripts honor several environment variables:
 

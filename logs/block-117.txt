@@ -3,11 +3,9 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 > bitdash-firestudio@1.0.0 backtest
 > node --loader ts-node/esm scripts/backtest.ts
 
-(node:3521) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+(node:6053) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
 --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("ts-node/esm", pathToFileURL("./"));'
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:3521) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
-(Use `node --trace-deprecation ...` to show where the warning was created)
 
 node:internal/modules/run_main:123
     triggerUncaughtException(
@@ -16,4 +14,4 @@ node:internal/modules/run_main:123
   [Symbol(nodejs.util.inspect.custom)]: [Function: [nodejs.util.inspect.custom]]
 }
 
-Node.js v22.16.0
+Node.js v20.19.2
