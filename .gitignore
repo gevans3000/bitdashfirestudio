@@ -32,6 +32,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# large logs
+logs/block-*
+
 # vercel
 .vercel
 
