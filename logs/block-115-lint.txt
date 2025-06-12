@@ -1,4 +1,0 @@
-
-> bitdash-firestudio@1.0.0 lint
-> ESLINT_USE_FLAT_CONFIG=false eslint -c .eslintrc.json "src/**/*.{ts,tsx,js,jsx}"
-

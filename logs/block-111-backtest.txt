@@ -1,4 +1,0 @@
-
-> bitdash-firestudio@1.0.0 backtest
-> node --loader ts-node/esm scripts/backtest.ts
-

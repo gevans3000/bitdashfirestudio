@@ -34,6 +34,9 @@ yarn-error.log*
 
 # large logs
 logs/block-*
+memory.log
+snapshot.json
+commit.log
 
 # vercel
 .vercel
@@ -49,5 +52,3 @@ next-env.d.ts
 firebase-debug.log
 firestore-debug.log
 logs/commit.log
-memory.json
-snapshot.json
