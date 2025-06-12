@@ -187,7 +187,6 @@ Task 95: create memory CLI with rotate, snapshot-rotate, status, grep, update-lo
 | `npm run setup-hooks` | Install pre-commit and post-commit hooks for automatic memlog checks |
 | `npm run dev-deps` | Install dev dependencies if `node_modules` is missing; uses `.cache/node_modules.tar.gz` to speed up reinstalls |
 | `bash scripts/check-env.sh` | Verify required CLIs (`next`, `jest`, `ts-node`) are installed |
-| `node scripts/try-cmd.js <cmd>` | Run a command only if the binary exists |
 | `npm run backtest` | Launch the backtest defined in `scripts/backtest.ts` |
 
 Use `MEM_ROTATE_LIMIT` or a numeric argument to `npm run memory rotate` to change the number of retained lines.

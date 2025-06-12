@@ -23,7 +23,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "backtest": "node --loader ts-node/esm scripts/backtest.ts",
-    "auto": "node scripts/try-cmd.js ts-node src/scripts/autoTaskRunner.ts",
+    "auto": "node --loader ts-node/esm src/scripts/autoTaskRunner.ts",
     "mem-update": "npx tsx scripts/update-memory.ts",
     "memory": "node --loader ts-node/esm scripts/memory-cli.ts",
     "codex": "bash ./scripts/codex_context.sh",

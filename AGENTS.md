@@ -180,7 +180,7 @@ export interface AgentMessage<T = unknown> {
 | `npm run auto` | Process tasks via AutoTaskRunner |
 | `npm run bootstrap` | Install deps then lint, test and backtest |
 
-Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). `bash scripts/check-env.sh` verifies that `next`, `jest` and `ts-node` are available. The helper `scripts/try-cmd.js` is used by lint, test and backtest commands to skip missing binaries so automation never blocks.
+Run `npm ci` once when the environment starts (or `npm run dev-deps` if offline). `bash scripts/check-env.sh` verifies that `next`, `jest` and `ts-node` are available.
 
 ---
 
